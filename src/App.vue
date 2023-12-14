@@ -1,26 +1,106 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/vue.svg" />
-    <HelloWorld message="Hello Vue 2 + Vite" />
-  </div>
+    <div id="app">
+        <navigation-bar></navigation-bar>
+        <router-view></router-view>
+    </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import NavigationBar from "./components/UI/NavigationBar.vue";
 export default {
-  components: {
-    HelloWorld,
-  },
+    components: {
+        NavigationBar,
+    },
 };
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap");
+:root {
+    /* Font sizes */
+    --fs-smallest: clamp(0.8rem. 5vw, 1.2rem);
+    --fs-small: clamp(1.2rem, 5vw, 1.4rem);
+    --fs-medium: clamp(1.4rem, 5vw, 1.8rem);
+    --fs-large: clamp(1.8rem, 5vw, 2.2rem);
+    --fs-largest: clamp(2.2rem, 5vw, 2.6rem);
+    /* Colors */
+    --black-main: #212529;
+    --white-main: #f8f9fa;
+    --grey-main: #e9ecef;
+    --blue-main: #74c0fc;
+    --blue-light: #d0ebff;
+    --blue-dark: #339af0;
+    /* Paddings */
+    --pd-smallest: 0.4rem;
+    --pd-small: 0.6rem;
+    --pd-medium: 1rem;
+    --pd-large: 1.2rem;
+    --pd-largest: 1.6rem;
+    /* Gaps */
+    --gap-smallest: 0.3rem;
+    --gap-small: 0.5rem;
+    --gap-medium: 0.8rem;
+    --gap-large: 1rem;
+    --gap-largest: 1.4rem;
+    /* Border radius */
+    --border-radius: 5px;
+}
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+p {
+    margin: 0;
+}
+
+a,
+a:link,
+a:visited {
+    text-decoration: none;
+    color: var(--black-main);
+}
+
+button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: "Montserrat", sans-serif;
+    color: var(--black-main);
+}
+
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+}
+
+body {
+    color: var(--black-main);
+    background-color: var(--grey-main);
+    margin: 0;
+}
+
+/* Common */
+.nav-link {
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.nav-link:not(.router-link-exact-active):hover {
+    border-bottom-color: var(--blue-main);
+}
+
+.router-link-exact-active,
+.router-link-active {
+    border-bottom: 2px solid var(--blue-main);
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+    font-family: "Montserrat", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
 }
 </style>
