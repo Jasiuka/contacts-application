@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <notifications-list></notifications-list>
         <navigation-bar></navigation-bar>
         <router-view></router-view>
     </div>
@@ -7,9 +8,11 @@
 
 <script>
 import NavigationBar from "./components/UI/NavigationBar.vue";
+import NotificationsList from "./components/Notifications/NotificationsList.vue";
 export default {
     components: {
         NavigationBar,
+        NotificationsList,
     },
 };
 </script>
@@ -30,6 +33,7 @@ export default {
     --blue-main: #74c0fc;
     --blue-light: #d0ebff;
     --blue-dark: #339af0;
+    --error-main: #fa5252;
     /* Paddings */
     --pd-smallest: 0.4rem;
     --pd-small: 0.6rem;
