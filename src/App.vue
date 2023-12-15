@@ -31,12 +31,10 @@ export default {
     --fs-largest: clamp(2.2rem, 5vw, 2.6rem);
     /* Colors */
     --black-main: #212529;
-    --white-main: #f8f9fa;
-    --grey-main: #e9ecef;
-    --blue-main: #74c0fc;
-    --blue-light: #d0ebff;
-    --blue-dark: #339af0;
-    --error-main: #fa5252;
+    --white-main: #ffff;
+    --grey-main: #f8f9fa;
+    --blue-main: #1f3f77;
+    --blue-light: #d2d9e4;
     /* Paddings */
     --pd-smallest: 0.4rem;
     --pd-small: 0.6rem;
@@ -75,7 +73,6 @@ a,
 a:link,
 a:visited {
     text-decoration: none;
-    color: var(--black-main);
 }
 
 button {
@@ -104,18 +101,19 @@ body {
     padding: var(--pd-page);
 }
 
-.nav-link {
-    border-bottom: 2px solid transparent;
+.navigation-link {
+    color: var(--white-main);
+    font-weight: 500;
     transition: all 0.3s ease;
 }
 
-.nav-link:not(.router-link-exact-active):hover {
-    border-bottom-color: var(--blue-main);
+.navigation-link:not(.router-link-exact-active):hover {
+    color: var(--blue-light);
 }
 
 .router-link-exact-active,
 .router-link-active {
-    border-bottom: 2px solid var(--blue-main);
+    color: var(--blue-light);
 }
 
 #app {
