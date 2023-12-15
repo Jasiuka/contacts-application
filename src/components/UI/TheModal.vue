@@ -3,14 +3,15 @@
         <div v-if="getModalVisible" class="modal-background"></div>
         <transition name="modal">
             <dialog class="dialog" v-if="getModalVisible" open>
+                <component :is="getModalComponent"></component>
                 <button
+                    v-if="closeRequired"
                     @click="closeModal"
                     class="close-modal"
-                    title="Close modal"
+                    title="Uždaryti"
                 >
                     X
                 </button>
-                <component :is="getModalComponent"></component>
             </dialog>
         </transition>
     </div>
@@ -28,6 +29,9 @@ export default {
     name: "TheModal",
     computed: {
         ...mapGetters(["getModalVisible", "getModalComponent"]),
+        closeRequired() {
+            return !this.getModalComponent.includes("delete");
+        },
     },
     methods: {
         ...mapMutations(["CLOSE_MODAL"]),
@@ -51,28 +55,40 @@ export default {
 
 .modal-background {
     position: absolute;
-    background-color: #74c1fc1c;
+    background-color: rgba(0, 0, 0, 0.137);
     min-width: 100dvw;
     min-height: 100dvh;
 
     @supports (backdrop-filter: blur()) {
-        backdrop-filter: blur(3px);
+        backdrop-filter: blur(2px);
     }
 }
 
 .dialog {
     position: relative;
+    border: none;
+    box-shadow: 10px 10px 15px -8px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+    padding: calc(var(--pd-largest) * 2);
+    display: grid;
+    grid-template-columns: 90% 10%;
+    column-gap: var(--gap-large);
 }
 
 .close-modal {
-    position: absolute;
+    /* position: absolute;
     right: 0.5rem;
-    top: 0.5rem;
+    top: 0.5rem; */
     font-size: var(--fs-small);
+    background-color: var(--blue-main);
+    height: 3rem;
+    width: 3rem;
+    border-radius: 50%;
+    color: var(--white-main);
 }
 
 .close-modal:hover {
-    color: var(--blue-main);
+    transform: scale(0.95);
 }
 
 .modal-enter-active {
