@@ -62,4 +62,8 @@ export default {
 .error {
     background-color: var(--error-main);
 }
+
+.success {
+    background-color: #69db7c;
+}
 </style>

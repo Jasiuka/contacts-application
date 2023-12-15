@@ -1,16 +1,28 @@
 import axios from "axios";
 
 export default function (store) {
-    store.server = axios.create({ baseURL: SERVER_ADDRESS });
+    store.server = axios.create({
+        baseURL: BASE_API_URL,
+        headers: {
+            Authorization: "Bearer " + AUTH_TOKEN,
+        },
+    });
 
     store.dataGet = async function (path) {
         try {
             const response = await this.server.get(path);
             return response;
         } catch (error) {
-            throw new Error(
-                "There was an error while fetching data from the server"
-            );
+            throw new Error("Įvyko klaida gaunant duomenis iš serverio");
+        }
+    };
+
+    store.dataGetPerPage = async function (path, page) {
+        try {
+            const response = await this.server.get(`${path}/${page}`);
+            return response;
+        } catch (error) {
+            throw new Error("Įvyko klaida gaunant duomenis iš serverio");
         }
     };
 
@@ -19,9 +31,7 @@ export default function (store) {
             const response = await this.server.post(path, dataToPost);
             return response;
         } catch (error) {
-            throw new Error(
-                "There was an error while posting data to the server"
-            );
+            throw new Error("Įvyko klaida siunčiant duomenis į serverį");
         }
     };
 
@@ -33,7 +43,7 @@ export default function (store) {
             );
             return response;
         } catch (error) {
-            throw new Error("There was an error while updating data");
+            throw new Error("Įvyko klaida atnaujinant duomenis serveryje");
         }
     };
 
@@ -44,7 +54,7 @@ export default function (store) {
             );
             return response;
         } catch (error) {
-            throw new Error("There was an error while deleting data");
+            throw new Error("Įvyko klaida naikinant duomenis");
         }
     };
 }

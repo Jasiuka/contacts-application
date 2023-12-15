@@ -36,6 +36,7 @@ export default {
     --blue-main: #1f3f77;
     --blue-main-lighter: #355285;
     --blue-light: #d2d9e4;
+    --red-main: #a61a11;
     /* Paddings */
     --pd-smallest: 0.4rem;
     --pd-small: 0.6rem;
@@ -102,6 +103,26 @@ body {
     padding: var(--pd-page);
 }
 
+.action-btn {
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn:hover {
+    transform: scale(1.05);
+}
+.action-delete {
+    background-color: var(--red-main);
+}
+
+.action-edit {
+    background-color: var(--blue-main);
+}
+
 .navigation-link {
     color: var(--white-main);
     font-weight: 500;
@@ -121,6 +142,5 @@ body {
     font-family: "Montserrat", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
 }
 </style>
