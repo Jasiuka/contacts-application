@@ -43,6 +43,7 @@ export default {
     --pd-medium: 1rem;
     --pd-large: 1.2rem;
     --pd-largest: 1.6rem;
+    --pd-page: 2.4rem var(--pd-medium);
     /* Gaps */
     --gap-smallest: 0.3rem;
     --gap-small: 0.5rem;
@@ -59,6 +60,14 @@ ul {
 }
 
 p {
+    margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
     margin: 0;
 }
 
