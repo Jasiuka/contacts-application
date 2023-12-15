@@ -2,6 +2,7 @@
     <div id="app">
         <notifications-list></notifications-list>
         <navigation-bar></navigation-bar>
+        <the-modal></the-modal>
         <router-view></router-view>
     </div>
 </template>
@@ -9,10 +10,12 @@
 <script>
 import NavigationBar from "./components/UI/NavigationBar.vue";
 import NotificationsList from "./components/Notifications/NotificationsList.vue";
+import TheModal from "./components/UI/TheModal.vue";
 export default {
     components: {
         NavigationBar,
         NotificationsList,
+        TheModal,
     },
 };
 </script>
@@ -72,6 +75,7 @@ button {
     cursor: pointer;
     font-family: "Montserrat", sans-serif;
     color: var(--black-main);
+    transition: all 0.3s ease;
 }
 
 *,
