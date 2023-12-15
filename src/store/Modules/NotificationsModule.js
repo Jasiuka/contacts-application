@@ -1,12 +1,6 @@
 let removeInterval = null;
 const state = {
-    notifications: [
-        {
-            notificationText: "Warning",
-            id: 1545,
-            type: "error",
-        },
-    ],
+    notifications: [],
 };
 const getters = {
     getNotifications: (state) => state.notifications,
