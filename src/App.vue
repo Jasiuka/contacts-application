@@ -34,6 +34,7 @@ export default {
     --white-main: #ffff;
     --grey-main: #f8f9fa;
     --blue-main: #1f3f77;
+    --blue-main-lighter: #355285;
     --blue-light: #d2d9e4;
     /* Paddings */
     --pd-smallest: 0.4rem;

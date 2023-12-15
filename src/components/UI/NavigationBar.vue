@@ -105,13 +105,13 @@ export default {
     padding: var(--pd-small);
 }
 
-.navigation-dropdown--item {
+.navigation-dropdown--item,
+.navigation-dropdown--item button {
     width: 100%;
 }
 
 .navigation-dropdown--item button:hover {
     background-color: var(--blue-light);
-    width: 100%;
 }
 
 .nav-logo {
