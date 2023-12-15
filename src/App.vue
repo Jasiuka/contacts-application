@@ -50,7 +50,7 @@ export default {
     --gap-large: 1rem;
     --gap-largest: 1.4rem;
     /* Border radius */
-    --border-radius: 5px;
+    --border-radius: 8px;
 }
 ul {
     list-style: none;
