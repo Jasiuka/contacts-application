@@ -13,6 +13,7 @@
 .dropdown {
     position: relative;
     padding-bottom: var(--pd-smallest);
+    box-shadow: 0px 3px 14px 0px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown:hover .dropdown-list {
@@ -26,6 +27,7 @@
     cursor: pointer;
 }
 .dropdown-list {
+    overflow: hidden;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -34,7 +36,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    left: -20%;
+    right: 0%;
     top: 100%;
     background-color: white;
     border-radius: var(--border-radius);
