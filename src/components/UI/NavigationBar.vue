@@ -2,7 +2,7 @@
     <nav class="navigation">
         <ul class="navigation-list">
             <li>
-                <router-link to="/kontaktai">
+                <router-link to="/contacts">
                     <img
                         class="nav-logo"
                         src="../../assets/Teltonika-logotipas 1.png"
@@ -10,22 +10,22 @@
                 </router-link>
             </li>
             <li>
-                <router-link class="navigation-link" to="/kontaktai"
+                <router-link class="navigation-link" to="/contacts"
                     >Kontaktai</router-link
                 >
             </li>
             <li>
-                <router-link class="navigation-link" to="/imones"
+                <router-link class="navigation-link" to="/companies"
                     >Įmonės</router-link
                 >
             </li>
             <li>
-                <router-link class="navigation-link" to="/struktura"
+                <router-link class="navigation-link" to="/structure"
                     >Struktūra</router-link
                 >
             </li>
             <li>
-                <router-link class="navigation-link" to="paskyros"
+                <router-link class="navigation-link" to="/accounts"
                     >Paskyros</router-link
                 >
             </li>
