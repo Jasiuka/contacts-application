@@ -17,7 +17,7 @@ const router = new VueRouter({
             children: [
                 {
                     name: "ContactsManagement",
-                    path: "/kontaktai",
+                    path: "/contacts",
                     redirect: { name: "ContactsList" },
                     component: EmployeeContacts,
                     children: [
@@ -33,17 +33,17 @@ const router = new VueRouter({
             component: AdminLogin,
         },
         {
-            path: "/paskyros",
+            path: "/accounts",
             name: "AdminAccounts",
             component: AdminAccountsManagement,
         },
         {
-            path: "/imones",
+            path: "/companies",
             name: "CompaniesManagement",
             component: CompaniesManagement,
         },
         {
-            path: "/struktura",
+            path: "/structure",
             name: "CompanyStructures",
             component: CompanyStructureManagement,
         },
@@ -52,7 +52,7 @@ const router = new VueRouter({
             redirect: { name: "NotFound" },
         },
         {
-            path: "/nerastas",
+            path: "/not-found",
             name: "NotFound",
             component: NotFound,
         },
