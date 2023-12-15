@@ -1,8 +1,8 @@
 <template>
     <main class="not-found page-inner">
-        <h2>Unfortunately, page was not found</h2>
-        <router-link class="not-found-link" to="/contacts-management"
-            >Get back to main</router-link
+        <h2>Deja, puslapis kurio ieškojote nerastas</h2>
+        <router-link class="not-found-link" to="/contacts"
+            >Grįžti į pagrindinį</router-link
         >
     </main>
 </template>
@@ -26,9 +26,10 @@
     padding: var(--pd-small);
     border-radius: var(--border-radius);
     transition: all 0.3s ease;
+    color: var(--white-main);
 }
 
 .not-found-link:hover {
-    background-color: var(--blue-light);
+    background-color: var(--blue-main-lighter);
 }
 </style>
