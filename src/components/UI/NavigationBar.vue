@@ -1,30 +1,59 @@
 <template>
     <nav class="navigation">
         <ul class="navigation-list">
-            <navigation-dropdown
-                :links="managementDropdown"
-                dropdownName="Management"
-            ></navigation-dropdown>
             <li>
-                <router-link class="nav-link" to="/contacts-management"
-                    >Main</router-link
+                <router-link to="/kontaktai">
+                    <img
+                        class="nav-logo"
+                        src="../../assets/Teltonika-logotipas 1.png"
+                    />
+                </router-link>
+            </li>
+            <li>
+                <router-link class="navigation-link" to="/kontaktai"
+                    >Kontaktai</router-link
                 >
             </li>
-            <li v-if="loggedIn">
-                <div>Image</div>
-            </li>
-            <li v-else>
-                <router-link class="nav-link" to="/admin-login"
-                    >Login</router-link
+            <li>
+                <router-link class="navigation-link" to="/imones"
+                    >Įmonės</router-link
                 >
             </li>
+            <li>
+                <router-link class="navigation-link" to="/struktura"
+                    >Struktūra</router-link
+                >
+            </li>
+            <li>
+                <router-link class="navigation-link" to="paskyros"
+                    >Paskyros</router-link
+                >
+            </li>
+            <base-dropdown class="navigation-dropdown">
+                <template #display>
+                    <img src="../../assets/Male-User.png" />
+                </template>
+                <template #list-items>
+                    <li class="navigation-dropdown--item">
+                        <button title="Keisti slaptažodį">
+                            Keisti slaptažodį
+                        </button>
+                    </li>
+                    <li class="navigation-dropdown--item">
+                        <button title="Atsijungti">Atsijungti</button>
+                    </li>
+                </template>
+            </base-dropdown>
         </ul>
     </nav>
 </template>
 
 <script>
-import NavigationDropdown from "../NavigationDropdown.vue";
+import BaseDropdown from "../Base/BaseDropdown.vue";
 export default {
+    components: {
+        BaseDropdown,
+    },
     data() {
         return {
             managementDropdown: [
@@ -48,28 +77,44 @@ export default {
             loggedIn: false,
         };
     },
-    components: {
-        NavigationDropdown,
-    },
 };
 </script>
 
 <style scoped>
 .navigation {
-    padding: var(--pd-medium);
+    padding: var(--pd-medium) var(--pd-largest);
     display: flex;
-    justify-content: end;
-    font-size: var(--fs-medium);
+    font-size: var(--fs-small);
     margin-bottom: var(--gap--large);
-    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.1);
+    background-color: var(--blue-main);
 }
 
 .navigation-list {
     display: flex;
-    gap: var(--gap-medium);
+    align-items: center;
+    min-width: 100%;
+    gap: calc(var(--gap-large) * 2);
 }
 
-.router-link-exact-active {
-    border-bottom: 2px solid var(--blue-main);
+.navigation-dropdown {
+    margin-left: auto;
+}
+
+.navigation-dropdown--item button {
+    font-size: var(--fs-small);
+    padding: var(--pd-small);
+}
+
+.navigation-dropdown--item {
+    width: 100%;
+}
+
+.navigation-dropdown--item button:hover {
+    background-color: var(--blue-light);
+    width: 100%;
+}
+
+.nav-logo {
+    height: 3rem;
 }
 </style>
