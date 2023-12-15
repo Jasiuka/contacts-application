@@ -1,5 +1,5 @@
 <template>
-    <main class="not-found">
+    <main class="not-found page-inner">
         <h2>Unfortunately, page was not found</h2>
         <router-link class="not-found-link" to="/contacts-management"
             >Get back to main</router-link
@@ -9,7 +9,6 @@
 
 <style>
 .not-found {
-    padding: var(--pd-page);
     height: 25rem;
     display: flex;
     flex-direction: column;

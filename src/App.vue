@@ -100,6 +100,10 @@ body {
 }
 
 /* Common */
+.page-inner {
+    padding: var(--pd-page);
+}
+
 .nav-link {
     border-bottom: 2px solid transparent;
     transition: all 0.3s ease;
