@@ -1,7 +1,7 @@
 <template>
     <main class="not-found page-inner">
         <h2>Deja, puslapis kurio ieškojote nerastas</h2>
-        <router-link class="not-found-link" to="/kontaktai"
+        <router-link class="not-found-link" to="/contacts"
             >Grįžti į pagrindinį</router-link
         >
     </main>
