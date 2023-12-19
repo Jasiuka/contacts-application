@@ -3,6 +3,9 @@
         <h1 class="page-heading">
             <slot name="page-heading" :class="pageHeadingClass"></slot>
         </h1>
+        <div class="page-special">
+            <slot name="page-special"></slot>
+        </div>
         <section class="page-content" :class="pageContentClass">
             <slot name="content"></slot>
         </section>
@@ -12,8 +15,7 @@
 <script>
 export default {
     props: ["pageHeadingClass", "pageContentClass"],
-    created() {
-    },
+    created() {},
 };
 </script>
 

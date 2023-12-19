@@ -1,9 +1,11 @@
 const state = {
     contacts: [],
+    contactToModify: null,
 };
 
 const getters = {
     getContacts: (state) => state.contacts,
+    getContactToModify: (state) => state.contactToModify,
 };
 
 const actions = {
@@ -14,7 +16,26 @@ const actions = {
             );
             if (response.status === 200) {
                 const contacts = response.data.items;
+                console.log(contacts);
                 commit("SET_CONTACTS_STATE", contacts);
+            }
+        } catch (error) {
+            dispatch("CreateNotification", {
+                notificationText: error.message,
+                type: "error",
+            });
+        }
+    },
+
+    async FetchSingleContact({ dispatch, commit }, contact) {
+        try {
+            const response = await this.dataGetSingle(
+                `employees/records/${contact.id}?expand=office_id,company_id,division_id,department_id,group_id`
+            );
+            if (response.status === 200) {
+                const contact = response.data.items;
+                console.log(contact);
+                commit("SET_CONTACT_TO_MODIFY", contact);
             }
         } catch (error) {
             dispatch("CreateNotification", {
@@ -66,6 +87,9 @@ const actions = {
 const mutations = {
     SET_CONTACTS_STATE(state, contacts) {
         state.contacts = contacts;
+    },
+    SET_CONTACT_TO_MODIFY(state, contact) {
+        state.contactToModify = contact;
     },
 };
 

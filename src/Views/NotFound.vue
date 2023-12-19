@@ -22,7 +22,7 @@
 
 .not-found-link {
     font-size: var(--fs-small);
-    background-color: var(--blue-main);
+    background-color: var(--blue-second);
     padding: var(--pd-small);
     border-radius: var(--border-radius);
     transition: all 0.3s ease;

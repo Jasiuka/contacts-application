@@ -16,6 +16,7 @@
                             input-type="text"
                             placeholder="Įveskite vardą"
                             input-name="name"
+                            :input-value="getContactToModify?.name"
                         ></custom-input>
                     </div>
                     <div class="form-control">
@@ -24,6 +25,7 @@
                             input-type="text"
                             placeholder="Įveskite pavardę"
                             input-name="surname"
+                            :input-value="getContactToModify?.surname"
                         ></custom-input>
                     </div>
                     <div class="form-control">
@@ -32,6 +34,7 @@
                             input-type="text"
                             placeholder="Įveskite poziciją"
                             input-name="position"
+                            :input-value="getContactToModify?.position"
                         ></custom-input>
                     </div>
                 </div>
@@ -43,14 +46,16 @@
                             input-type="email"
                             placeholder="Įveskite el.paštą.."
                             input-name="email"
+                            :input-value="getContactToModify?.email"
                         ></custom-input>
                     </div>
                     <div class="form-control">
                         <custom-input
                             label-text="Telefono numeris"
-                            input-type="number"
+                            input-type="text"
                             placeholder="Įveskite telefono numerį"
                             input-name="number"
+                            :input-value="getContactToModify?.phone_number"
                         ></custom-input>
                     </div>
                 </div>
@@ -116,6 +121,7 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 export default {
     data() {
         return {
@@ -125,10 +131,18 @@ export default {
             ],
         };
     },
+    computed: {
+        ...mapGetters(["getContactToModify"]),
+    },
     methods: {
+        ...mapActions(["FetchSingleContact"]),
         submitForm() {
             console.log("Contact created");
         },
+    },
+    async created() {
+        console.log(this.getContactToModify);
+        await this.FetchSingleContact({ id: this.getContactToModify.id });
     },
 };
 </script>

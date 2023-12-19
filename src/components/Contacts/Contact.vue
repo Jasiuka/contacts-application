@@ -31,19 +31,20 @@
             <button
                 title="Ištrinti"
                 class="contact-delete action-delete action-btn"
-                @click="deleteContact(contact.id)"
+                @click="openModal(formTypes.DELETE_CONTACT)"
             >
                 <img
                     alt="Ištrinimo paveikslėlis"
-                    src="../../assets/Trash-Can.png"
+                    src="../../assets/Icons/Trash-Can.png"
                 />
             </button>
             <button
+                @click="openModal(formTypes.EDIT_CONTACT)"
                 title="Koreguoti"
                 class="contact-edit action-edit action-btn"
             >
                 <img
-                    src="../../assets/Pencil-Drawing.png"
+                    src="../../assets/Icons/Pencil-Drawing.png"
                     alt="Koregavimo paveikslėlis"
                 />
             </button>
@@ -52,7 +53,8 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapMutations } from "vuex";
+import { formTypes } from "../Forms/formTypes";
 export default {
     name: "ContactComponent",
     props: {
@@ -61,13 +63,19 @@ export default {
             required: true,
         },
     },
+    data() {
+        return {
+            formTypes,
+        };
+    },
     methods: {
-        ...mapActions(["DeleteContact"]),
-        deleteContact(id) {
-            this.DeleteContact({ id });
+        ...mapMutations(["OPEN_MODAL", "CLOSE_MODAL", "SET_CONTACT_TO_MODIFY"]),
+
+        openModal(formType) {
+            this.SET_CONTACT_TO_MODIFY(this.contact);
+            this.OPEN_MODAL(formType);
         },
     },
-    mounted() {},
 };
 </script>
 

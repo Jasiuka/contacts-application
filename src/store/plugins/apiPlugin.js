@@ -17,6 +17,16 @@ export default function (store) {
         }
     };
 
+    store.dataGetSingle = async function (path) {
+        try {
+            const response = await this.server.get(path);
+            console.log(response);
+            return response;
+        } catch (error) {
+            throw new Error("Įvyko klaida gaunant duomenis iš serverio");
+        }
+    };
+
     store.dataGetPerPage = async function (path, page) {
         try {
             const response = await this.server.get(`${path}/${page}`);
