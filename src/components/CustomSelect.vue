@@ -1,14 +1,20 @@
 <template>
     <div>
         <label :for="selectName">{{ labelText }}</label>
-        <select :id="selectName" :name="selectName">
-            <option>{{ notSelectedText }}</option>
+        <select
+            :id="selectName"
+            :name="selectName"
+            :class="{ 'select-invalid': isInvalid && !selectedValue }"
+            v-model="selectedValue"
+            :required="isRequired"
+        >
+            <option value="0">{{ notSelectedText }}</option>
             <option
                 v-for="option in options"
-                :value="option.value"
+                :value="option.id"
                 :key="option.text"
             >
-                {{ option.text }}
+                {{ option.name }}
             </option>
         </select>
     </div>
@@ -33,6 +39,19 @@ export default {
             type: String,
             required: true,
         },
+        isInvalid: {
+            type: Boolean,
+            required: false,
+        },
+        isRequired: {
+            type: Boolean,
+            required: false,
+        },
+    },
+    data() {
+        return {
+            selectedValue: 0,
+        };
     },
 };
 </script>
@@ -46,6 +65,10 @@ select {
     border: none;
     width: 100%;
     border-radius: var(--border-radius);
+}
+
+.select-invalid {
+    border: 2px solid rgb(247, 37, 37);
 }
 
 label {

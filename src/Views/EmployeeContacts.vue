@@ -37,7 +37,7 @@ export default {
         ...mapGetters(["getContacts"]),
     },
     methods: {
-        ...mapActions(["FetchContacts"]),
+        ...mapActions(["FetchContacts", "FetchAllStructures"]),
         ...mapMutations(["OPEN_MODAL"]),
         openModal(formType) {
             this.OPEN_MODAL(formType);
@@ -45,6 +45,7 @@ export default {
     },
     async created() {
         await this.FetchContacts();
+        await this.FetchAllStructures();
     },
 };
 </script>

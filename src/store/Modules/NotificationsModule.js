@@ -37,6 +37,7 @@ const mutations = {
     REMOVE_NOTIFICATION(state) {
         state.notifications = state.notifications.slice(1);
         if (state.notifications.length === 0) {
+            console.log("Executed?");
             clearInterval(removeInterval);
             removeInterval = null;
         }

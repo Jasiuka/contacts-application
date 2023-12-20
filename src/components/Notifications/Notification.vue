@@ -48,6 +48,7 @@ export default {
     font-size: var(--fs-small);
     gap: var(--gap-small);
     justify-content: space-between;
+    z-index: 100;
 }
 
 .notification-close {
@@ -56,11 +57,16 @@ export default {
     transition: all 0.3s ease;
 }
 
+.notification-close.error {
+    color: var(--white-main);
+}
+
 .notification-close:hover {
     color: var(--grey-main);
 }
 .error {
-    background-color: var(--error-main);
+    background-color: var(--red-main);
+    color: var(--white-main);
 }
 
 .success {

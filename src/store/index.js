@@ -4,6 +4,7 @@ import apiPlugin from "./plugins/apiPlugin";
 import NotificationsModule from "./Modules/NotificationsModule";
 import ModalModule from "./Modules/ModalModule";
 import ContactsModule from "../store/Modules/ContactsModule";
+import StructuresModule from "./Modules/StructuresModule";
 
 Vue.use(Vuex);
 
@@ -12,6 +13,7 @@ const store = new Vuex.Store({
         NotificationsModule,
         ModalModule,
         ContactsModule,
+        StructuresModule,
     },
     plugins: [apiPlugin],
 });

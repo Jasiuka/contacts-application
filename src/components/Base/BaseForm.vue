@@ -69,6 +69,11 @@ form {
     border-radius: var(--border-radius);
 }
 
+.form-content:has(.form-delete--content) {
+    flex-direction: column;
+    gap: var(--gap-small);
+}
+
 .form-delete--content {
     font-size: var(--fs-smallest);
     color: #495057;

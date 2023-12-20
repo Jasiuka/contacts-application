@@ -16,7 +16,6 @@ const actions = {
             );
             if (response.status === 200) {
                 const contacts = response.data.items;
-                console.log(contacts);
                 commit("SET_CONTACTS_STATE", contacts);
             }
         } catch (error) {
@@ -34,7 +33,6 @@ const actions = {
             );
             if (response.status === 200) {
                 const contact = response.data.items;
-                console.log(contact);
                 commit("SET_CONTACT_TO_MODIFY", contact);
             }
         } catch (error) {

@@ -7,7 +7,11 @@
             :type="inputType"
             :name="inputName"
             :id="inputName"
-            :value="inputValue"
+            :value="inputValue ? inputValue : enteredValue"
+            :class="{ 'input-invalid': isInvalid && !enteredValue }"
+            v-model="enteredValue"
+            :required="isRequired"
+            :maxlength="maxLength"
         />
     </div>
 </template>
@@ -40,6 +44,23 @@ export default {
             type: String,
             required: false,
         },
+        isInvalid: {
+            type: Boolean,
+            required: false,
+        },
+        maxLength: {
+            type: String,
+            required: false,
+        },
+        isRequired: {
+            type: Boolean,
+            required: false,
+        },
+    },
+    data() {
+        return {
+            enteredValue: "",
+        };
     },
 };
 </script>
@@ -55,6 +76,10 @@ input {
     border: none;
     font-size: var(--fs-smallest);
     border-radius: var(--border-radius);
+}
+
+.input-invalid {
+    border: 2px solid rgb(247, 37, 37);
 }
 
 label {
