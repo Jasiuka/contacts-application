@@ -17,7 +17,7 @@ const actions = {
         }
 
         if (!removeInterval) {
-            setInterval(() => {
+            removeInterval = setInterval(() => {
                 commit("REMOVE_NOTIFICATION");
             }, 2000);
         }
