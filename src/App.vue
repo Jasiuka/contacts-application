@@ -104,6 +104,12 @@ body {
     padding: var(--pd-page);
 }
 
+.input-required,
+.select-required {
+    color: rgb(247, 37, 37);
+    font-weight: 500;
+}
+
 /* BUTTONS */
 .action-btn {
     border-radius: 50%;

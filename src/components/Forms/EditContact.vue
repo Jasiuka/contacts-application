@@ -136,12 +136,9 @@ export default {
     },
     methods: {
         ...mapActions(["FetchSingleContact"]),
-        submitForm() {
-            console.log("Contact created");
-        },
+        submitForm() {},
     },
     async created() {
-        console.log(this.getContactToModify);
         await this.FetchSingleContact({ id: this.getContactToModify.id });
     },
 };

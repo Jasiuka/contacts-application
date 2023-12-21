@@ -1,10 +1,15 @@
 <template>
     <div>
-        <label :for="selectName">{{ labelText }}</label>
+        <label :for="selectName"
+            >{{ labelText }}
+            <span class="select-required" v-if="isRequired">*</span>
+        </label>
         <select
             :id="selectName"
             :name="selectName"
-            :class="{ 'select-invalid': isInvalid && !selectedValue }"
+            :class="{
+                'select-invalid': isInvalid && Number(selectedValue) === 0,
+            }"
             v-model="selectedValue"
             :required="isRequired"
         >

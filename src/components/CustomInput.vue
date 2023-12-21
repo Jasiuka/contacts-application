@@ -1,6 +1,9 @@
 <template>
     <div>
-        <label :for="inputName">{{ labelText }}</label>
+        <label :for="inputName"
+            >{{ labelText }}
+            <span class="input-required" v-if="isRequired">*</span>
+        </label>
 
         <input
             :placeholder="placeholder"
@@ -8,7 +11,12 @@
             :name="inputName"
             :id="inputName"
             :value="inputValue ? inputValue : enteredValue"
-            :class="{ 'input-invalid': isInvalid && !enteredValue }"
+            :class="{
+                'input-invalid':
+                    isInvalid ||
+                    (isInvalid && !enteredValue && isRequired) ||
+                    (inputValue !== undefined && isRequired),
+            }"
             v-model="enteredValue"
             :required="isRequired"
             :maxlength="maxLength"
@@ -62,6 +70,11 @@ export default {
             enteredValue: "",
         };
     },
+    computed: {
+        inputInvalid() {
+            return isInvalid;
+        },
+    },
 };
 </script>
 
@@ -78,6 +91,10 @@ input {
     border-radius: var(--border-radius);
 }
 
+.input-required {
+    color: rgb(247, 37, 37);
+    font-weight: 500;
+}
 .input-invalid {
     border: 2px solid rgb(247, 37, 37);
 }

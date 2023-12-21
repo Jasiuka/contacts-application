@@ -8,7 +8,7 @@
                 class="contact-avatar"
                 :src="
                     contact.photo
-                        ? contact.photo
+                        ? imageUrl
                         : require('../../assets/noPhoto.png')
                 "
                 :alt="`${contact.name} nuotrauka`"
@@ -63,6 +63,17 @@ export default {
             required: true,
         },
     },
+    computed: {
+        imageUrl() {
+            if (this.contact.photo) {
+                const nUrl = new URL(
+                    `${this.contact.id}/${this.contact.photo}`,
+                    `http://localhost:8090/api/files/b2oym7fr4tkhpsr/`
+                );
+                return nUrl;
+            }
+        },
+    },
     data() {
         return {
             formTypes,
@@ -103,6 +114,10 @@ export default {
     grid-row: 1/3;
     display: block;
     object-position: -10px;
+    width: 3rem;
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: center;
 }
 
 .contact-name {

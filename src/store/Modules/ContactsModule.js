@@ -49,9 +49,27 @@ const actions = {
                 "employees/records",
                 contact.id
             );
-            if (response) {
+            if (response.status === 204) {
                 dispatch("CreateNotification", {
                     notificationText: "Įrašas panaikintas sėkmingai",
+                    type: "success",
+                });
+                dispatch("UpdateContacts");
+            }
+        } catch (error) {
+            dispatch("CreateNotification", {
+                notificationText: error.message,
+                type: "error",
+            });
+        }
+    },
+
+    async CreateContact({ dispatch }, contact) {
+        try {
+            const response = await this.dataPost("/employees/records", contact);
+            if (response.status === 200) {
+                dispatch("CreateNotification", {
+                    notificationText: "Įrašas sukurtas sėkmingai",
                     type: "success",
                 });
                 dispatch("UpdateContacts");
