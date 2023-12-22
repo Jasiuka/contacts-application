@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <notifications-list></notifications-list>
         <navigation-bar></navigation-bar>
         <router-view></router-view>
     </div>
@@ -7,9 +8,11 @@
 
 <script>
 import NavigationBar from "./components/UI/NavigationBar.vue";
+import NotificationsList from "./components/Notifications/NotificationsList.vue";
 export default {
     components: {
         NavigationBar,
+        NotificationsList,
     },
 };
 </script>

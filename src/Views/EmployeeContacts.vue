@@ -1,3 +1,9 @@
 <template>
-    <h1>Employee contacts</h1>
+    <div>
+        <h1>Employee contacts</h1>
+    </div>
 </template>
+
+<script>
+export default {};
+</script>
