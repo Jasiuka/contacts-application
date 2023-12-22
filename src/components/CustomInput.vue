@@ -75,6 +75,9 @@ export default {
             return isInvalid;
         },
     },
+    created() {
+        this.enteredValue = this.inputValue;
+    },
 };
 </script>
 

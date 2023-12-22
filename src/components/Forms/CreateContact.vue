@@ -122,8 +122,14 @@
                             class="file-upload"
                             name="photo"
                             type="file"
+                            @change="changePhotoDisplayText"
+                            accept="image/png,image/jpeg,image/jpg"
                         />
                         <label for="file-upload">Įkelti nuotrauką</label>
+                        <p class="image-text" v-if="photo">
+                            Nuotrauka: {{ photo }}
+                        </p>
+                        <p v-else>Nuotrauka neįkelta</p>
                     </div>
                 </div>
             </div>
@@ -135,18 +141,23 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { validationMixin } from "../../utils/mixins/validationMixin";
-import {
-    createObjectFromInputsArray,
-    createFormDataFromInputsArray,
-} from "../../utils/helper";
+import { createFormDataFromInputsArray } from "../../utils/helper";
 export default {
     mixins: [validationMixin],
+    data() {
+        return {
+            photo: "",
+        };
+    },
     computed: {
         ...mapGetters(["getStructures"]),
     },
     methods: {
         ...mapMutations(["CLOSE_MODAL"]),
         ...mapActions(["CreateContact"]),
+        changePhotoDisplayText(event) {
+            this.photo = event.target.files[0].name;
+        },
         submitForm(event) {
             this.invalidFields = [];
             const formContent = event.srcElement.children[1];
@@ -193,6 +204,18 @@ export default {
             }
             if (!numberFormatIsValid) return;
 
+            // Check file format
+            const fileInput = formContent.querySelector("[name='photo']");
+            const photoValidFormat = this.checkFileFormat(
+                "Nuotrauka",
+                fileInput.files[0].type,
+                "image/png",
+                "image/jpeg",
+                "image/jpg"
+            );
+
+            if (!photoValidFormat) return;
+
             const contact = createFormDataFromInputsArray(allFields);
             this.CreateContact(contact);
             this.CLOSE_MODAL();
@@ -200,3 +223,10 @@ export default {
     },
 };
 </script>
+
+<style>
+.image-text {
+    word-break: break-word;
+    text-overflow: ellipsis;
+}
+</style>

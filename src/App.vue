@@ -121,7 +121,7 @@ body {
 }
 
 .action-btn:hover,
-.page-add-new:hover {
+.page-special-action:hover {
     transform: scale(1.05);
 }
 .action-delete {
@@ -145,13 +145,19 @@ body {
     border-bottom-color: var(--blue-second);
 }
 
-.page-add-new {
+.page-special-action {
     background-color: var(--blue-second);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--pd-small);
+    padding: var(--pd-medium);
+}
+
+.page-special-action--icon {
+    max-width: 1.6rem;
+    max-height: 1.6rem;
+    object-fit: cover;
 }
 
 /* LINKS */

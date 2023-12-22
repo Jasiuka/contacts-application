@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from "vuex";
+import { mapMutations } from "vuex";
 import { formTypes } from "../Forms/formTypes";
 export default {
     name: "ContactComponent",
@@ -66,11 +66,11 @@ export default {
     computed: {
         imageUrl() {
             if (this.contact.photo) {
-                const nUrl = new URL(
+                const url = new URL(
                     `${this.contact.id}/${this.contact.photo}`,
                     `http://localhost:8090/api/files/b2oym7fr4tkhpsr/`
                 );
-                return nUrl;
+                return url;
             }
         },
     },

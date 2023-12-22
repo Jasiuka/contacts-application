@@ -29,4 +29,17 @@ export default {
     font-weight: 400;
     margin-bottom: var(--gap-largest);
 }
+
+.page-special {
+    margin-bottom: var(--gap-largest);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-large);
+}
+
+.page-special div {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-medium);
+}
 </style>

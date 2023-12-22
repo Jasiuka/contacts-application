@@ -1,11 +1,11 @@
 <template>
     <base-form
         @submit.native.prevent="submitForm"
-        submitText="Pridėti"
+        submitText="Redaguoti"
         submitClass="submit-button"
     >
         <template #form-heading>
-            <h2>Pridėti kontaktą</h2>
+            <h2>Redaguoti kontaktą</h2>
         </template>
         <template #form-content>
             <div class="form-side">
@@ -67,7 +67,8 @@
                         labelText="Įmonė"
                         notSelectedText="Pasirinkite įmonę.."
                         selectName="company"
-                        :options="testOptions"
+                        :options="getStructures.companies"
+                        :value-to-select="getContactToModify?.company_id"
                     ></custom-select>
                 </div>
                 <div class="form-control">
@@ -75,7 +76,8 @@
                         labelText="Ofisas"
                         notSelectedText="Pasirinkite ofisą.."
                         selectName="office"
-                        :options="testOptions"
+                        :options="getStructures.offices"
+                        :value-to-select="getContactToModify?.office_id"
                     ></custom-select>
                 </div>
                 <div class="form-control">
@@ -83,7 +85,8 @@
                         labelText="Padalinys"
                         notSelectedText="Pasirinkite padalinį.."
                         selectName="department"
-                        :options="testOptions"
+                        :options="getStructures.departments"
+                        :value-to-select="getContactToModify?.department_id"
                     ></custom-select>
                 </div>
                 <div class="form-control">
@@ -91,7 +94,8 @@
                         labelText="Skyrius"
                         notSelectedText="Pasirinkite skyrių.."
                         selectName="division"
-                        :options="testOptions"
+                        :options="getStructures.divisions"
+                        :value-to-select="getContactToModify?.division_id"
                     ></custom-select>
                 </div>
                 <div class="form-control">
@@ -99,19 +103,25 @@
                         labelText="Grupė"
                         notSelectedText="Pasirinkite grupę.."
                         selectName="group"
-                        :options="testOptions"
+                        :options="getStructures.groups"
+                        :value-to-select="getContactToModify?.group_id"
                     ></custom-select>
                 </div>
                 <div class="form-control">
                     <div class="file-upload-wrapper">
                         <input
-                            required
                             id="file-upload"
                             class="file-upload"
-                            name="fil"
+                            name="photo"
                             type="file"
+                            @change="changePhotoDisplayText"
+                            accept="image/png,image/jpeg,image/jpg"
                         />
                         <label for="file-upload">Įkelti nuotrauką</label>
+                        <p class="image-text" v-if="photo">
+                            Nuotrauka: {{ photo }}
+                        </p>
+                        <p v-else>Nuotrauka neįkelta</p>
                     </div>
                 </div>
             </div>
@@ -125,17 +135,17 @@ import { mapGetters, mapActions } from "vuex";
 export default {
     data() {
         return {
-            testOptions: [
-                { text: "Something", value: 1 },
-                { text: "Company", value: 2 },
-            ],
+            photo: "",
         };
     },
     computed: {
-        ...mapGetters(["getContactToModify"]),
+        ...mapGetters(["getContactToModify", "getStructures"]),
     },
     methods: {
         ...mapActions(["FetchSingleContact"]),
+        changePhotoDisplayText(event) {
+            this.photo = event.target.files[0].name;
+        },
         submitForm() {},
     },
     async created() {

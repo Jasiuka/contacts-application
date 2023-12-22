@@ -63,5 +63,15 @@ export const validationMixin = {
 
             return isInvalid;
         },
+
+        checkFileFormat(inputName, fileFormat, ...availableFormats) {
+            const isFormatValid = availableFormats.includes(fileFormat);
+            if (!isFormatValid) {
+                this.CreateNotification({
+                    notificationText: `${inputName} netinkamo formato. Galimi formatai ${availableFormats.toString()}`,
+                });
+            }
+            return isFormatValid;
+        },
     },
 };

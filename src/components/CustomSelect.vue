@@ -15,6 +15,7 @@
         >
             <option value="0">{{ notSelectedText }}</option>
             <option
+                :selected="selectedValue"
                 v-for="option in options"
                 :value="option.id"
                 :key="option.text"
@@ -52,11 +53,18 @@ export default {
             type: Boolean,
             required: false,
         },
+        valueToSelect: {
+            type: [String, Number],
+            required: false,
+        },
     },
     data() {
         return {
             selectedValue: 0,
         };
+    },
+    created() {
+        this.selectedValue = this.valueToSelect ? this.valueToSelect : 0;
     },
 };
 </script>
