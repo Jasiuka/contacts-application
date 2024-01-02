@@ -46,19 +46,18 @@ export const validationMixin = {
         checkMultipleValuesFormatWithRegex(regEx, ...inputs) {
             let isInvalid;
             const regex = new RegExp(regEx);
-            inputs.every((input) => {
-                const isInputInvalid = !regex.test(input.value);
-                if (isInputInvalid) {
-                    this.invalidFields.push(input.name);
+
+            for (let i = 0; i < inputs.length; i++) {
+                const inputValid = regex.test(inputs[i].value);
+                if (!inputValid) {
+                    this.invalidFields.push(inputs[i].name);
                     isInvalid = true;
                     this.CreateNotification({
                         notificationText: "Ne visi laukai teisingo formato",
                         type: "error",
                     });
-                    return false;
                 }
-            });
-
+            }
             return isInvalid;
         },
 

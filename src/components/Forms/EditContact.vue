@@ -1,11 +1,11 @@
 <template>
     <base-form
         @submit.native.prevent="submitForm"
-        submitText="Pridėti"
+        submitText="Redaguoti"
         submitClass="submit-button"
     >
         <template #form-heading>
-            <h2>Pridėti kontaktą</h2>
+            <h2>Redaguoti kontaktą</h2>
         </template>
         <template #form-content>
             <div class="form-side">
@@ -19,6 +19,7 @@
                             :is-invalid="invalidFields.includes('name')"
                             max-length="20"
                             :is-required="true"
+                            :input-value="getContactToModify.name"
                         ></custom-input>
                     </div>
                     <div class="form-control">
@@ -30,6 +31,7 @@
                             max-length="30"
                             :is-required="true"
                             :is-invalid="invalidFields.includes('surname')"
+                            :input-value="getContactToModify.surname"
                         ></custom-input>
                     </div>
                     <div class="form-control">
@@ -41,6 +43,7 @@
                             max-length="40"
                             :is-required="true"
                             :is-invalid="invalidFields.includes('position')"
+                            :input-value="getContactToModify.position"
                         ></custom-input>
                     </div>
                 </div>
@@ -54,6 +57,7 @@
                             input-name="email"
                             :is-required="true"
                             :is-invalid="invalidFields.includes('email')"
+                            :input-value="getContactToModify.email"
                         ></custom-input>
                     </div>
                     <div class="form-control">
@@ -63,6 +67,7 @@
                             placeholder="Įveskite telefono numerį"
                             input-name="phone_number"
                             :is-invalid="invalidFields.includes('number')"
+                            :input-value="getContactToModify.phone_number"
                         ></custom-input>
                     </div>
                 </div>
@@ -77,6 +82,7 @@
                         :options="getStructures.companies"
                         :is-required="true"
                         :is-invalid="invalidFields.includes('company')"
+                        :value-to-select="getContactToModify.company_id"
                     ></custom-select>
                 </div>
                 <div class="form-control">
@@ -87,6 +93,7 @@
                         :options="getStructures.offices"
                         :is-required="true"
                         :is-invalid="invalidFields.includes('office')"
+                        :value-to-select="getContactToModify.office_id"
                     ></custom-select>
                 </div>
                 <div class="form-control">
@@ -95,6 +102,7 @@
                         notSelectedText="Pasirinkite padalinį.."
                         selectName="department_id"
                         :options="getStructures.departments"
+                        :value-to-select="getContactToModify.department_id"
                     ></custom-select>
                 </div>
                 <div class="form-control">
@@ -105,6 +113,7 @@
                         :options="getStructures.divisions"
                         :is-invalid="invalidFields.includes('division')"
                         :is-required="true"
+                        :value-to-select="getContactToModify.division_id"
                     ></custom-select>
                 </div>
                 <div class="form-control">
@@ -113,6 +122,7 @@
                         notSelectedText="Pasirinkite grupę.."
                         selectName="group_id"
                         :options="getStructures.groups"
+                        :value-to-select="getContactToModify.group_id"
                     ></custom-select>
                 </div>
                 <div class="form-control">
