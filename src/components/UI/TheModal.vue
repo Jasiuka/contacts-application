@@ -3,7 +3,7 @@
         <div v-if="getModalVisible" class="modal-background"></div>
         <transition name="modal">
             <dialog class="dialog" v-if="getModalVisible" open>
-                <component :is="getModalComponent"></component>
+                <slot name="modal-component"></slot>
                 <button
                     v-if="closeRequired"
                     @click="closeModal"
@@ -19,13 +19,8 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import CreateCompany from "../Forms/CreateCompany.vue";
-import CreateContact from "../Forms/CreateContact.vue";
+
 export default {
-    components: {
-        CreateCompany,
-        CreateContact,
-    },
     name: "TheModal",
     computed: {
         ...mapGetters(["getModalVisible", "getModalComponent"]),

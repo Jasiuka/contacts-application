@@ -2,20 +2,33 @@
     <div id="app">
         <notifications-list></notifications-list>
         <navigation-bar></navigation-bar>
-        <the-modal></the-modal>
+        <the-modal>
+            <template #modal-component>
+                <component :is="getModalComponent"></component>
+            </template>
+        </the-modal>
         <router-view></router-view>
     </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import NavigationBar from "./components/UI/NavigationBar.vue";
 import NotificationsList from "./components/Notifications/NotificationsList.vue";
 import TheModal from "./components/UI/TheModal.vue";
+import CreateCompany from "./components/Forms/CreateCompany.vue";
+import CreateContact from "./components/Forms/CreateContact.vue";
 export default {
     components: {
         NavigationBar,
         NotificationsList,
         TheModal,
+        // For modal
+        CreateCompany,
+        CreateContact,
+    },
+    computed: {
+        ...mapGetters(["getModalComponent"]),
     },
 };
 </script>
