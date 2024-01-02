@@ -1,4 +1,5 @@
 import { mapActions } from "vuex";
+import { createObjectWithOldAndNewValues } from "../helper";
 export const validationMixin = {
     data() {
         return {
@@ -45,19 +46,16 @@ export const validationMixin = {
         checkMultipleValuesFormatWithRegex(regEx, ...inputs) {
             let isInvalid;
             const regex = new RegExp(regEx);
-            inputs.forEach((input) => {
+            inputs.every((input) => {
                 const isInputInvalid = !regex.test(input.value);
                 if (isInputInvalid) {
                     this.invalidFields.push(input.name);
                     isInvalid = true;
-                } else {
-                    isInvalid = false;
-                }
-                if (isInputInvalid) {
                     this.CreateNotification({
                         notificationText: "Ne visi laukai teisingo formato",
                         type: "error",
                     });
+                    return false;
                 }
             });
 
@@ -69,9 +67,52 @@ export const validationMixin = {
             if (!isFormatValid) {
                 this.CreateNotification({
                     notificationText: `${inputName} netinkamo formato. Galimi formatai ${availableFormats.toString()}`,
+                    type: "error",
                 });
             }
             return isFormatValid;
+        },
+        checkIfAnyChanged(inputsNodeList, currentObjValues, customInputs) {
+            const oldAndNewValuesObject = createObjectWithOldAndNewValues(
+                inputsNodeList,
+                currentObjValues,
+                customInputs
+            );
+            let allSame = true;
+
+            Object.values(oldAndNewValuesObject).every((value) => {
+                if (value.newVal !== value.oldVal) {
+                    allSame = false;
+                    return false;
+                }
+                if (value.newVal === value.oldVal) {
+                    return true;
+                }
+            });
+
+            if (allSame) {
+                this.CreateNotification({
+                    notificationText:
+                        "Bent vienas laukas turėtų būti pakeistas!",
+                    type: "error",
+                });
+            }
+            return allSame;
+        },
+        checkIfSingleChanged(
+            inputValue,
+            currentValue,
+            notificationRequired = false
+        ) {
+            const notChanged = inputValue === currentValue;
+            if (notChanged && notificationRequired) {
+                this.CreateNotification({
+                    notificationText:
+                        "Bent vienas laukas turėtų būti pakeistas!",
+                    type: "error",
+                });
+            }
+            return notChanged;
         },
     },
 };

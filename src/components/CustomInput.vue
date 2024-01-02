@@ -12,10 +12,7 @@
             :id="inputName"
             :value="inputValue ? inputValue : enteredValue"
             :class="{
-                'input-invalid':
-                    isInvalid ||
-                    (isInvalid && !enteredValue && isRequired) ||
-                    (inputValue !== undefined && isRequired),
+                'input-invalid': isInvalid && !changed,
             }"
             v-model="enteredValue"
             :required="isRequired"
@@ -68,11 +65,14 @@ export default {
     data() {
         return {
             enteredValue: "",
+            changed: false,
         };
     },
-    computed: {
-        inputInvalid() {
-            return isInvalid;
+    watch: {
+        enteredValue(newValue, oldValue) {
+            if (newValue !== oldValue && this.isInvalid) {
+                this.changed = true;
+            }
         },
     },
     created() {

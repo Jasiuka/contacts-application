@@ -1,31 +1,35 @@
 <template>
     <base-form
         @submit.native.prevent="submitForm"
-        submitText="Redaguoti"
+        submitText="Pridėti"
         submitClass="submit-button"
     >
         <template #form-heading>
-            <h2>Redaguoti kontaktą</h2>
+            <h2>Pridėti kontaktą</h2>
         </template>
         <template #form-content>
             <div class="form-side">
                 <div>
                     <div class="form-control">
                         <custom-input
-                            label-text="Vardas:"
+                            label-text="Vardas"
                             input-type="text"
                             placeholder="Įveskite vardą"
                             input-name="name"
-                            :input-value="getContactToModify?.name"
+                            :is-invalid="invalidFields.includes('name')"
+                            max-length="20"
+                            :is-required="true"
                         ></custom-input>
                     </div>
                     <div class="form-control">
                         <custom-input
-                            label-text="Pavardė:"
+                            label-text="Pavardė"
                             input-type="text"
                             placeholder="Įveskite pavardę"
                             input-name="surname"
-                            :input-value="getContactToModify?.surname"
+                            max-length="30"
+                            :is-required="true"
+                            :is-invalid="invalidFields.includes('surname')"
                         ></custom-input>
                     </div>
                     <div class="form-control">
@@ -34,7 +38,9 @@
                             input-type="text"
                             placeholder="Įveskite poziciją"
                             input-name="position"
-                            :input-value="getContactToModify?.position"
+                            max-length="40"
+                            :is-required="true"
+                            :is-invalid="invalidFields.includes('position')"
                         ></custom-input>
                     </div>
                 </div>
@@ -43,10 +49,11 @@
                     <div class="form-control">
                         <custom-input
                             label-text="Elektroninis paštas"
-                            input-type="email"
                             placeholder="Įveskite el.paštą.."
+                            input-type="email"
                             input-name="email"
-                            :input-value="getContactToModify?.email"
+                            :is-required="true"
+                            :is-invalid="invalidFields.includes('email')"
                         ></custom-input>
                     </div>
                     <div class="form-control">
@@ -54,8 +61,8 @@
                             label-text="Telefono numeris"
                             input-type="text"
                             placeholder="Įveskite telefono numerį"
-                            input-name="number"
-                            :input-value="getContactToModify?.phone_number"
+                            input-name="phone_number"
+                            :is-invalid="invalidFields.includes('number')"
                         ></custom-input>
                     </div>
                 </div>
@@ -66,45 +73,46 @@
                     <custom-select
                         labelText="Įmonė"
                         notSelectedText="Pasirinkite įmonę.."
-                        selectName="company"
+                        selectName="company_id"
                         :options="getStructures.companies"
-                        :value-to-select="getContactToModify?.company_id"
+                        :is-required="true"
+                        :is-invalid="invalidFields.includes('company')"
                     ></custom-select>
                 </div>
                 <div class="form-control">
                     <custom-select
                         labelText="Ofisas"
                         notSelectedText="Pasirinkite ofisą.."
-                        selectName="office"
+                        selectName="office_id"
                         :options="getStructures.offices"
-                        :value-to-select="getContactToModify?.office_id"
+                        :is-required="true"
+                        :is-invalid="invalidFields.includes('office')"
                     ></custom-select>
                 </div>
                 <div class="form-control">
                     <custom-select
                         labelText="Padalinys"
                         notSelectedText="Pasirinkite padalinį.."
-                        selectName="department"
+                        selectName="department_id"
                         :options="getStructures.departments"
-                        :value-to-select="getContactToModify?.department_id"
                     ></custom-select>
                 </div>
                 <div class="form-control">
                     <custom-select
                         labelText="Skyrius"
                         notSelectedText="Pasirinkite skyrių.."
-                        selectName="division"
+                        selectName="division_id"
                         :options="getStructures.divisions"
-                        :value-to-select="getContactToModify?.division_id"
+                        :is-invalid="invalidFields.includes('division')"
+                        :is-required="true"
                     ></custom-select>
                 </div>
                 <div class="form-control">
                     <custom-select
                         labelText="Grupė"
                         notSelectedText="Pasirinkite grupę.."
-                        selectName="group"
+                        selectName="group_id"
                         :options="getStructures.groups"
-                        :value-to-select="getContactToModify?.group_id"
                     ></custom-select>
                 </div>
                 <div class="form-control">
@@ -131,8 +139,11 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
+import { validationMixin } from "../../utils/mixins/validationMixin";
+import { createFormDataFromInputsArray } from "../../utils/helper";
 export default {
+    mixins: [validationMixin],
     data() {
         return {
             photo: "",
@@ -142,14 +153,95 @@ export default {
         ...mapGetters(["getContactToModify", "getStructures"]),
     },
     methods: {
-        ...mapActions(["FetchSingleContact"]),
+        ...mapActions(["FetchSingleContact", "EditContact"]),
+        ...mapMutations(["CLOSE_MODAL"]),
         changePhotoDisplayText(event) {
             this.photo = event.target.files[0].name;
         },
-        submitForm() {},
+        submitForm(event) {
+            this.invalidFields = [];
+            const formContent = event.srcElement.children[1];
+            const allFieldsWithoutFile = formContent.querySelectorAll(
+                "input:not([type='file']),select,textarea,checkbox"
+            );
+            const allFields = formContent.querySelectorAll(
+                "input,select,textarea,checkbox"
+            );
+
+            const allFieldsValuesSame = this.checkIfAnyChanged(
+                allFieldsWithoutFile,
+                this.getContactToModify,
+                [{ name: "photo", value: this.photo }]
+            );
+            if (allFieldsValuesSame) {
+                return;
+            }
+            // check if all required fields are filled
+            const allFieldsFilled = this.checkIfAllFieldsFilled(
+                allFields,
+                "phone_number",
+                "group_id",
+                "department_id",
+                "photo"
+            );
+            if (!allFieldsFilled) return;
+
+            // check email format
+            const emailIsValid = this.checkValueFormatWithRegex(
+                "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
+                formContent.querySelector("[name='email']"),
+                "El. paštas"
+            );
+            if (!emailIsValid) return;
+
+            // check name,surname,position input formats returns true if at least one invalid
+            const multipleValuesInvalid =
+                this.checkMultipleValuesFormatWithRegex(
+                    "^[a-zA-Z\\s]*$",
+                    formContent.querySelector("[name='name']"),
+                    formContent.querySelector("[name='surname']"),
+                    formContent.querySelector("[name='position']")
+                );
+            if (multipleValuesInvalid) return;
+
+            // Check number format
+            const numberEl = formContent.querySelector("[name='phone_number']");
+            let numberFormatIsValid = true;
+            if (numberEl.value) {
+                numberFormatIsValid = this.checkValueFormatWithRegex(
+                    "^[+][0-9]\\d{5,16}",
+                    numberEl,
+                    "Telefono numeris"
+                );
+            }
+            if (!numberFormatIsValid) return;
+
+            // Check file format
+            const fileInput = formContent.querySelector("[name='photo']");
+            if (fileInput.files[0]) {
+                const photoValidFormat = this.checkFileFormat(
+                    "Nuotrauka",
+                    fileInput.files[0].type,
+                    "image/png",
+                    "image/jpeg",
+                    "image/jpg"
+                );
+
+                if (!photoValidFormat) return;
+            }
+
+            const contact = createFormDataFromInputsArray(allFields);
+            this.EditContact({
+                id: this.getContactToModify.id,
+                dataToUpdate: contact,
+            });
+            this.CLOSE_MODAL();
+        },
     },
-    async created() {
-        await this.FetchSingleContact({ id: this.getContactToModify.id });
+    created() {
+        this.photo = this.getContactToModify.photo
+            ? this.getContactToModify.photo
+            : "";
     },
 };
 </script>

@@ -33,3 +33,37 @@ export const createFormDataFromInputsArray = (inputsArray) => {
 
     return formData;
 };
+
+export const createValuesArrayFromNodeList = (nodeList, ...exceptions) => {
+    const inputValues = [];
+    nodeList.forEach((node) => {
+        if (!exceptions.includes(node.name)) {
+            inputValues.push(node.value);
+        }
+    });
+    return inputValues;
+};
+
+export const createObjectWithOldAndNewValues = (
+    inputsNodeList,
+    obj,
+    customInputs
+) => {
+    const nObj = {};
+
+    inputsNodeList.forEach((node) => {
+        nObj[node.name] = {
+            newVal: node.value,
+            oldVal: obj[node.name],
+        };
+    });
+
+    customInputs.forEach((input) => {
+        nObj[input.name] = {
+            newVal: input.value,
+            oldVal: obj[input.name],
+        };
+    });
+
+    return nObj;
+};

@@ -21,7 +21,9 @@
             >
         </template>
         <template #card-content>
-            <p class="contact-phone">Telefono nr: {{ contact.phone_number }}</p>
+            <p v-if="contact.phone_number" class="contact-phone">
+                Telefono nr: {{ contact.phone_number }}
+            </p>
             <p class="contact-email">El. paštas: {{ contact.email }}</p>
             <p class="contact-address">
                 Adresas: {{ contact.expand.office_id.name }}
@@ -107,6 +109,7 @@ export default {
     gap: var(--gap-medium);
     font-weight: 500;
     margin-bottom: var(--gap-medium);
+    flex: 1;
 }
 
 .contact-avatar {

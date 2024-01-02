@@ -13,7 +13,7 @@
             v-model="selectedValue"
             :required="isRequired"
         >
-            <option value="0">{{ notSelectedText }}</option>
+            <option value="">{{ notSelectedText }}</option>
             <option
                 :selected="selectedValue"
                 v-for="option in options"
@@ -60,11 +60,11 @@ export default {
     },
     data() {
         return {
-            selectedValue: 0,
+            selectedValue: "",
         };
     },
     created() {
-        this.selectedValue = this.valueToSelect ? this.valueToSelect : 0;
+        this.selectedValue = this.valueToSelect ? this.valueToSelect : "";
     },
 };
 </script>

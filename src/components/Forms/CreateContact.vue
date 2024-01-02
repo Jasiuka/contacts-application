@@ -152,6 +152,11 @@ export default {
     computed: {
         ...mapGetters(["getStructures"]),
     },
+    watch: {
+        invalidFields(val) {
+            console.log(val);
+        },
+    },
     methods: {
         ...mapMutations(["CLOSE_MODAL"]),
         ...mapActions(["CreateContact"]),
@@ -185,7 +190,7 @@ export default {
             // check name,surname,position input formats returns true if at least one invalid
             const multipleValuesInvalid =
                 this.checkMultipleValuesFormatWithRegex(
-                    "^[a-zA-Z]*$",
+                    "^[a-zA-Z\\s]*$",
                     formContent.querySelector("[name='name']"),
                     formContent.querySelector("[name='surname']"),
                     formContent.querySelector("[name='position']")
@@ -194,27 +199,28 @@ export default {
 
             // Check number format
             const numberEl = formContent.querySelector("[name='phone_number']");
-            let numberFormatIsValid = true;
             if (numberEl.value) {
-                numberFormatIsValid = this.checkValueFormatWithRegex(
+                const numberFormatIsValid = this.checkValueFormatWithRegex(
                     "^[+][0-9]\\d{5,16}",
                     numberEl,
                     "Telefono numeris"
                 );
+                if (!numberFormatIsValid) return;
             }
-            if (!numberFormatIsValid) return;
 
             // Check file format
             const fileInput = formContent.querySelector("[name='photo']");
-            const photoValidFormat = this.checkFileFormat(
-                "Nuotrauka",
-                fileInput.files[0].type,
-                "image/png",
-                "image/jpeg",
-                "image/jpg"
-            );
+            if (fileInput.files[0]) {
+                const photoValidFormat = this.checkFileFormat(
+                    "Nuotrauka",
+                    fileInput.files[0].type,
+                    "image/png",
+                    "image/jpeg",
+                    "image/jpg"
+                );
 
-            if (!photoValidFormat) return;
+                if (!photoValidFormat) return;
+            }
 
             const contact = createFormDataFromInputsArray(allFields);
             this.CreateContact(contact);

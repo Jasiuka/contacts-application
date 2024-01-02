@@ -1,21 +1,20 @@
 import axios from "axios";
 
 export default function (store) {
-    store.server = axios.create({
+    (store.server = axios.create({
         baseURL: BASE_API_URL,
         headers: {
             Authorization: "Bearer " + AUTH_TOKEN,
         },
-    });
-
-    (store.dataGet = async function (path) {
-        try {
-            const response = await this.server.get(path);
-            return response;
-        } catch (error) {
-            throw new Error("Įvyko klaida gaunant duomenis iš serverio");
-        }
-    }),
+    })),
+        (store.dataGet = async function (path) {
+            try {
+                const response = await this.server.get(path);
+                return response;
+            } catch (error) {
+                throw new Error("Įvyko klaida gaunant duomenis iš serverio");
+            }
+        }),
         (store.dataGetSingle = async function (path) {
             try {
                 const response = await this.server.get(path);

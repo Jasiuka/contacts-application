@@ -32,7 +32,7 @@ const actions = {
                 `employees/records/${contact.id}?expand=office_id,company_id,division_id,department_id,group_id`
             );
             if (response.status === 200) {
-                const contact = response.data.items;
+                const contact = response.data;
                 commit("SET_CONTACT_TO_MODIFY", contact);
             }
         } catch (error) {
@@ -70,6 +70,28 @@ const actions = {
             if (response.status === 200) {
                 dispatch("CreateNotification", {
                     notificationText: "Įrašas sukurtas sėkmingai",
+                    type: "success",
+                });
+                dispatch("UpdateContacts");
+            }
+        } catch (error) {
+            dispatch("CreateNotification", {
+                notificationText: error.message,
+                type: "error",
+            });
+        }
+    },
+
+    async EditContact({ dispatch }, contactData) {
+        try {
+            const response = await this.dataPatch(
+                "/employees/records",
+                contactData.id,
+                contactData.dataToUpdate
+            );
+            if (response.status === 200) {
+                dispatch("CreateNotification", {
+                    notificationText: "Įrašas pakoreguotas sėkmingai",
                     type: "success",
                 });
                 dispatch("UpdateContacts");
