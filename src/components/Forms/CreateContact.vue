@@ -152,11 +152,6 @@ export default {
     computed: {
         ...mapGetters(["getStructures"]),
     },
-    watch: {
-        invalidFields(val) {
-            console.log(val);
-        },
-    },
     methods: {
         ...mapMutations(["CLOSE_MODAL"]),
         ...mapActions(["CreateContact"]),
