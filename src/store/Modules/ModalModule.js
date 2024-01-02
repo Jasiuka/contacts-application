@@ -1,5 +1,5 @@
 const state = {
-    modalVisible: true,
+    modalVisible: false,
     modalComponent: "create-contact",
 };
 
