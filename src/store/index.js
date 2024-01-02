@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import apiPlugin from "./plugins/apiPlugin";
 import NotificationsModule from "./Modules/NotificationsModule";
 import ModalModule from "./Modules/ModalModule";
 
@@ -10,6 +11,7 @@ const store = new Vuex.Store({
         NotificationsModule,
         ModalModule,
     },
+    plugins: [apiPlugin],
 });
 
 export default store;
