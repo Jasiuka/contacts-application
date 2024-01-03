@@ -74,45 +74,58 @@
                         labelText="Įmonė"
                         notSelectedText="Pasirinkite įmonę.."
                         selectName="company_id"
-                        :options="getStructures.companies"
+                        :options="getCompanies"
                         :is-required="true"
                         :is-invalid="invalidFields.includes('company')"
+                        :value-to-select="getSelectedCompany"
+                        @set-structure="setter"
                     ></custom-select>
                 </div>
-                <div class="form-control">
+                <div v-if="company" key="office" class="form-control">
                     <custom-select
                         labelText="Ofisas"
                         notSelectedText="Pasirinkite ofisą.."
                         selectName="office_id"
-                        :options="getStructures.offices"
+                        :options="getOffices"
                         :is-required="true"
                         :is-invalid="invalidFields.includes('office')"
+                        :value-to-select="getSelectedOffice"
+                        @set-structure="setter"
                     ></custom-select>
                 </div>
-                <div class="form-control">
+                <div v-if="office && company" class="form-control">
                     <custom-select
                         labelText="Padalinys"
                         notSelectedText="Pasirinkite padalinį.."
-                        selectName="department_id"
-                        :options="getStructures.departments"
+                        selectName="division_id"
+                        :options="getDivisions"
+                        :is-required="true"
+                        :value-to-select="getSelectedDivision"
+                        @set-structure="setter"
                     ></custom-select>
                 </div>
-                <div class="form-control">
+                <div v-if="division && office && company" class="form-control">
                     <custom-select
                         labelText="Skyrius"
                         notSelectedText="Pasirinkite skyrių.."
-                        selectName="division_id"
-                        :options="getStructures.divisions"
-                        :is-invalid="invalidFields.includes('division')"
-                        :is-required="true"
+                        selectName="department_id"
+                        :options="getDepartments"
+                        :is-invalid="invalidFields.includes('departments')"
+                        :value-to-select="getSelectedDepartment"
+                        @set-structure="setter"
                     ></custom-select>
                 </div>
-                <div class="form-control">
+                <div
+                    v-if="department && division && office && company"
+                    class="form-control"
+                >
                     <custom-select
                         labelText="Grupė"
                         notSelectedText="Pasirinkite grupę.."
                         selectName="group_id"
-                        :options="getStructures.groups"
+                        :options="getGroups"
+                        :value-to-select="getSelectedGroup"
+                        @set-structure="setter"
                     ></custom-select>
                 </div>
                 <div class="form-control">
@@ -139,25 +152,14 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from "vuex";
+import { mapActions } from "vuex";
 import { validationMixin } from "../../utils/mixins/validationMixin";
+import { contactFormMixin } from "../../utils/mixins/contactFormMixin";
 import { createFormDataFromInputsArray } from "../../utils/helper";
 export default {
-    mixins: [validationMixin],
-    data() {
-        return {
-            photo: "",
-        };
-    },
-    computed: {
-        ...mapGetters(["getStructures"]),
-    },
+    mixins: [validationMixin, contactFormMixin],
     methods: {
-        ...mapMutations(["CLOSE_MODAL"]),
         ...mapActions(["CreateContact"]),
-        changePhotoDisplayText(event) {
-            this.photo = event.target.files[0].name;
-        },
         submitForm(event) {
             this.invalidFields = [];
             const formContent = event.srcElement.children[1];
@@ -221,6 +223,9 @@ export default {
             this.CreateContact(contact);
             this.CLOSE_MODAL();
         },
+    },
+    async created() {
+        await this.FetchCompanies();
     },
 };
 </script>

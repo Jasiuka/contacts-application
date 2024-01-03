@@ -28,9 +28,8 @@ export default {
 <style>
 .notification-component {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 5%;
+    left: 76dvw;
+    top: 10%;
     z-index: 999;
 }
 

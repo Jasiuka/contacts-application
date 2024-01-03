@@ -15,7 +15,7 @@ export const validationMixin = {
                     (exception) => exception === field.name
                 );
                 if (!isException) {
-                    if (!field.value || field.value === "0") {
+                    if (!field.value.trim() || field.value === "0") {
                         this.invalidFields.push(field.name);
                     }
                 }

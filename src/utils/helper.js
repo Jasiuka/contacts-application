@@ -67,3 +67,17 @@ export const createObjectWithOldAndNewValues = (
 
     return nObj;
 };
+
+export const createStructureObject = (structureArray, structureName) => {
+    if (structureArray) {
+        const fixedStructure = structureArray.map((structure) => {
+            return {
+                name: structure.expand[`${structureName}_id`].name,
+                id: structure.expand[`${structureName}_id`].id,
+            };
+        });
+        return fixedStructure;
+    } else {
+        return [];
+    }
+};

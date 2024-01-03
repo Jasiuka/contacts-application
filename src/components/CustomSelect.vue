@@ -12,13 +12,16 @@
             }"
             v-model="selectedValue"
             :required="isRequired"
+            @change="setStructure"
         >
-            <option value="">{{ notSelectedText }}</option>
+            <option value="">
+                {{ notSelectedText }}
+            </option>
             <option
                 :selected="selectedValue"
                 v-for="option in options"
                 :value="option.id"
-                :key="option.text"
+                :key="option.id"
             >
                 {{ option.name }}
             </option>
@@ -28,10 +31,11 @@
 
 <script>
 export default {
+    emits: ["setStructure"],
     props: {
         options: {
-            type: Array,
-            required: true,
+            type: [Array, Object],
+            required: false,
         },
         notSelectedText: {
             type: String,
@@ -57,14 +61,33 @@ export default {
             type: [String, Number],
             required: false,
         },
+        isVisible: {
+            type: Boolean,
+            required: false,
+        },
     },
     data() {
         return {
             selectedValue: "",
         };
     },
+    watch: {
+        options() {
+            this.selectedValue = "";
+            this.setStructure();
+        },
+    },
+    methods: {
+        setStructure() {
+            this.$emit("set-structure", {
+                selection: this.selectName.slice(0, -3),
+                id: this.selectedValue,
+            });
+        },
+    },
     created() {
         this.selectedValue = this.valueToSelect ? this.valueToSelect : "";
+        console.log(this.valueToSelect);
     },
 };
 </script>
