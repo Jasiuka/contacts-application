@@ -52,10 +52,28 @@ export const contactFormMixin = {
             setterFunction[`set_${selection}`]();
             this[selection] = id;
             if (id.trim() && selection.trim()) {
-                if (selection === "company") this.FetchOffices({ id });
-                if (selection === "office") this.FetchDivisions({ id });
-                if (selection === "division") this.FetchDepartments({ id });
-                if (selection === "department") this.FetchGroups({ id });
+                if (selection === "company") {
+                    this.FetchOffices({ id });
+                    this.SET_SELECTED_OFFICE("");
+                    this.SET_SELECTED_DIVISION("");
+                    this.SET_SELECTED_DEPARTMENT("");
+                    this.SET_SELECTED_GROUP("");
+                }
+                if (selection === "office") {
+                    this.FetchDivisions({ id });
+                    this.SET_SELECTED_DIVISION("");
+                    this.SET_SELECTED_DEPARTMENT("");
+                    this.SET_SELECTED_GROUP("");
+                }
+                if (selection === "division") {
+                    this.FetchDepartments({ id });
+                    this.SET_SELECTED_DEPARTMENT("");
+                    this.SET_SELECTED_GROUP("");
+                }
+                if (selection === "department") {
+                    this.FetchGroups({ id });
+                    this.SET_SELECTED_GROUP("");
+                }
             }
         },
         changePhotoDisplayText(event) {
@@ -63,10 +81,10 @@ export const contactFormMixin = {
         },
     },
     destroyed() {
-        this.SET_SELECTED_COMPANY(null);
-        this.SET_SELECTED_OFFICE(null);
-        this.SET_SELECTED_DIVISION(null);
-        this.SET_SELECTED_DEPARTMENT(null);
-        this.SET_SELECTED_GROUP(null);
+        this.SET_SELECTED_COMPANY("");
+        this.SET_SELECTED_OFFICE("");
+        this.SET_SELECTED_DIVISION("");
+        this.SET_SELECTED_DEPARTMENT("");
+        this.SET_SELECTED_GROUP("");
     },
 };

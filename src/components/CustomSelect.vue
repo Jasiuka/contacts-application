@@ -104,6 +104,10 @@ export default {
     mounted() {
         this.selectedValue = this.valueToSelect;
     },
+    destroyed() {
+        console.log(this.selectName + " SHOULD BE DESTROYED");
+        this.selectedValue = "";
+    },
 };
 </script>
 

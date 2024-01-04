@@ -74,7 +74,7 @@
             </div>
             <div class="form-side form-side--selections">
                 <h3 class="form-sub-heading">Įmonės detalės:</h3>
-                <div class="form-control">
+                <div key="company" class="form-control">
                     <custom-select
                         labelText="Įmonė"
                         notSelectedText="Pasirinkite įmonę.."
@@ -85,10 +85,9 @@
                         :value-to-select="getSelectedCompany"
                         @set-structure="setter"
                         :should-reset="false"
-                        key="company"
                     ></custom-select>
                 </div>
-                <div v-if="company" class="form-control">
+                <div v-if="company" key="office" class="form-control">
                     <custom-select
                         labelText="Ofisas"
                         notSelectedText="Pasirinkite ofisą.."
@@ -99,10 +98,13 @@
                         :value-to-select="getSelectedOffice"
                         @set-structure="setter"
                         :should-reset="false"
-                        key="office"
                     ></custom-select>
                 </div>
-                <div v-if="office && company" class="form-control">
+                <div
+                    v-if="office && company"
+                    key="division"
+                    class="form-control"
+                >
                     <custom-select
                         labelText="Padalinys"
                         notSelectedText="Pasirinkite padalinį.."
@@ -112,10 +114,13 @@
                         :value-to-select="getSelectedDivision"
                         @set-structure="setter"
                         :should-reset="false"
-                        key="division"
                     ></custom-select>
                 </div>
-                <div v-if="division && office && company" class="form-control">
+                <div
+                    v-if="division && office && company"
+                    key="department"
+                    class="form-control"
+                >
                     <custom-select
                         labelText="Skyrius"
                         notSelectedText="Pasirinkite skyrių.."
@@ -129,6 +134,7 @@
                     ></custom-select>
                 </div>
                 <div
+                    key="group"
                     v-if="division && office && company && department"
                     class="form-control"
                 >
@@ -139,7 +145,6 @@
                         :options="getGroups"
                         :value-to-select="getSelectedGroup"
                         @set-structure="setter"
-                        key="group"
                     ></custom-select>
                 </div>
                 <div class="form-control">
