@@ -33,6 +33,11 @@ export const contactFormMixin = {
             "SET_SELECTED_DIVISION",
             "SET_SELECTED_DEPARTMENT",
             "SET_SELECTED_GROUP",
+            "SET_COMPANIES_STATE",
+            "SET_OFFICES_STATE",
+            "SET_DIVISIONS_STATE",
+            "SET_DEPARTMENTS_STATE",
+            "SET_GROUPS_STATE",
         ]),
         ...mapActions([
             "FetchCompanies",
@@ -82,9 +87,14 @@ export const contactFormMixin = {
     },
     destroyed() {
         this.SET_SELECTED_COMPANY("");
+        // this.SET_COMPANIES_STATE([])
         this.SET_SELECTED_OFFICE("");
+        // this.SET_OFFICES_STATE([]);
         this.SET_SELECTED_DIVISION("");
+        // this.SET_DIVISIONS_STATE([]);
         this.SET_SELECTED_DEPARTMENT("");
+        this.SET_DEPARTMENTS_STATE([]);
         this.SET_SELECTED_GROUP("");
+        this.SET_GROUPS_STATE([]);
     },
 };
