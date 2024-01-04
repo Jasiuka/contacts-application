@@ -179,7 +179,11 @@ export default {
         ...mapGetters(["getContactToModify"]),
     },
     methods: {
-        ...mapActions(["FetchSingleContact", "EditContact"]),
+        ...mapActions([
+            "FetchSingleContact",
+            "EditContact",
+            "FetchSingleContact",
+        ]),
         submitForm(event) {
             this.invalidFields = [];
             const formContent = event.srcElement.children[1];
@@ -285,6 +289,10 @@ export default {
                 dataToUpdate: contact,
             });
             this.CLOSE_MODAL();
+            const isEditedFromDetailedPage = this.$route.params.contactId;
+            if (isEditedFromDetailedPage) {
+                this.FetchSingleContact({ id: isEditedFromDetailedPage });
+            }
         },
     },
     async created() {

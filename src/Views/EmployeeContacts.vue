@@ -89,6 +89,7 @@ export default {
     },
     async created() {
         await this.FetchContacts();
+        await this.FetchAllStructures();
     },
 };
 </script>
