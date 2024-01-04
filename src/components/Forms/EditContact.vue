@@ -112,6 +112,7 @@
                         :options="getDivisions"
                         :is-required="true"
                         :value-to-select="getSelectedDivision"
+                        :is-invalid="invalidFields.includes('divisions')"
                         @set-structure="setter"
                         :should-reset="false"
                     ></custom-select>
@@ -126,23 +127,24 @@
                         notSelectedText="Pasirinkite skyrių.."
                         selectName="department_id"
                         :options="getDepartments"
-                        :is-invalid="invalidFields.includes('departments')"
                         :value-to-select="getSelectedDepartment"
                         @set-structure="setter"
                         :should-reset="false"
-                        key="department"
                     ></custom-select>
                 </div>
-                <div class="form-control">
+                <div
+                    key="group"
+                    v-if="division && office && company && department"
+                    class="form-control"
+                >
                     <custom-select
-                        key="group"
-                        v-if="division && office && company && department"
                         labelText="Grupė"
                         notSelectedText="Pasirinkite grupę.."
                         selectName="group_id"
                         :options="getGroups"
                         :value-to-select="getSelectedGroup"
                         @set-structure="setter"
+                        :should-reset="false"
                     ></custom-select>
                 </div>
                 <div class="form-control">
@@ -287,9 +289,11 @@ export default {
         this.division = this.getContactToModify.division_id;
         if (this.getContactToModify.department_id) {
             this.SET_SELECTED_DEPARTMENT(this.getContactToModify.department_id);
+            this.department = this.getContactToModify.department_id;
         }
         if (this.getContactToModify.group_id) {
             this.SET_SELECTED_GROUP(this.getContactToModify.group_id);
+            this.group = this.getContactToModify.group_id;
         }
     },
 };
