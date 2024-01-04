@@ -47,8 +47,8 @@
                     />
 
                     <h2 class="contact-name">
-                        {{ getContactToModify?.name }}
-                        {{ getContactToModify?.surname }}
+                        {{ getContactToModify.name }}
+                        {{ getContactToModify.surname }}
                     </h2>
                     <span class="contact-position"
                         >Pozicija: {{ getContactToModify?.position }}</span

@@ -130,6 +130,7 @@ const mutations = {
         state.contacts = contacts;
     },
     SET_CONTACT_TO_MODIFY(state, contact) {
+        console.log("NEW CONTACT:", contact);
         state.contactToModify = contact;
     },
     SET_CONTACTS_VIEW(state, view) {
