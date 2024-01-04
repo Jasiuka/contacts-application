@@ -55,20 +55,20 @@ export const contactFormMixin = {
                 if (selection === "company") {
                     this.FetchOffices({ id });
                     this.SET_SELECTED_OFFICE("");
-                    this.SET_SELECTED_DIVISION("");
-                    this.SET_SELECTED_DEPARTMENT("");
-                    this.SET_SELECTED_GROUP("");
+                    // this.SET_SELECTED_DIVISION("");
+                    // this.SET_SELECTED_DEPARTMENT("");
+                    // this.SET_SELECTED_GROUP("");
                 }
                 if (selection === "office") {
                     this.FetchDivisions({ id });
                     this.SET_SELECTED_DIVISION("");
-                    this.SET_SELECTED_DEPARTMENT("");
-                    this.SET_SELECTED_GROUP("");
+                    // this.SET_SELECTED_DEPARTMENT("");
+                    // this.SET_SELECTED_GROUP("");
                 }
                 if (selection === "division") {
                     this.FetchDepartments({ id });
                     this.SET_SELECTED_DEPARTMENT("");
-                    this.SET_SELECTED_GROUP("");
+                    // this.SET_SELECTED_GROUP("");
                 }
                 if (selection === "department") {
                     this.FetchGroups({ id });

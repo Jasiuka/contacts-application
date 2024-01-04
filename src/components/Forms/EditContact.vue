@@ -133,12 +133,10 @@
                         key="department"
                     ></custom-select>
                 </div>
-                <div
-                    key="group"
-                    v-if="division && office && company && department"
-                    class="form-control"
-                >
+                <div class="form-control">
                     <custom-select
+                        key="group"
+                        v-if="division && office && company && department"
                         labelText="Grupė"
                         notSelectedText="Pasirinkite grupę.."
                         selectName="group_id"
