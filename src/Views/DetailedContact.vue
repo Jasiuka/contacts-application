@@ -1,3 +1,206 @@
 <template>
-    <h1>Detailed contact</h1>
+    <page-layout>
+        <template #page-heading> Detalesnė kontakto informacija </template>
+        <template #content>
+            <div class="detailed-contact__header">
+                <img
+                    class="contact-avatar"
+                    :src="
+                        getContactToModify?.photo
+                            ? imageUrl
+                            : require('../assets/noPhoto.png')
+                    "
+                    :alt="`${getContactToModify?.name} nuotrauka`"
+                />
+
+                <h2 class="contact-name">
+                    {{ getContactToModify?.name }}
+                    {{ getContactToModify?.surname }}
+                </h2>
+                <span class="contact-position"
+                    >Pozicija: {{ getContactToModify?.position }}</span
+                >
+            </div>
+            <div class="detailed-contact__main">
+                <div class="line"></div>
+                <div class="contact-details">
+                    <h3>Kontaktinė informacija</h3>
+                    <div class="contact-details__content">
+                        <ul>
+                            <li>
+                                <p>
+                                    Elektroninis paštas:
+                                    {{ getContactToModify?.email }}
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    Telefono numeris:
+                                    {{ getContactToModify?.phone_number }}
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="company-details">
+                    <h3>Kompanijos informacija</h3>
+                    <div class="company-details__content">
+                        <ul>
+                            <li>
+                                <p>
+                                    Kompanija:
+                                    {{
+                                        getContactToModify?.expand.company_id
+                                            ? getContactToModify.expand
+                                                  .company_id.name
+                                            : "Nepriskirta"
+                                    }}
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    Būstinė:
+                                    {{
+                                        getContactToModify?.expand.office_id
+                                            ? getContactToModify.expand
+                                                  .office_id.name
+                                            : "Nepriskirta"
+                                    }}
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    Padalinys:
+                                    {{
+                                        getContactToModify?.expand.department_id
+                                            ? getContactToModify.expand
+                                                  .department_id.name
+                                            : "Nepriskirta"
+                                    }}
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    Skyrius:
+                                    {{
+                                        getContactToModify?.expand.division_id
+                                            ? getContactToModify.expand
+                                                  .division_id.name
+                                            : "Nepriskirta"
+                                    }}
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    Grupė:
+                                    {{
+                                        getContactToModify?.expand.group_id
+                                            ? getContactToModify.expand.group_id
+                                                  .name
+                                            : "Nepriskirta"
+                                    }}
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </page-layout>
 </template>
+
+<script>
+import { mapActions, mapGetters } from "vuex";
+export default {
+    name: "DetailedContact",
+    computed: {
+        ...mapGetters(["getContactToModify"]),
+        imageUrl() {
+            if (this.getContactToModify.photo) {
+                const url = new URL(
+                    `${this.getContactToModify.id}/${this.getContactToModify.photo}`,
+                    `http://localhost:8090/api/files/b2oym7fr4tkhpsr/`
+                );
+                return url;
+            }
+        },
+    },
+    methods: {
+        ...mapActions(["FetchSingleContact"]),
+    },
+    async created() {
+        const contactId = this.$route.params.contactId;
+        await this.FetchSingleContact({ id: contactId });
+        console.log(this.getContactToModify);
+    },
+};
+</script>
+
+<style scoped>
+.detailed-contact__header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: 70% 30%;
+    column-gap: var(--gap-medium);
+    min-width: 100%;
+    align-items: center;
+    margin-bottom: var(--gap-medium);
+    justify-content: baseline;
+}
+
+.detailed-contact__header .contact-avatar {
+    grid-column: 1/2;
+    grid-row: 1/3;
+    display: block;
+    object-position: -10px;
+    width: 6rem;
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: center;
+}
+
+.detailed-contact__header .contact-name {
+    font-size: var(--fs-largest);
+}
+
+.detailed-contact__header .contact-position {
+    font-size: calc(var(--fs-medium) - 0.5rem);
+}
+
+.detailed-contact__main {
+    display: flex;
+    align-items: baseline;
+    padding: var(--pd-large);
+    gap: 15dvw;
+    min-width: 100%;
+    position: relative;
+}
+
+.detailed-contact__main h3 {
+    font-size: var(--fs-largest);
+    font-weight: 400;
+    margin-bottom: calc(var(--gap-largest) * 1.5);
+}
+
+.detailed-contact__main ul {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    gap: var(--gap-large);
+}
+
+.detailed-contact__main ul li p {
+    font-size: var(--fs-medium);
+}
+
+.line {
+    position: absolute;
+    top: 20%;
+    left: 0;
+    min-width: 100%;
+    height: 0px;
+    /* background-color: red; */
+    box-shadow: 0px 11px 2px 1px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0px 5px 14px 6px rgba(0, 0, 0, 0.1); */
+}
+</style>
