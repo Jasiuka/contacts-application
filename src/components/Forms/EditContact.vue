@@ -82,8 +82,10 @@
                         :options="getCompanies"
                         :is-required="true"
                         :is-invalid="invalidFields.includes('company')"
-                        :value-to-select="company"
+                        :value-to-select="getSelectedCompany"
                         @set-structure="setter"
+                        :should-reset="false"
+                        key="company"
                     ></custom-select>
                 </div>
                 <div v-if="company" class="form-control">
@@ -94,8 +96,10 @@
                         :options="getOffices"
                         :is-required="true"
                         :is-invalid="invalidFields.includes('office')"
-                        :value-to-select="office"
+                        :value-to-select="getSelectedOffice"
                         @set-structure="setter"
+                        :should-reset="false"
+                        key="office"
                     ></custom-select>
                 </div>
                 <div v-if="office && company" class="form-control">
@@ -107,6 +111,8 @@
                         :is-required="true"
                         :value-to-select="getSelectedDivision"
                         @set-structure="setter"
+                        :should-reset="false"
+                        key="division"
                     ></custom-select>
                 </div>
                 <div v-if="division && office && company" class="form-control">
@@ -118,6 +124,8 @@
                         :is-invalid="invalidFields.includes('departments')"
                         :value-to-select="getSelectedDepartment"
                         @set-structure="setter"
+                        :should-reset="false"
+                        key="department"
                     ></custom-select>
                 </div>
                 <div
@@ -131,6 +139,7 @@
                         :options="getGroups"
                         :value-to-select="getSelectedGroup"
                         @set-structure="setter"
+                        key="group"
                     ></custom-select>
                 </div>
                 <div class="form-control">
@@ -252,12 +261,33 @@ export default {
         this.photo = this.getContactToModify.photo
             ? this.getContactToModify.photo
             : "";
-        console.log(this.getContactToModify);
         await this.FetchCompanies();
-        this.SET_SELECTED_COMPANY(this.getContactToModify.company_id);
         await this.FetchOffices({ id: this.getContactToModify.company_id });
+        await this.FetchDivisions({ id: this.getContactToModify.office_id });
+        if (this.getContactToModify.division_id) {
+            await this.FetchDepartments({
+                id: this.getContactToModify.division_id,
+            });
+        }
+        if (this.getContactToModify.department_id) {
+            await this.FetchGroups({
+                id: this.getContactToModify.department_id,
+            });
+        }
+    },
+    mounted() {
+        this.SET_SELECTED_COMPANY(this.getContactToModify.company_id);
+        this.company = this.getContactToModify.company_id;
         this.SET_SELECTED_OFFICE(this.getContactToModify.office_id);
-        console.log(this.getSelectedOffice);
+        this.office = this.getContactToModify.office_id;
+        this.SET_SELECTED_DIVISION(this.getContactToModify.division_id);
+        this.division = this.getContactToModify.division_id;
+        if (this.getContactToModify.department_id) {
+            this.SET_SELECTED_DEPARTMENT(this.getContactToModify.department_id);
+        }
+        if (this.getContactToModify.group_id) {
+            this.SET_SELECTED_GROUP(this.getContactToModify.group_id);
+        }
     },
 };
 </script>

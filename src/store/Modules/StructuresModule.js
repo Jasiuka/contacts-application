@@ -163,16 +163,16 @@ const mutations = {
         state.selectedCompany = companyId;
     },
     SET_SELECTED_OFFICE(state, officeId) {
-        state.selectedCompany = officeId;
+        state.selectedOffice = officeId;
     },
     SET_SELECTED_DIVISION(state, divisionId) {
-        state.selectedCompany = divisionId;
+        state.selectedDivision = divisionId;
     },
     SET_SELECTED_DEPARTMENT(state, departmentId) {
-        state.selectedCompany = departmentId;
+        state.selectedDepartment = departmentId;
     },
     SET_SELECTED_GROUP(state, groupId) {
-        state.selectedCompany = groupId;
+        state.selectedGroup = groupId;
     },
     SET_COMPANIES_STATE(state, companies) {
         state.companies = companies;

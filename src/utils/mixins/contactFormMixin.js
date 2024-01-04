@@ -49,7 +49,6 @@ export const contactFormMixin = {
                 set_department: () => this.SET_SELECTED_DEPARTMENT(id),
                 set_group: () => this.SET_SELECTED_GROUP(id),
             };
-
             setterFunction[`set_${selection}`]();
             this[selection] = id;
             if (id.trim() && selection.trim()) {
@@ -62,5 +61,12 @@ export const contactFormMixin = {
         changePhotoDisplayText(event) {
             this.photo = event.target.files[0].name;
         },
+    },
+    destroyed() {
+        this.SET_SELECTED_COMPANY(null);
+        this.SET_SELECTED_OFFICE(null);
+        this.SET_SELECTED_DIVISION(null);
+        this.SET_SELECTED_DEPARTMENT(null);
+        this.SET_SELECTED_GROUP(null);
     },
 };

@@ -65,16 +65,32 @@ export default {
             type: Boolean,
             required: false,
         },
+        shouldReset: {
+            type: Boolean,
+            required: false,
+            default: true,
+        },
     },
     data() {
         return {
             selectedValue: "",
+            resets: this.shouldReset,
         };
     },
     watch: {
-        options() {
-            this.selectedValue = "";
-            this.setStructure();
+        options(newVal, oldVal) {
+            if (this.resets) {
+                this.selectedValue = "";
+                this.setStructure();
+            }
+            if (newVal) {
+                this.resets = true;
+            }
+        },
+        valueToSelect(newVal, oldVal) {
+            if (newVal && !oldVal) {
+                this.selectedValue = newVal;
+            }
         },
     },
     methods: {
@@ -85,9 +101,8 @@ export default {
             });
         },
     },
-    created() {
-        this.selectedValue = this.valueToSelect ? this.valueToSelect : "";
-        console.log(this.valueToSelect);
+    mounted() {
+        this.selectedValue = this.valueToSelect;
     },
 };
 </script>
