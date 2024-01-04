@@ -220,7 +220,7 @@ export default {
                 "El. paštas"
             );
             const emailLengthIsValid = this.checkFieldValueLength(
-                formContent.querySelector("[name='email']"),
+                formContent.querySelector("[name='email']").value,
                 40,
                 "El. Paštas"
             );
