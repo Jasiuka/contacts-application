@@ -238,8 +238,8 @@ export default {
 
             // Check number format
             const numberEl = formContent.querySelector("[name='phone_number']");
-            let numberFormatIsValid,
-                numberLengthValid = true;
+            let numberFormatIsValid = true;
+            let numberLengthValid = true;
 
             if (numberEl.value) {
                 numberFormatIsValid = this.checkValueFormatWithRegex(

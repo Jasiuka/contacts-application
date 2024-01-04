@@ -205,10 +205,11 @@ export default {
 
             // Check number format
             const numberEl = formContent.querySelector("[name='phone_number']");
-            let numberFormatIsValid,
-                numberLengthValid = true;
 
-            if (numberEl.value) {
+            let numberFormatIsValid = true;
+            let numberLengthValid = true;
+
+            if (numberEl.value.trim()) {
                 numberFormatIsValid = this.checkValueFormatWithRegex(
                     "^[+][0-9]\\d{5,16}",
                     numberEl,
