@@ -3,7 +3,7 @@
         <template #page-heading> Detalesnė kontakto informacija </template>
         <template #content>
             <h2 v-if="!getContactToModify?.name">
-                Atsiprašome, tačiau toks kontaktas nerastas
+                Atiprašome, tačiau toks kontaktas nerastas.
             </h2>
             <div v-else>
                 <div class="detailed-contact__header">
@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
     name: "DetailedContact",
     computed: {
@@ -154,10 +154,14 @@ export default {
     },
     methods: {
         ...mapActions(["FetchSingleContact"]),
+        ...mapMutations(["SET_CONTACT_TO_MODIFY"]),
     },
     async created() {
         const contactId = this.$route.params.contactId;
         await this.FetchSingleContact({ id: contactId });
+    },
+    destroyed() {
+        this.SET_CONTACT_TO_MODIFY(null);
     },
 };
 </script>

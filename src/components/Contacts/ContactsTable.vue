@@ -4,7 +4,12 @@
             <th v-for="headText in tableHead">{{ headText }}</th>
         </template>
         <template #table-body>
-            <tr v-for="contact in contacts" :key="contact.id">
+            <tr
+                @click="routeToDetailedContact(contact.id)"
+                class="contact-row"
+                v-for="contact in contacts"
+                :key="contact.id"
+            >
                 <td>{{ contact.name }} {{ contact.surname }}</td>
                 <td>
                     {{ contact.position }}
@@ -75,6 +80,15 @@ export default {
             this.SET_CONTACT_TO_MODIFY(contact);
             this.OPEN_MODAL(formType);
         },
+        routeToDetailedContact(contactId) {
+            this.$router.push({ path: "/contacts/" + contactId });
+        },
     },
 };
 </script>
+
+<style scoped>
+.contact-row {
+    cursor: pointer;
+}
+</style>

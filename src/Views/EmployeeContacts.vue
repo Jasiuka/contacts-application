@@ -37,7 +37,10 @@
             </p>
         </template>
         <template #content>
-            <contacts-table :contacts="getContacts" v-if="view === 'list'">
+            <contacts-table
+                :contacts="getContacts"
+                v-if="getContactsView === 'list'"
+            >
             </contacts-table>
             <div class="contacts-list" v-else>
                 <contact-component
@@ -76,12 +79,13 @@ export default {
     },
     methods: {
         ...mapActions(["FetchContacts", "FetchAllStructures"]),
-        ...mapMutations(["OPEN_MODAL"]),
+        ...mapMutations(["OPEN_MODAL", "SET_CONTACTS_VIEW"]),
         openModal(formType) {
             this.OPEN_MODAL(formType);
         },
         changeView() {
-            this.view = this.view === "cards" ? "list" : "cards";
+            const nextView = this.getContactsView === "list" ? "cards" : "list";
+            this.SET_CONTACTS_VIEW(nextView);
         },
     },
     async created() {
