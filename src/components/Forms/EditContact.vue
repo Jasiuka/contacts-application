@@ -64,11 +64,12 @@
                     <div class="form-control">
                         <custom-input
                             label-text="Telefono numeris"
-                            input-type="text"
+                            input-type="tel"
                             placeholder="Įveskite telefono numerį"
                             input-name="phone_number"
                             :is-invalid="invalidFields.includes('number')"
                             :input-value="getContactToModify.phone_number"
+                             pattern="^[+][0-9]\d{5,16}"
                         ></custom-input>
                     </div>
                 </div>
