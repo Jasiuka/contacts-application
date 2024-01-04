@@ -59,12 +59,14 @@
                     </div>
                     <div class="form-control">
                         <custom-input
-                            label-text="Telefono numeris"
+                            label-text="Telefono numeris (+37..)"
                             input-type="tel"
                             placeholder="Įveskite telefono numerį"
                             input-name="phone_number"
                             :is-invalid="invalidFields.includes('number')"
-                            pattern="^[+][0-9]\d{5,16}"
+                            pattern="^[+][0-9]\d{2,16}"
+                            max-length="17"
+                            min-length="4"
                         ></custom-input>
                     </div>
                 </div>
@@ -198,10 +200,17 @@ export default {
                 this.checkMultipleValuesFormatWithRegex(
                     "^[a-zA-Z\\s]*$",
                     formContent.querySelector("[name='name']"),
-                    formContent.querySelector("[name='surname']"),
-                    formContent.querySelector("[name='position']")
+                    formContent.querySelector("[name='surname']")
                 );
             if (multipleValuesInvalid) return;
+
+            const PositionIsValid = this.checkValueFormatWithRegex(
+                "^[ąčęėįšųūžĄČĘĖĮŠŲŪŽA-Za-z\\s]+(?:\\.[ąčęėįšųūžĄČĘĖĮŠŲŪŽA-Za-z\\s]+)?$",
+                formContent.querySelector("[name='position']"),
+                "Pozicija"
+            );
+
+            if (!PositionIsValid) return;
 
             // Check number format
             const numberEl = formContent.querySelector("[name='phone_number']");
@@ -211,7 +220,7 @@ export default {
 
             if (numberEl.value.trim()) {
                 numberFormatIsValid = this.checkValueFormatWithRegex(
-                    "^[+][0-9]\\d{5,16}",
+                    "^[+][0-9]\\d{2,16}",
                     numberEl,
                     "Telefono numeris"
                 );

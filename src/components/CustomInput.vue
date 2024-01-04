@@ -58,6 +58,10 @@ export default {
             type: String,
             required: false,
         },
+        minLength: {
+            type: String,
+            required: false,
+        },
         isRequired: {
             type: Boolean,
             required: false,
