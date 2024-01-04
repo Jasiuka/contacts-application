@@ -2,106 +2,133 @@
     <page-layout>
         <template #page-heading> Detalesnė kontakto informacija </template>
         <template #content>
-            <div class="detailed-contact__header">
-                <img
-                    class="contact-avatar"
-                    :src="
-                        getContactToModify?.photo
-                            ? imageUrl
-                            : require('../assets/noPhoto.png')
-                    "
-                    :alt="`${getContactToModify?.name} nuotrauka`"
-                />
+            <h2 v-if="!getContactToModify?.name">
+                Atsiprašome, tačiau toks kontaktas nerastas
+            </h2>
+            <div v-else>
+                <div class="detailed-contact__header">
+                    <img
+                        class="contact-avatar"
+                        :src="
+                            getContactToModify?.photo
+                                ? imageUrl
+                                : require('../assets/noPhoto.png')
+                        "
+                        :alt="`${getContactToModify?.name} nuotrauka`"
+                    />
 
-                <h2 class="contact-name">
-                    {{ getContactToModify?.name }}
-                    {{ getContactToModify?.surname }}
-                </h2>
-                <span class="contact-position"
-                    >Pozicija: {{ getContactToModify?.position }}</span
-                >
-            </div>
-            <div class="detailed-contact__main">
-                <div class="line"></div>
-                <div class="contact-details">
-                    <h3>Kontaktinė informacija</h3>
-                    <div class="contact-details__content">
-                        <ul>
-                            <li>
-                                <p>
-                                    Elektroninis paštas:
-                                    {{ getContactToModify?.email }}
-                                </p>
-                            </li>
-                            <li>
-                                <p>
-                                    Telefono numeris:
-                                    {{ getContactToModify?.phone_number }}
-                                </p>
-                            </li>
-                        </ul>
-                    </div>
+                    <h2 class="contact-name">
+                        {{ getContactToModify?.name }}
+                        {{ getContactToModify?.surname }}
+                    </h2>
+                    <span class="contact-position"
+                        >Pozicija: {{ getContactToModify?.position }}</span
+                    >
                 </div>
-                <div class="company-details">
-                    <h3>Kompanijos informacija</h3>
-                    <div class="company-details__content">
-                        <ul>
-                            <li>
-                                <p>
-                                    Kompanija:
-                                    {{
-                                        getContactToModify?.expand.company_id
-                                            ? getContactToModify.expand
-                                                  .company_id.name
-                                            : "Nepriskirta"
-                                    }}
-                                </p>
-                            </li>
-                            <li>
-                                <p>
-                                    Būstinė:
-                                    {{
-                                        getContactToModify?.expand.office_id
-                                            ? getContactToModify.expand
-                                                  .office_id.name
-                                            : "Nepriskirta"
-                                    }}
-                                </p>
-                            </li>
-                            <li>
-                                <p>
-                                    Padalinys:
-                                    {{
-                                        getContactToModify?.expand.department_id
-                                            ? getContactToModify.expand
-                                                  .department_id.name
-                                            : "Nepriskirta"
-                                    }}
-                                </p>
-                            </li>
-                            <li>
-                                <p>
-                                    Skyrius:
-                                    {{
-                                        getContactToModify?.expand.division_id
-                                            ? getContactToModify.expand
-                                                  .division_id.name
-                                            : "Nepriskirta"
-                                    }}
-                                </p>
-                            </li>
-                            <li>
-                                <p>
-                                    Grupė:
-                                    {{
-                                        getContactToModify?.expand.group_id
-                                            ? getContactToModify.expand.group_id
-                                                  .name
-                                            : "Nepriskirta"
-                                    }}
-                                </p>
-                            </li>
-                        </ul>
+                <div class="detailed-contact__main">
+                    <div class="line"></div>
+                    <div class="contact-details">
+                        <h3>Kontaktinė informacija</h3>
+                        <div class="contact-details__content">
+                            <ul>
+                                <li>
+                                    <p>
+                                        Elektroninis paštas:
+                                        <a
+                                            :href="
+                                                'mailto:' +
+                                                getContactToModify?.email
+                                            "
+                                        >
+                                            {{ getContactToModify?.email }}
+                                        </a>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        Telefono numeris:
+                                        <a
+                                            v-if="
+                                                getContactToModify?.phone_number
+                                            "
+                                            :href="
+                                                'tel:' +
+                                                getContactToModify?.phone_number
+                                            "
+                                            >{{
+                                                getContactToModify?.phone_number
+                                            }}</a
+                                        >
+                                        <span v-else>nepridėta</span>
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="company-details">
+                        <h3>Kompanijos informacija</h3>
+                        <div class="company-details__content">
+                            <ul>
+                                <li>
+                                    <p>
+                                        Kompanija:
+                                        {{
+                                            getContactToModify?.expand
+                                                .company_id
+                                                ? getContactToModify.expand
+                                                      .company_id.name
+                                                : "Nepriskirta"
+                                        }}
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        Būstinė:
+                                        {{
+                                            getContactToModify?.expand.office_id
+                                                ? getContactToModify.expand
+                                                      .office_id.name
+                                                : "Nepriskirta"
+                                        }}
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        Padalinys:
+                                        {{
+                                            getContactToModify?.expand
+                                                .department_id
+                                                ? getContactToModify.expand
+                                                      .department_id.name
+                                                : "Nepriskirta"
+                                        }}
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        Skyrius:
+                                        {{
+                                            getContactToModify?.expand
+                                                .division_id
+                                                ? getContactToModify.expand
+                                                      .division_id.name
+                                                : "Nepriskirta"
+                                        }}
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        Grupė:
+                                        {{
+                                            getContactToModify?.expand.group_id
+                                                ? getContactToModify.expand
+                                                      .group_id.name
+                                                : "Nepriskirta"
+                                        }}
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -131,7 +158,6 @@ export default {
     async created() {
         const contactId = this.$route.params.contactId;
         await this.FetchSingleContact({ id: contactId });
-        console.log(this.getContactToModify);
     },
 };
 </script>

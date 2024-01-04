@@ -40,6 +40,7 @@ const actions = {
                 notificationText: error.message,
                 type: "error",
             });
+            commit("SET_CONTACT_TO_MODIFY", null);
         }
     },
 
