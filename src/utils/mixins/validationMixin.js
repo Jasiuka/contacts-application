@@ -61,6 +61,19 @@ export const validationMixin = {
             return isInvalid;
         },
 
+        checkFieldValueLength(inputValue, maxLength, inputName) {
+            const isLengthValid = inputValue.length <= maxLength;
+            console.log(inputValue.length);
+            console.log(isLengthValid, inputName, inputValue);
+            if (!isLengthValid) {
+                this.CreateNotification({
+                    notificationText: `${inputName} neturi viršyt ${maxLength} simbolių ilgio`,
+                    type: "error",
+                });
+            }
+            return isLengthValid;
+        },
+
         checkFileFormat(inputName, fileFormat, ...availableFormats) {
             const isFormatValid = availableFormats.includes(fileFormat);
             if (!isFormatValid) {

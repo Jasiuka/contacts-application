@@ -52,9 +52,10 @@
                     <div class="form-control">
                         <custom-input
                             label-text="Elektroninis paštas"
-                            placeholder="Įveskite el.paštą.."
+                            placeholder="Įveskite el.paštą"
                             input-type="email"
                             input-name="email"
+                            max-length="40"
                             :is-required="true"
                             :is-invalid="invalidFields.includes('email')"
                             :input-value="getContactToModify.email"
@@ -157,7 +158,9 @@
                             @change="changePhotoDisplayText"
                             accept="image/png,image/jpeg,image/jpg"
                         />
-                        <label for="file-upload">Įkelti nuotrauką</label>
+                        <label class="file-upload__label" for="file-upload"
+                            >Įkelti nuotrauką</label
+                        >
                         <p class="image-text" v-if="photo">
                             Nuotrauka: {{ photo }}
                         </p>
@@ -216,7 +219,12 @@ export default {
                 formContent.querySelector("[name='email']"),
                 "El. paštas"
             );
-            if (!emailIsValid) return;
+            const emailLengthIsValid = this.checkFieldValueLength(
+                formContent.querySelector("[name='email']"),
+                40,
+                "El. Paštas"
+            );
+            if (!emailIsValid || !emailLengthIsValid) return;
 
             // check name,surname,position input formats returns true if at least one invalid
             const multipleValuesInvalid =
@@ -230,15 +238,22 @@ export default {
 
             // Check number format
             const numberEl = formContent.querySelector("[name='phone_number']");
-            let numberFormatIsValid = true;
+            let numberFormatIsValid,
+                numberLengthValid = true;
+
             if (numberEl.value) {
                 numberFormatIsValid = this.checkValueFormatWithRegex(
                     "^[+][0-9]\\d{5,16}",
                     numberEl,
                     "Telefono numeris"
                 );
+                numberLengthValid = this.checkFieldValueLength(
+                    numberEl.value,
+                    17,
+                    "Tel. Numeris"
+                );
             }
-            if (!numberFormatIsValid) return;
+            if (!numberFormatIsValid || !numberLengthValid) return;
 
             // Check file format
             const fileInput = formContent.querySelector("[name='photo']");

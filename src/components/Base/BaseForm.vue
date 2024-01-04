@@ -148,4 +148,29 @@ form {
 #file-upload:valid + label::after {
     display: none;
 }
+
+@media only screen and (max-height: 57rem) {
+    .form-content {
+        gap: var(--gap-largest);
+    }
+
+    .form-heading {
+        font-size: var(--fs-smallest);
+    }
+
+    .form-sub-heading {
+        margin-bottom: var(--gap-small);
+        font-size: var(--fs-smallest);
+    }
+
+    .file-upload__label,
+    .image-text {
+        font-size: calc(var(--fs-smallest) - 0.5rem);
+    }
+
+    .submit-button {
+        padding: var(--pd-small) var(--pd-large);
+        font-size: var(--fs-smallest);
+    }
+}
 </style>

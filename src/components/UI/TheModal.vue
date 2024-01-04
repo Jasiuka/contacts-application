@@ -71,6 +71,7 @@ export default {
     flex-direction: column;
     gap: var(--gap-largest);
     min-width: 40dvw;
+    max-height: 90dvh;
 }
 
 .close-modal {
@@ -103,6 +104,16 @@ export default {
     to {
         opacity: 1;
         transform: scale(1);
+    }
+}
+
+@media only screen and (max-height: 57rem) {
+    .close-modal {
+        position: absolute;
+        top: 3%;
+        font-size: var(--fs-smallest);
+        width: 2.5rem;
+        height: 2.5rem;
     }
 }
 </style>

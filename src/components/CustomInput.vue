@@ -6,6 +6,7 @@
         </label>
 
         <input
+            ref="input"
             :placeholder="placeholder"
             :type="inputType"
             :name="inputName"
@@ -61,6 +62,10 @@ export default {
             type: Boolean,
             required: false,
         },
+        pattern: {
+            type: String,
+            required: false,
+        },
     },
     data() {
         return {
@@ -77,6 +82,11 @@ export default {
     },
     created() {
         this.enteredValue = this.inputValue;
+    },
+    mounted() {
+        if (this.pattern) {
+            this.$refs.input.setAttribute("pattern", this.pattern);
+        }
     },
 };
 </script>
@@ -105,5 +115,12 @@ input {
 label {
     display: block;
     margin-bottom: var(--gap-small);
+}
+
+@media only screen and (max-height: 57rem) {
+    input,
+    label {
+        font-size: calc(var(--fs-smallest) - 0.3rem);
+    }
 }
 </style>

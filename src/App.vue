@@ -91,6 +91,8 @@ span,
 label {
     text-overflow: ellipsis;
     overflow: hidden;
+    word-break: break-word;
+    text-wrap: balance;
 }
 
 h1,

@@ -140,4 +140,11 @@ option:checked {
     background-color: var(--blue-main);
     color: var(--white-main);
 }
+
+@media only screen and (max-height: 57rem) {
+    select,
+    label {
+        font-size: calc(var(--fs-smallest) - 0.4rem);
+    }
+}
 </style>
