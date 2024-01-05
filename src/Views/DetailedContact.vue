@@ -1,6 +1,35 @@
 <template>
     <page-layout>
         <template #page-heading> Detalesnė kontakto informacija </template>
+        <template #page-special>
+            <div
+                v-if="getContactToModify?.name"
+                class="detailed-contact__actions"
+            >
+                <p>Kontakto veiksmai</p>
+                <button
+                    title="Ištrinti"
+                    class="contact-delete action-delete action-btn"
+                    @click="openModal(formTypes.DELETE_CONTACT)"
+                >
+                    <img
+                        alt="Ištrinimo paveikslėlis"
+                        src="../assets/Icons/Trash-Can.png"
+                    />
+                </button>
+                <button
+                    @click="openModal(formTypes.EDIT_CONTACT)"
+                    title="Koreguoti"
+                    class="contact-edit action-edit action-btn"
+                >
+                    <img
+                        src="../assets/Icons/Pencil-Drawing.png"
+                        alt="Koregavimo paveikslėlis"
+                    />
+                </button>
+                <div class="line"></div>
+            </div>
+        </template>
         <template #content>
             <h2 v-if="!getContactToModify?.name">
                 Atiprašome, tačiau toks kontaktas nerastas.
@@ -26,7 +55,7 @@
                     >
                 </div>
                 <div class="detailed-contact__main">
-                    <div class="line"></div>
+                    <!-- <div class="line"></div> -->
                     <div class="contact-details">
                         <h3>Kontaktinė informacija</h3>
                         <div class="contact-details__content">
@@ -138,8 +167,14 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations } from "vuex";
+import { formTypes } from "../components/Forms/formTypes";
 export default {
     name: "DetailedContact",
+    data() {
+        return {
+            formTypes,
+        };
+    },
     computed: {
         ...mapGetters(["getContactToModify"]),
         imageUrl() {
@@ -154,7 +189,10 @@ export default {
     },
     methods: {
         ...mapActions(["FetchSingleContact"]),
-        ...mapMutations(["SET_CONTACT_TO_MODIFY"]),
+        ...mapMutations(["SET_CONTACT_TO_MODIFY", "OPEN_MODAL"]),
+        openModal(formType) {
+            this.OPEN_MODAL(formType);
+        },
     },
     async created() {
         const contactId = this.$route.params.contactId;
@@ -174,7 +212,7 @@ export default {
     column-gap: var(--gap-medium);
     min-width: 100%;
     align-items: center;
-    margin-bottom: var(--gap-medium);
+    margin-bottom: calc(var(--gap-largest) * 1.5);
     justify-content: baseline;
 }
 
@@ -197,6 +235,29 @@ export default {
     font-size: calc(var(--fs-medium) - 0.5rem);
 }
 
+.detailed-contact__actions {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: calc(var(--gap-largest) * 2);
+    align-items: center;
+}
+
+.detailed-contact__actions p {
+    font-size: var(--fs-smallest);
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.detailed-contact__actions .action-btn {
+    border-radius: var(--border-radius);
+}
+
+.detailed-contact__actions .line {
+    height: 2px;
+    flex: 1;
+    background-color: var(--blue-main);
+}
+
 .detailed-contact__main {
     display: flex;
     align-items: baseline;
@@ -210,6 +271,8 @@ export default {
     font-size: var(--fs-largest);
     font-weight: 400;
     margin-bottom: calc(var(--gap-largest) * 1.5);
+    padding-bottom: var(--pd-medium);
+    border-bottom: 2px solid var(--blue-main);
 }
 
 .detailed-contact__main ul {
@@ -223,7 +286,7 @@ export default {
     font-size: var(--fs-medium);
 }
 
-.line {
+.detailed-contact__main .line {
     position: absolute;
     top: 20%;
     left: 0;

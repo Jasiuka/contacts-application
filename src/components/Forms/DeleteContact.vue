@@ -41,6 +41,10 @@ export default {
 
             this.DeleteContact({ id });
             this.CLOSE_MODAL();
+            const isDeletedFromDetailedPage = this.$route.params.contactId;
+            if (isDeletedFromDetailedPage) {
+                this.$router.push({ path: "/contacts" });
+            }
         },
     },
 };
