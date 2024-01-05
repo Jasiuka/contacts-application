@@ -6,7 +6,7 @@
                 <button
                     class="page-view-change page-special-action"
                     :title="
-                        getContactsview === `cards`
+                        getContactsView === `cards`
                             ? 'Pakeisti į sąrašo vaizdą'
                             : 'Pakeisti į kortelių vaizdą'
                     "
