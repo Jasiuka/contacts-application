@@ -97,9 +97,9 @@
                                         Padalinys:
                                         {{
                                             getContactToModify?.expand
-                                                .department_id
+                                                .division_id
                                                 ? getContactToModify.expand
-                                                      .department_id.name
+                                                      .division_id.name
                                                 : "Nepriskirta"
                                         }}
                                     </p>
@@ -109,9 +109,9 @@
                                         Skyrius:
                                         {{
                                             getContactToModify?.expand
-                                                .division_id
+                                                .department_id
                                                 ? getContactToModify.expand
-                                                      .division_id.name
+                                                      .department_id.name
                                                 : "Nepriskirta"
                                         }}
                                     </p>
