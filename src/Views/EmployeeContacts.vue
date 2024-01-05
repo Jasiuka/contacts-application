@@ -14,13 +14,7 @@
                 >
                     <img
                         class="page-special-action--icon"
-                        v-if="view !== 'cards'"
-                        src="./../assets/Icons/Vector.png"
-                    />
-                    <img
-                        v-else
-                        class="page-special-action--icon"
-                        src="./../assets/Icons/Bullet-List.png"
+                        :src="viewButtonImage"
                     />
                 </button>
                 <button
@@ -61,6 +55,8 @@ import { mapActions, mapGetters, mapMutations } from "vuex";
 import { formTypes } from "../components/Forms/formTypes";
 import ContactComponent from "../components/Contacts/Contact.vue";
 import ContactsTable from "../components/Contacts/ContactsTable.vue";
+import VectorPng from "../assets/Icons/Vector.png";
+import BulletListPng from "../assets/Icons/Bullet-List.png";
 export default {
     components: {
         ContactComponent,
@@ -74,6 +70,9 @@ export default {
     },
     computed: {
         ...mapGetters(["getContacts"]),
+        viewButtonImage() {
+            return this.view === "cards" ? BulletListPng : VectorPng;
+        },
     },
     methods: {
         ...mapActions(["FetchContacts", "FetchAllStructures"]),

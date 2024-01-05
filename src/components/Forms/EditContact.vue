@@ -69,9 +69,9 @@
                             input-name="phone_number"
                             :is-invalid="invalidFields.includes('number')"
                             :input-value="getContactToModify.phone_number"
-                            pattern="^[+][0-9]\d{2,16}"
+                            pattern="^[+0-9][0-9]\d{1,16}"
                             max-length="17"
-                            min-length="4"
+                            min-length="2"
                         ></custom-input>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
                         :should-reset="false"
                     ></custom-select>
                 </div>
-                <div v-if="company" key="office" class="form-control">
+                <div key="office" class="form-control">
                     <custom-select
                         labelText="Ofisas"
                         notSelectedText="Pasirinkite ofisą.."
@@ -102,13 +102,10 @@
                         :value-to-select="getSelectedOffice"
                         @set-structure="setter"
                         :should-reset="false"
+                        :is-disabled="officeDisabled"
                     ></custom-select>
                 </div>
-                <div
-                    v-if="office && company"
-                    key="division"
-                    class="form-control"
-                >
+                <div key="division" class="form-control">
                     <custom-select
                         labelText="Padalinys"
                         notSelectedText="Pasirinkite padalinį.."
@@ -119,13 +116,10 @@
                         :is-invalid="invalidFields.includes('divisions')"
                         @set-structure="setter"
                         :should-reset="false"
+                        :is-disabled="divisionDisabled"
                     ></custom-select>
                 </div>
-                <div
-                    v-if="division && office && company"
-                    key="department"
-                    class="form-control"
-                >
+                <div key="department" class="form-control">
                     <custom-select
                         labelText="Skyrius"
                         notSelectedText="Pasirinkite skyrių.."
@@ -134,13 +128,10 @@
                         :value-to-select="getSelectedDepartment"
                         @set-structure="setter"
                         :should-reset="false"
+                        :is-disabled="departmentDisabled"
                     ></custom-select>
                 </div>
-                <div
-                    key="group"
-                    v-if="division && office && company && department"
-                    class="form-control"
-                >
+                <div key="group" class="form-control">
                     <custom-select
                         labelText="Grupė"
                         notSelectedText="Pasirinkite grupę.."
@@ -149,6 +140,7 @@
                         :value-to-select="getSelectedGroup"
                         @set-structure="setter"
                         :should-reset="false"
+                        :is-disabled="groupDisabled"
                     ></custom-select>
                 </div>
                 <div class="form-control">
@@ -177,7 +169,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import { validationMixin } from "../../utils/mixins/validationMixin";
 import { contactFormMixin } from "../../utils/mixins/contactFormMixin";
 import { createFormDataFromInputsArray } from "../../utils/helper";
@@ -217,54 +209,54 @@ export default {
             if (!allFieldsFilled) return;
 
             // check email format
-            const emailIsValid = this.checkValueFormatWithRegex(
-                "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
-                formContent.querySelector("[name='email']"),
-                "El. paštas"
-            );
-            const emailLengthIsValid = this.checkFieldValueLength(
-                formContent.querySelector("[name='email']").value,
-                40,
-                "El. Paštas"
+            const email = formContent.querySelector("[name='email']");
+            const emailIsValid = this.validator(email, "El. Paštas", "email");
+            const emailLengthIsValid = this.validator(
+                email,
+                "El. Paštas",
+                "length",
+                40
             );
             if (!emailIsValid || !emailLengthIsValid) return;
 
             // check name,surname,position input formats returns true if at least one invalid
             const multipleValuesInvalid =
                 this.checkMultipleValuesFormatWithRegex(
-                    "^[ąčęėįšųūžĄČĘĖĮŠŲŪŽa-zA-Z\\s]*$",
+                    "regular",
                     formContent.querySelector("[name='name']"),
                     formContent.querySelector("[name='surname']")
                 );
             if (multipleValuesInvalid) return;
 
-            const PositionIsValid = this.checkValueFormatWithRegex(
-                "^[ąčęėįšųūžĄČĘĖĮŠŲŪŽA-Za-z\\s]+(?:\\.[ąčęėįšųūžĄČĘĖĮŠŲŪŽA-Za-z\\s]+)?$",
+            const PositionIsValid = this.validator(
                 formContent.querySelector("[name='position']"),
-                "Pozicija"
+                "Pozicija",
+                "special"
             );
 
             if (!PositionIsValid) return;
 
             // Check number format
             const numberEl = formContent.querySelector("[name='phone_number']");
+
             let numberFormatIsValid = true;
             let numberLengthValid = true;
 
-            if (numberEl.value) {
-                numberFormatIsValid = this.checkValueFormatWithRegex(
-                    "^[+][0-9]\\d{2,16}",
+            if (numberEl.value.trim()) {
+                numberFormatIsValid = this.validator(
                     numberEl,
-                    "Telefono numeris"
+                    "Telefono numeris",
+                    "phone"
                 );
-                numberLengthValid = this.checkFieldValueLength(
-                    numberEl.value,
-                    17,
-                    "Tel. Numeris"
+                numberLengthValid = this.validator(
+                    numberEl,
+                    "Telefono Numeris",
+                    "length",
+                    17
                 );
             }
-            if (!numberFormatIsValid || !numberLengthValid) return;
 
+            if (!numberFormatIsValid || !numberLengthValid) return;
             // Check file format
             const fileInput = formContent.querySelector("[name='photo']");
             if (fileInput.files[0]) {
@@ -282,12 +274,12 @@ export default {
             const contact = createFormDataFromInputsArray(allFields);
 
             const form = event.target;
-            if (!form.department_id.value) {
-                contact.append("department_id", "");
-            }
-            if (!form.group_id) {
-                contact.append("group_id", "");
-            }
+            // if (!form.department_id.value) {
+            //     contact.append("department_id", "");
+            // }
+            // if (!form.group_id) {
+            //     contact.append("group_id", "");
+            // }
             this.EditContact({
                 id: this.getContactToModify.id,
                 dataToUpdate: contact,

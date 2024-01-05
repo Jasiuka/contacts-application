@@ -24,6 +24,18 @@ export const contactFormMixin = {
             "getDepartments",
             "getGroups",
         ]),
+        officeDisabled() {
+            return this.company ? false : true;
+        },
+        divisionDisabled() {
+            return this.office ? false : true;
+        },
+        departmentDisabled() {
+            return this.division ? false : true;
+        },
+        groupDisabled() {
+            return this.department ? false : true;
+        },
     },
     methods: {
         ...mapMutations([

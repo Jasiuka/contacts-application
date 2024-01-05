@@ -13,6 +13,7 @@
             v-model="selectedValue"
             :required="isRequired"
             @change="setStructure"
+            :disabled="isDisabled"
         >
             <option value="">
                 {{ notSelectedText }}
@@ -61,7 +62,7 @@ export default {
             type: [String, Number],
             required: false,
         },
-        isVisible: {
+        isDisabled: {
             type: Boolean,
             required: false,
         },
@@ -100,13 +101,19 @@ export default {
                 id: this.selectedValue,
             });
         },
+        reset() {
+            this.selectedValue = "";
+            this.setStructure();
+        },
     },
     mounted() {
         this.selectedValue = this.valueToSelect;
     },
+    updated() {
+        if (this.isDisabled) this.reset();
+    },
     destroyed() {
-        this.selectedValue = "";
-        this.setStructure();
+        this.reset();
     },
 };
 </script>
@@ -133,6 +140,8 @@ label {
 
 option {
     transition: all 0.3s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 option:hover,

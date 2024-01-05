@@ -70,7 +70,7 @@ export default {
     display: flex;
     flex-direction: column;
     gap: var(--gap-largest);
-    min-width: 40dvw;
+    min-width: 50dvw;
     max-height: 90dvh;
 }
 

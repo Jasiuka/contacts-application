@@ -31,9 +31,44 @@ export const validationMixin = {
                 return true;
             }
         },
+        validator(input, inputName, pattern, length = null) {
+            let isValid;
+            switch (pattern) {
+                case "email":
+                    isValid = this.checkValueFormatWithRegex(
+                        "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
+                        input,
+                        inputName
+                    );
+                    break;
+                case "phone":
+                    isValid = this.checkValueFormatWithRegex(
+                        "^[+0-9][0-9]\\d{2,16}",
+                        input,
+                        inputName
+                    );
+                    break;
+                case "special":
+                    isValid = this.checkValueFormatWithRegex(
+                        "^[ąčęėįšųūžĄČĘĖĮŠŲŪŽA-Za-z\\s]+(?:\\.[ąčęėįšųūžĄČĘĖĮŠŲŪŽA-Za-z\\s]+)?$",
+                        input,
+                        inputName
+                    );
+                    break;
+                case "length":
+                    isValid = this.checkFieldValueLength(
+                        input,
+                        length,
+                        inputName
+                    );
+                    break;
+            }
+            return isValid;
+        },
         checkValueFormatWithRegex(regEx, input, inputName) {
             const regex = new RegExp(regEx);
             const isValid = regex.test(input.value);
+
             if (!isValid) {
                 this.CreateNotification({
                     notificationText: `Laukas ${inputName} neteisingo formato`,
@@ -43,26 +78,33 @@ export const validationMixin = {
             }
             return isValid;
         },
-        checkMultipleValuesFormatWithRegex(regEx, ...inputs) {
+        checkMultipleValuesFormatWithRegex(pattern, ...inputs) {
             let isInvalid;
-            const regex = new RegExp(regEx);
-
-            for (let i = 0; i < inputs.length; i++) {
-                const inputValid = regex.test(inputs[i].value);
-                if (!inputValid) {
-                    this.invalidFields.push(inputs[i].name);
-                    isInvalid = true;
-                    this.CreateNotification({
-                        notificationText: "Ne visi laukai teisingo formato",
-                        type: "error",
-                    });
-                }
+            switch (pattern) {
+                case "regular":
+                    const regex = new RegExp(
+                        "^[ąčęėįšųūžĄČĘĖĮŠŲŪŽa-zA-Z\\s]*$"
+                    );
+                    for (let i = 0; i < inputs.length; i++) {
+                        const inputValid = regex.test(inputs[i].value);
+                        if (!inputValid) {
+                            this.invalidFields.push(inputs[i].name);
+                            isInvalid = true;
+                            this.CreateNotification({
+                                notificationText:
+                                    "Ne visi laukai teisingo formato",
+                                type: "error",
+                            });
+                        }
+                    }
+                    break;
             }
+
             return isInvalid;
         },
 
-        checkFieldValueLength(inputValue, maxLength, inputName) {
-            const isLengthValid = inputValue.length <= maxLength;
+        checkFieldValueLength(input, maxLength, inputName) {
+            const isLengthValid = input.value.length <= maxLength;
             if (!isLengthValid) {
                 this.CreateNotification({
                     notificationText: `${inputName} neturi viršyt ${maxLength} simbolių ilgio`,

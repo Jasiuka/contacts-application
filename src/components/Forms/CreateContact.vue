@@ -59,14 +59,14 @@
                     </div>
                     <div class="form-control">
                         <custom-input
-                            label-text="Telefono numeris (+37..)"
+                            label-text="Telefono numeris (pvz: +370..)"
                             input-type="tel"
                             placeholder="Įveskite telefono numerį"
                             input-name="phone_number"
                             :is-invalid="invalidFields.includes('number')"
-                            pattern="^[+][0-9]\d{2,16}"
+                            pattern="^[+0-9][0-9]\d{1,16}"
                             max-length="17"
-                            min-length="4"
+                            min-length="2"
                         ></custom-input>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                         @set-structure="setter"
                     ></custom-select>
                 </div>
-                <div v-if="company" key="office" class="form-control">
+                <div key="office" class="form-control">
                     <custom-select
                         labelText="Ofisas"
                         notSelectedText="Pasirinkite ofisą.."
@@ -95,9 +95,10 @@
                         :is-invalid="invalidFields.includes('office')"
                         :value-to-select="getSelectedOffice"
                         @set-structure="setter"
+                        :is-disabled="officeDisabled"
                     ></custom-select>
                 </div>
-                <div v-if="office && company" class="form-control">
+                <div class="form-control">
                     <custom-select
                         labelText="Padalinys"
                         notSelectedText="Pasirinkite padalinį.."
@@ -106,9 +107,10 @@
                         :is-required="true"
                         :value-to-select="getSelectedDivision"
                         @set-structure="setter"
+                        :is-disabled="divisionDisabled"
                     ></custom-select>
                 </div>
-                <div v-if="division && office && company" class="form-control">
+                <div class="form-control">
                     <custom-select
                         labelText="Skyrius"
                         notSelectedText="Pasirinkite skyrių.."
@@ -117,12 +119,10 @@
                         :is-invalid="invalidFields.includes('departments')"
                         :value-to-select="getSelectedDepartment"
                         @set-structure="setter"
+                        :is-disabled="departmentDisabled"
                     ></custom-select>
                 </div>
-                <div
-                    v-if="department && division && office && company"
-                    class="form-control"
-                >
+                <div class="form-control">
                     <custom-select
                         labelText="Grupė"
                         notSelectedText="Pasirinkite grupę.."
@@ -130,6 +130,7 @@
                         :options="getGroups"
                         :value-to-select="getSelectedGroup"
                         @set-structure="setter"
+                        :is-disabled="groupDisabled"
                     ></custom-select>
                 </div>
                 <div class="form-control">
@@ -183,31 +184,29 @@ export default {
             if (!allFieldsFilled) return;
 
             // check email format
-            const emailIsValid = this.checkValueFormatWithRegex(
-                "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
-                formContent.querySelector("[name='email']"),
-                "El. paštas"
-            );
-            const emailLengthIsValid = this.checkFieldValueLength(
-                formContent.querySelector("[name='email']").value,
-                40,
-                "El. Paštas"
+            const email = formContent.querySelector("[name='email']");
+            const emailIsValid = this.validator(email, "El. Paštas", "email");
+            const emailLengthIsValid = this.validator(
+                email,
+                "El. Paštas",
+                "length",
+                40
             );
             if (!emailIsValid || !emailLengthIsValid) return;
 
             // check name,surname,position input formats returns true if at least one invalid
             const multipleValuesInvalid =
                 this.checkMultipleValuesFormatWithRegex(
-                    "^[a-zA-Z\\s]*$",
+                    "regular",
                     formContent.querySelector("[name='name']"),
                     formContent.querySelector("[name='surname']")
                 );
             if (multipleValuesInvalid) return;
 
-            const PositionIsValid = this.checkValueFormatWithRegex(
-                "^[ąčęėįšųūžĄČĘĖĮŠŲŪŽA-Za-z\\s]+(?:\\.[ąčęėįšųūžĄČĘĖĮŠŲŪŽA-Za-z\\s]+)?$",
+            const PositionIsValid = this.validator(
                 formContent.querySelector("[name='position']"),
-                "Pozicija"
+                "Pozicija",
+                "special"
             );
 
             if (!PositionIsValid) return;
@@ -219,19 +218,20 @@ export default {
             let numberLengthValid = true;
 
             if (numberEl.value.trim()) {
-                numberFormatIsValid = this.checkValueFormatWithRegex(
-                    "^[+][0-9]\\d{2,16}",
+                numberFormatIsValid = this.validator(
                     numberEl,
-                    "Telefono numeris"
+                    "Telefono numeris",
+                    "phone"
                 );
-                numberLengthValid = this.checkFieldValueLength(
-                    numberEl.value,
-                    17,
-                    "Tel. Numeris"
+                numberLengthValid = this.validator(
+                    numberEl,
+                    "Telefono Numeris",
+                    "length",
+                    17
                 );
             }
-            if (!numberFormatIsValid || !numberLengthValid) return;
 
+            if (!numberFormatIsValid || !numberLengthValid) return;
             // Check file format
             const fileInput = formContent.querySelector("[name='photo']");
             if (fileInput.files[0]) {

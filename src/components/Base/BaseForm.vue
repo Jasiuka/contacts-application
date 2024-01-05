@@ -42,11 +42,13 @@ form {
     flex-direction: column;
     align-items: baseline;
     gap: calc(var(--gap-large) * 2);
+    padding-right: var(--pd-largest);
 }
 
 .form-content {
     display: flex;
     gap: calc(var(--gap-largest) * 3);
+    width: 100%;
 }
 
 .form-heading {
@@ -82,6 +84,10 @@ form {
 .form-side {
     display: flex;
     flex-direction: column;
+}
+
+.form-side--selections {
+    flex: 1;
 }
 
 .form-side > div {
