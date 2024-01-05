@@ -6,7 +6,7 @@
                 <button
                     class="page-view-change page-special-action"
                     :title="
-                        view === `cards`
+                        getContactsview === `cards`
                             ? 'Pakeisti į sąrašo vaizdą'
                             : 'Pakeisti į kortelių vaizdą'
                     "
@@ -68,13 +68,12 @@ export default {
     data() {
         return {
             formTypes,
-            view: "cards",
         };
     },
     computed: {
         ...mapGetters(["getContacts", "getContactsView"]),
         viewButtonImage() {
-            return this.view === "cards" ? BulletListPng : VectorPng;
+            return this.getContactsView === "cards" ? BulletListPng : VectorPng;
         },
     },
     methods: {
