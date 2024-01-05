@@ -100,7 +100,7 @@
                             <ul>
                                 <li>
                                     <p>
-                                        Kompanija:
+                                        Įmonė:
                                         {{
                                             getContactToModify?.expand
                                                 .company_id

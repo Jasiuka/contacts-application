@@ -1,21 +1,29 @@
+import { createFetchUrlWithFilters } from "../../utils/helper.js";
 const state = {
     contacts: [],
     contactToModify: null,
     contactsView: "cards",
+    contactsActiveFilters: {},
 };
 
 const getters = {
     getContacts: (state) => state.contacts,
     getContactToModify: (state) => state.contactToModify,
     getContactsView: (state) => state.contactsView,
+    getContactsActiveFilters: (state) => state.contactsActiveFilters,
 };
 
 const actions = {
-    async FetchContacts({ dispatch, commit }) {
+    async FetchContacts({ dispatch, commit }, payload) {
         try {
-            const response = await this.dataGet(
-                "employees/records?expand=office_id"
+            let filters = payload?.filters;
+            console.log(filters);
+            const url = createFetchUrlWithFilters(
+                "employees/records?expand=office_id",
+                filters
             );
+            console.log(url);
+            const response = await this.dataGet(url);
             if (response.status === 200) {
                 const contacts = response.data.items;
                 commit("SET_CONTACTS_STATE", contacts);
@@ -135,6 +143,12 @@ const mutations = {
     },
     SET_CONTACTS_VIEW(state, view) {
         state.contactsView = view;
+    },
+    SET_CONTACTS_FILTER(state, filter) {
+        state.contactsActiveFilters = {
+            ...state.contactsActiveFilters,
+            [filter.name]: filter.value,
+        };
     },
 };
 

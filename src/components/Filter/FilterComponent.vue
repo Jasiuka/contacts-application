@@ -14,6 +14,6 @@ export default {
 .filter {
     display: flex;
     align-items: center;
-    gap: var(--gap-medium);
+    gap: var(--gap-largest);
 }
 </style>

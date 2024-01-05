@@ -37,13 +37,39 @@
             </p>
             <filter-component>
                 <filter-item-select
-                    :select-options="[
-                        { text: 1, id: 1 },
-                        { text: 2, id: 2 },
-                    ]"
-                    option-default="Filtruoti kompanijas.."
-                    select-label="Kompanija"
-                    select-name="filter_company"
+                    :select-options="getCompanies"
+                    option-default="Filtruoti įmones.."
+                    select-label="Įmonė"
+                    select-name="company_filter"
+                    @change-filter="changeFilter"
+                ></filter-item-select>
+                <filter-item-select
+                    :select-options="getOffices"
+                    option-default="Filtruoti ofisus.."
+                    select-label="Ofisas"
+                    select-name="office_filter"
+                    @change-filter="changeFilter"
+                ></filter-item-select>
+                <filter-item-select
+                    :select-options="getDivisions"
+                    option-default="Filtruoti padalinius.."
+                    select-label="Padalinys"
+                    select-name="division_filter"
+                    @change-filter="changeFilter"
+                ></filter-item-select>
+                <filter-item-select
+                    :select-options="getDepartments"
+                    option-default="Filtruoti skyrius.."
+                    select-label="Skyrius"
+                    select-name="department_filter"
+                    @change-filter="changeFilter"
+                ></filter-item-select>
+                <filter-item-select
+                    :select-options="getGroups"
+                    option-default="Filtruoti grupes.."
+                    select-label="Grupė"
+                    select-name="group_filter"
+                    @change-filter="changeFilter"
                 ></filter-item-select>
             </filter-component>
         </template>
@@ -86,14 +112,35 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["getContacts", "getContactsView"]),
+        ...mapGetters([
+            "getContacts",
+            "getContactsView",
+            "getCompanies",
+            "getOffices",
+            "getDivisions",
+            "getDepartments",
+            "getGroups",
+            "getContactsActiveFilters",
+        ]),
         viewButtonImage() {
             return this.getContactsView === "cards" ? BulletListPng : VectorPng;
         },
     },
     methods: {
-        ...mapActions(["FetchContacts", "FetchAllStructures"]),
-        ...mapMutations(["OPEN_MODAL", "SET_CONTACTS_VIEW"]),
+        ...mapActions([
+            "FetchContacts",
+            "FetchAllStructures",
+            "FetchCompanies",
+            "FetchOffices",
+            "FetchDivisions",
+            "FetchDepartments",
+            "FetchGroups",
+        ]),
+        ...mapMutations([
+            "OPEN_MODAL",
+            "SET_CONTACTS_VIEW",
+            "SET_CONTACTS_FILTER",
+        ]),
         openModal(formType) {
             this.OPEN_MODAL(formType);
         },
@@ -101,10 +148,29 @@ export default {
             const nextView = this.getContactsView === "list" ? "cards" : "list";
             this.SET_CONTACTS_VIEW(nextView);
         },
+        changeFilter(filter) {
+            this.SET_CONTACTS_FILTER(filter);
+
+            console.log("CHANGED FILTER:", filter);
+            if (filter.name === "company_id") {
+                this.FetchOffices({ id: filter.value });
+            }
+            if (filter.name === "office_id") {
+                this.FetchDivisions({ id: filter.value });
+            }
+            if (filter.name === "division_id") {
+                this.FetchDepartments({ id: filter.value });
+            }
+            if (filter.name === "department_id") {
+                this.FetchGroups({ id: filter.value });
+            }
+            this.FetchContacts({ filters: this.getContactsActiveFilters });
+        },
     },
     async created() {
-        await this.FetchContacts();
+        await this.FetchContacts({ filters: this.getContactsActiveFilters });
         await this.FetchAllStructures();
+        await this.FetchCompanies();
     },
 };
 </script>

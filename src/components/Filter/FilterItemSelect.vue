@@ -7,13 +7,13 @@
             :name="selectName"
             :id="selectName"
         >
-            <option value="">{{ defaultOption }}</option>
+            <option value="">{{ optionDefault }}</option>
             <option
                 v-for="selectOption in selectOptions"
                 :key="selectOption.id"
-                :value="selectOption.text"
+                :value="selectOption.id"
             >
-                {{ selectOption.text }}
+                {{ selectOption.name }}
             </option>
         </select>
     </div>
@@ -46,10 +46,49 @@ export default {
             default: "Pasirinkite filtrą..",
         },
     },
+    watch: {
+        selectOptions() {
+            this.selectedFilter = "";
+        },
+    },
     methods: {
         changeFilter() {
-            this.$emit("change-filter", this.selectedFilter);
+            const filterName = this.selectName.replace("filter", "id");
+
+            this.$emit("change-filter", {
+                name: filterName,
+                value: this.selectedFilter,
+            });
         },
     },
 };
 </script>
+
+<style scoped>
+.filter-control {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-smallest);
+}
+
+.filter-control label {
+    align-self: baseline;
+}
+
+.filter-control select {
+    width: max-content;
+    border-radius: var(--border-radius);
+    padding: var(--pd-smallest) var(--pd-medium);
+    background-color: transparent;
+    color: #212529a1;
+}
+
+.filter-control option {
+    color: var(--black-main);
+}
+
+.filter-control label,
+.filter-control select {
+    font-size: var(--fs-smallest);
+}
+</style>

@@ -37,7 +37,7 @@ export default {
     gap: var(--gap-large);
 }
 
-.page-special div {
+.page-special > div {
     display: flex;
     align-items: center;
     gap: var(--gap-medium);
