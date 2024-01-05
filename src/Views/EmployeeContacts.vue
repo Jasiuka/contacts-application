@@ -35,6 +35,17 @@
                     kontaktų
                 </b>
             </p>
+            <filter-component>
+                <filter-item-select
+                    :select-options="[
+                        { text: 1, id: 1 },
+                        { text: 2, id: 2 },
+                    ]"
+                    option-default="Filtruoti kompanijas.."
+                    select-label="Kompanija"
+                    select-name="filter_company"
+                ></filter-item-select>
+            </filter-component>
         </template>
         <template #content>
             <contacts-table
@@ -60,10 +71,14 @@ import ContactComponent from "../components/Contacts/Contact.vue";
 import ContactsTable from "../components/Contacts/ContactsTable.vue";
 import VectorPng from "../assets/Icons/Vector.png";
 import BulletListPng from "../assets/Icons/Bullet-List.png";
+import FilterComponent from "../components/Filter/FilterComponent.vue";
+import FilterItemSelect from "../components/Filter/FilterItemSelect.vue";
 export default {
     components: {
         ContactComponent,
         ContactsTable,
+        FilterComponent,
+        FilterItemSelect,
     },
     data() {
         return {
