@@ -138,6 +138,7 @@ export default {
     border-bottom: 2px solid transparent;
     display: inline-block;
     width: fit-content;
+    transition: all 0.3s ease;
 }
 
 .contact-name:not(h2):hover {

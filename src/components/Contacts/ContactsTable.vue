@@ -5,7 +5,7 @@
         </template>
         <template #table-body>
             <tr
-                @click="routeToDetailedContact(contact.id)"
+                @click="routeToDetailedContact($event, contact.id)"
                 class="contact-row"
                 v-for="contact in contacts"
                 :key="contact.id"
@@ -80,8 +80,11 @@ export default {
             this.SET_CONTACT_TO_MODIFY(contact);
             this.OPEN_MODAL(formType);
         },
-        routeToDetailedContact(contactId) {
-            this.$router.push({ path: "/contacts/" + contactId });
+        routeToDetailedContact(event, contactId) {
+            const target = event.target;
+            if (!target.closest("button")) {
+                this.$router.push({ path: "/contacts/" + contactId });
+            }
         },
     },
 };

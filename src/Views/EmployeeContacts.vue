@@ -72,7 +72,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["getContacts"]),
+        ...mapGetters(["getContacts", "getContactsView"]),
         viewButtonImage() {
             return this.view === "cards" ? BulletListPng : VectorPng;
         },
