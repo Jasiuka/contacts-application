@@ -98,6 +98,7 @@ const actions = {
                     type: "success",
                 });
                 dispatch("UpdateContacts");
+                dispatch("FetchSingleContact", { id: contactData.id });
             }
         } catch (error) {
             dispatch("CreateNotification", {

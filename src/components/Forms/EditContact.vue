@@ -289,10 +289,6 @@ export default {
                 dataToUpdate: contact,
             });
             this.CLOSE_MODAL();
-            const isEditedFromDetailedPage = this.$route.params.contactId;
-            if (isEditedFromDetailedPage) {
-                this.FetchSingleContact({ id: isEditedFromDetailedPage });
-            }
         },
     },
     async created() {
