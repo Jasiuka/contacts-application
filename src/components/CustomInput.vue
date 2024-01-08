@@ -15,7 +15,7 @@
             :class="{
                 'input-invalid': isInvalid && !changed,
             }"
-            v-model="enteredValue"
+            v-model.trim="enteredValue"
             :required="isRequired"
             :maxlength="maxLength"
         />
