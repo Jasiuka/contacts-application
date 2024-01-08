@@ -277,13 +277,6 @@ export default {
 
             const contact = createFormDataFromInputsArray(allFields);
 
-            const form = event.target;
-            // if (!form.department_id.value) {
-            //     contact.append("department_id", "");
-            // }
-            // if (!form.group_id) {
-            //     contact.append("group_id", "");
-            // }
             this.EditContact({
                 id: this.getContactToModify.id,
                 dataToUpdate: contact,

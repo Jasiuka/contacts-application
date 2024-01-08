@@ -81,3 +81,27 @@ export const createStructureObject = (structureArray, structureName) => {
         return [];
     }
 };
+
+export const createFetchUrlWithFilters = (base, filters = {}) => {
+    let url = base;
+    for (const key in filters) {
+        if (!filters[key]) {
+            delete filters[key];
+        }
+    }
+    const arrayOfObject = Object.keys(filters);
+    if (!arrayOfObject.length) {
+        return url;
+    }
+    url = url + "&&filter=(";
+
+    url = arrayOfObject.reduce((acc, key, index) => {
+        if (index === 0) {
+            return acc.concat(`${key}='${filters[key]}'`);
+        } else {
+            return acc.concat(" %26%26 ", `${key}='${filters[key]}'`);
+        }
+    }, url);
+
+    return url + ")";
+};
