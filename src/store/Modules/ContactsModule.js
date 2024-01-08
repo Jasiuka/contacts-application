@@ -5,6 +5,8 @@ const state = {
     contactsView: "cards",
     contactsActiveFilters: {},
     contactsSearchQuery: "",
+    contactsCurrentPage: 1,
+    contactsTotalPages: 1,
 };
 
 const getters = {
@@ -13,6 +15,8 @@ const getters = {
     getContactsView: (state) => state.contactsView,
     getContactsActiveFilters: (state) => state.contactsActiveFilters,
     getContactsSearchQuery: (state) => state.contactsSearchQuery,
+    getContactsCurrentPage: (state) => state.contactsCurrentPage,
+    getContactsTotalPages: (state) => state.contactsTotalPages,
 };
 
 const actions = {
@@ -20,6 +24,7 @@ const actions = {
         try {
             let searchFields, searchQuery;
             let filters = payload?.filters;
+            let page = payload?.page;
             if (payload.searchFields) {
                 searchFields = payload.searchFields;
             }
@@ -175,6 +180,12 @@ const mutations = {
     },
     SET_CONTACTS_SEARCH_QUERY(state, query) {
         state.contactsSearchQuery = query;
+    },
+    SET_CONTACTS_CURRENT_PAGE(state, page) {
+        state.contactsCurrentPage = page;
+    },
+    SET_CONTACTS_TOTAL_PAGES(state, pageCount) {
+        state.contactsTotalPages = pageCount;
     },
 };
 
