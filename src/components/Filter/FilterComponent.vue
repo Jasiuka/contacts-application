@@ -14,7 +14,14 @@ export default {
 .filter {
     display: flex;
     align-items: center;
-    gap: var(--gap-largest);
-    flex-wrap: wrap;
+    justify-content: space-between;
+    overflow-x: auto;
+}
+
+@media only screen and (min-width: 140rem) {
+    .filter {
+        justify-content: unset;
+        gap: calc(var(--gap-largest) * 2);
+    }
 }
 </style>

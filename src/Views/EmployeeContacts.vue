@@ -153,6 +153,28 @@ export default {
             "SET_CONTACTS_FILTER",
             "RESET_CONTACTS_FILTER",
         ]),
+        resetStructuresData(breakpoint) {
+            switch (breakpoint) {
+                case "all":
+                    this.FetchOffices({ id: "" });
+                    this.FetchDivisions({ id: "" });
+                    this.FetchDepartments({ id: "" });
+                    this.FetchGroups({ id: "" });
+                    break;
+                case "office":
+                    this.FetchDivisions({ id: "" });
+                    this.FetchDepartments({ id: "" });
+                    this.FetchGroups({ id: "" });
+                    break;
+                case "division":
+                    this.FetchDepartments({ id: "" });
+                    this.FetchGroups({ id: "" });
+                    break;
+                case "department":
+                    this.FetchGroups({ id: "" });
+                    break;
+            }
+        },
         openModal(formType) {
             this.OPEN_MODAL(formType);
         },
@@ -165,9 +187,7 @@ export default {
 
             if (filter.name === "company_id") {
                 this.FetchOffices({ id: filter.value });
-                this.FetchDivisions({ id: "" });
-                this.FetchDepartments({ id: "" });
-                this.FetchGroups({ id: "" });
+                this.resetStructuresData("office");
                 this.RESET_CONTACTS_FILTER({
                     office_id: "",
                     division_id: "",
@@ -177,8 +197,7 @@ export default {
             }
             if (filter.name === "office_id") {
                 this.FetchDivisions({ id: filter.value });
-                this.FetchDepartments({ id: "" });
-                this.FetchGroups({ id: "" });
+                this.resetStructuresData("division");
                 this.RESET_CONTACTS_FILTER({
                     division_id: "",
                     department_id: "",
@@ -187,7 +206,7 @@ export default {
             }
             if (filter.name === "division_id") {
                 this.FetchDepartments({ id: filter.value });
-                this.FetchGroups({ id: "" });
+                this.resetStructuresData("department");
                 this.RESET_CONTACTS_FILTER({ department_id: "", group_id: "" });
             }
             if (filter.name === "department_id") {
@@ -211,6 +230,7 @@ export default {
             department_id: "",
             group_id: "",
         });
+        this.resetStructuresData("all");
     },
 };
 </script>
