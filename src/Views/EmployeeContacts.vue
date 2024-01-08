@@ -232,7 +232,6 @@ export default {
                 departments: this.getDepartments,
                 groups: this.getGroups,
             };
-            console.log(this.filterStructures);
             this.FetchContacts({ filters: this.getContactsActiveFilters });
         },
     },
