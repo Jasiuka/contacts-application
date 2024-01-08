@@ -15,5 +15,6 @@ export default {
     display: flex;
     align-items: center;
     gap: var(--gap-largest);
+    flex-wrap: wrap;
 }
 </style>
