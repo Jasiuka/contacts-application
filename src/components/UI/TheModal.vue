@@ -3,7 +3,6 @@
         <div v-if="getModalVisible" class="modal-background"></div>
         <transition name="modal">
             <dialog class="dialog" v-if="getModalVisible" open>
-                <slot name="modal-component"></slot>
                 <button
                     v-if="!closeNotRequired"
                     @click="closeModal"
