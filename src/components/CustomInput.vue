@@ -127,4 +127,11 @@ label {
         font-size: calc(var(--fs-smallest) - 0.3rem);
     }
 }
+
+@media only screen and (max-height: 44rem) {
+    input,
+    label {
+        font-size: calc(var(--fs-smallest) - 0.6rem);
+    }
+}
 </style>
