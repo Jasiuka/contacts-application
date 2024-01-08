@@ -128,11 +128,19 @@ const actions = {
     async UpdateContacts({ dispatch, commit, state }) {
         try {
             let url;
+            let searchQuery = "";
             const filters = state.contactsActiveFilters;
+            const searchFields = ["name", "surname"];
+            if (state.contactsSearchQuery) {
+                searchQuery = state.contactsSearchQuery;
+            }
+
             if (filters) {
                 url = createFetchUrlWithFilters(
                     "employees/records?expand=office_id",
-                    filters
+                    filters,
+                    searchFields,
+                    searchQuery
                 );
             } else {
                 url = "employees/records?expand=office_id";
