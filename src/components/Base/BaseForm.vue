@@ -184,5 +184,46 @@ form {
         padding: var(--pd-smallest) var(--pd-large);
         font-size: calc(var(--fs-smallest) - 0.2rem);
     }
+
+    .form-side > div {
+        gap: var(--gap-largest);
+    }
+
+    .form-side:first-of-type > div:first-of-type {
+        margin-bottom: calc(var(--gap-largest) * 1.5);
+    }
+
+    .form-side.form-side--selections .form-control:not(:last-child) {
+        margin-bottom: var(--gap-large);
+    }
+}
+
+@media only screen and (max-height: 44rem) {
+    .form-content {
+        gap: var(--gap-large);
+    }
+
+    .form-heading {
+        font-size: calc(var(--fs-smallest) - 0.3rem);
+    }
+
+    .form-sub-heading {
+        margin-bottom: var(--gap-smallest);
+        font-size: calc(var(--fs-smallest) - 0.4rem);
+    }
+
+    .file-upload__label,
+    .image-text {
+        font-size: calc(var(--fs-smallest) - 0.7rem);
+    }
+
+    .file-upload__label {
+        padding: var(--pd-smallest);
+    }
+
+    .submit-button {
+        padding: var(--pd-smallest) var(--pd-large);
+        font-size: calc(var(--fs-smallest) - 0.2rem);
+    }
 }
 </style>
