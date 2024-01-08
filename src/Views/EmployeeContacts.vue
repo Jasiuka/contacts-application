@@ -6,7 +6,7 @@
                 <button
                     class="page-view-change page-special-action"
                     :title="
-                        view === `cards`
+                        getContactsView === `cards`
                             ? 'Pakeisti į sąrašo vaizdą'
                             : 'Pakeisti į kortelių vaizdą'
                     "
@@ -37,7 +37,10 @@
             </p>
         </template>
         <template #content>
-            <contacts-table :contacts="getContacts" v-if="view === 'list'">
+            <contacts-table
+                :contacts="getContacts"
+                v-if="getContactsView === 'list'"
+            >
             </contacts-table>
             <div class="contacts-list" v-else>
                 <contact-component
@@ -65,23 +68,23 @@ export default {
     data() {
         return {
             formTypes,
-            view: "cards",
         };
     },
     computed: {
-        ...mapGetters(["getContacts"]),
+        ...mapGetters(["getContacts", "getContactsView"]),
         viewButtonImage() {
-            return this.view === "cards" ? BulletListPng : VectorPng;
+            return this.getContactsView === "cards" ? BulletListPng : VectorPng;
         },
     },
     methods: {
         ...mapActions(["FetchContacts", "FetchAllStructures"]),
-        ...mapMutations(["OPEN_MODAL"]),
+        ...mapMutations(["OPEN_MODAL", "SET_CONTACTS_VIEW"]),
         openModal(formType) {
             this.OPEN_MODAL(formType);
         },
         changeView() {
-            this.view = this.view === "cards" ? "list" : "cards";
+            const nextView = this.getContactsView === "list" ? "cards" : "list";
+            this.SET_CONTACTS_VIEW(nextView);
         },
     },
     async created() {

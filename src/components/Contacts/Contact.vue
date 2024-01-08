@@ -13,9 +13,10 @@
                 "
                 :alt="`${contact.name} nuotrauka`"
             />
-            <h2 class="contact-name">
+
+            <router-link :to="'/contacts/' + contact.id" class="contact-name">
                 {{ contact.name }} {{ contact.surname }}
-            </h2>
+            </router-link>
             <span class="contact-position"
                 >Pozicija: {{ contact.position }}</span
             >
@@ -126,6 +127,22 @@ export default {
 .contact-name {
     grid-column: 2/3;
     grid-row: 1/2;
+}
+
+.contact-name:visited,
+.contact-name:link,
+.contact-name {
+    color: inherit;
+    font-size: var(--fs-small);
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    display: inline-block;
+    width: fit-content;
+    transition: all 0.3s ease;
+}
+
+.contact-name:not(h2):hover {
+    border-bottom-color: var(--blue-main);
 }
 
 .contact-position {

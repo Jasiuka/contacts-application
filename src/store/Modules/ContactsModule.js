@@ -1,11 +1,13 @@
 const state = {
     contacts: [],
     contactToModify: null,
+    contactsView: "cards",
 };
 
 const getters = {
     getContacts: (state) => state.contacts,
     getContactToModify: (state) => state.contactToModify,
+    getContactsView: (state) => state.contactsView,
 };
 
 const actions = {
@@ -40,6 +42,7 @@ const actions = {
                 notificationText: error.message,
                 type: "error",
             });
+            commit("SET_CONTACT_TO_MODIFY", null);
         }
     },
 
@@ -128,6 +131,9 @@ const mutations = {
     },
     SET_CONTACT_TO_MODIFY(state, contact) {
         state.contactToModify = contact;
+    },
+    SET_CONTACTS_VIEW(state, view) {
+        state.contactsView = view;
     },
 };
 

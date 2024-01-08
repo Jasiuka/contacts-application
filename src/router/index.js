@@ -7,23 +7,32 @@ import CompaniesManagement from "../Views/CompaniesManagement.vue";
 import AdminLogin from "../Views/AdminLogin.vue";
 import AdminAccountsManagement from "../Views/AdminAccountsManagement.vue";
 import EmployeeContacts from "../Views/EmployeeContacts.vue";
+import ContactsManagement from "../Views/ContactsManagement.vue";
+import DetailedContact from "../Views/DetailedContact.vue";
 Vue.use(VueRouter);
 const router = new VueRouter({
     routes: [
         {
             path: "/",
-            redirect: { name: "ContactsManagement" },
+            name: "Home",
             component: Home,
+            redirect: { name: "ContactsManagement" },
+        },
+        {
+            path: "/contacts",
+            name: "ContactsManagement",
+            component: ContactsManagement,
+            redirect: { name: "EmployeeContacts" },
             children: [
                 {
-                    name: "ContactsManagement",
-                    path: "/contacts",
-                    redirect: { name: "ContactsList" },
+                    path: "",
+                    name: "EmployeeContacts",
                     component: EmployeeContacts,
-                    children: [
-                        { path: "", name: "ContactsList" },
-                        { path: ":contactId", name: "DetailedContact" },
-                    ],
+                },
+                {
+                    path: ":contactId",
+                    name: "DetailedContact",
+                    component: DetailedContact,
                 },
             ],
         },
