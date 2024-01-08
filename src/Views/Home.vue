@@ -1,15 +1,14 @@
 <template>
-    <div>
-        <h1>Home</h1>
-        <router-view></router-view>
-    </div>
+    <router-view></router-view>
 </template>
 
 <script>
 import EmployeeContacts from "./EmployeeContacts.vue";
+import DetailedContactVue from "./DetailedContact.vue";
 export default {
     components: {
         EmployeeContacts,
+        DetailedContactVue,
     },
 };
 </script>

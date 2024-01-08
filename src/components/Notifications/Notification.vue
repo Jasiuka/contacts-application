@@ -1,8 +1,5 @@
 <template>
     <li class="notification-item" :class="type">
-        <p>
-            {{ notificationText }}
-        </p>
         <button
             @click="removeNotification"
             class="notification-close"
@@ -10,6 +7,9 @@
         >
             X
         </button>
+        <p>
+            {{ notificationText }}
+        </p>
     </li>
 </template>
 
@@ -48,18 +48,29 @@ export default {
     font-size: var(--fs-small);
     gap: var(--gap-small);
     justify-content: space-between;
+    z-index: 100;
 }
 
 .notification-close {
     font-size: var(--fs-smallest);
-    transform: translate(0.6rem, -0.7rem);
+    transform: translate(-0.6rem, -0.7rem);
     transition: all 0.3s ease;
+    color: var(--white-main);
+}
+
+.notification-close.error {
+    color: var(--white-main);
 }
 
 .notification-close:hover {
-    color: var(--grey-main);
+    color: var(--black-main);
 }
 .error {
-    background-color: var(--error-main);
+    background-color: var(--red-main);
+    color: var(--white-main);
+}
+
+.success {
+    background-color: #69db7c;
 }
 </style>

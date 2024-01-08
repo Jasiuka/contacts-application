@@ -25,7 +25,14 @@ const actions = {
 };
 const mutations = {
     ADD_NOTIFICATION(state, notification) {
-        state.notifications.push(notification);
+        const doesSameNotificationExists = state.notifications.findIndex(
+            (noti) => notification.notificationText === noti.notificationText
+        );
+        if (doesSameNotificationExists === -1) {
+            state.notifications.push(notification);
+        } else {
+            state.notifications[doesSameNotificationExists] = notification;
+        }
     },
 
     REMOVE_NOTIFICATION_WITH_CLICK(state, notificationId) {

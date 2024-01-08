@@ -2,7 +2,7 @@
     <nav class="navigation">
         <ul class="navigation-list">
             <li>
-                <router-link to="/contacts">
+                <router-link :to="{ path: '/contacts' }">
                     <img
                         class="nav-logo"
                         src="../../assets/Teltonika-logotipas 1.png"
@@ -10,7 +10,7 @@
                 </router-link>
             </li>
             <li>
-                <router-link class="navigation-link" to="/contacts"
+                <router-link class="navigation-link" :to="{ path: '/contacts' }"
                     >Kontaktai</router-link
                 >
             </li>
@@ -56,24 +56,6 @@ export default {
     },
     data() {
         return {
-            managementDropdown: [
-                {
-                    name: "Contacts management",
-                    to: "/contacts-management",
-                },
-                {
-                    name: "Companies management",
-                    to: "/companies-management",
-                },
-                {
-                    name: "Structures management",
-                    to: "/structures",
-                },
-                {
-                    name: "Accounts management",
-                    to: "/admin-accounts",
-                },
-            ],
             loggedIn: false,
         };
     },

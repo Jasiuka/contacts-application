@@ -5,13 +5,14 @@
             <dialog class="dialog" v-if="getModalVisible" open>
                 <slot name="modal-component"></slot>
                 <button
-                    v-if="closeRequired"
+                    v-if="!closeNotRequired"
                     @click="closeModal"
                     class="close-modal"
                     title="Uždaryti"
                 >
                     X
                 </button>
+                <slot name="modal-component"></slot>
             </dialog>
         </transition>
     </div>
@@ -24,8 +25,8 @@ export default {
     name: "TheModal",
     computed: {
         ...mapGetters(["getModalVisible", "getModalComponent"]),
-        closeRequired() {
-            return !this.getModalComponent.includes("delete");
+        closeNotRequired() {
+            return this.getModalComponent.includes("delete");
         },
     },
     methods: {
@@ -46,6 +47,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 50;
 }
 
 .modal-background {
@@ -64,18 +66,19 @@ export default {
     border: none;
     box-shadow: 10px 10px 15px -8px rgba(0, 0, 0, 0.1);
     border-radius: var(--border-radius);
-    padding: calc(var(--pd-largest) * 2);
-    display: grid;
-    grid-template-columns: 90% 10%;
-    column-gap: var(--gap-large);
+    padding: calc(var(--pd-largest) * 1.5) var(--pd-largest);
+    padding-left: calc(var(--pd-largest) * 2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-largest);
+    min-width: 50dvw;
+    max-height: 90dvh;
 }
 
 .close-modal {
-    /* position: absolute;
-    right: 0.5rem;
-    top: 0.5rem; */
+    align-self: flex-end;
     font-size: var(--fs-small);
-    background-color: var(--blue-main);
+    background-color: var(--blue-second);
     height: 3rem;
     width: 3rem;
     border-radius: 50%;
@@ -102,6 +105,16 @@ export default {
     to {
         opacity: 1;
         transform: scale(1);
+    }
+}
+
+@media only screen and (max-height: 57rem) {
+    .close-modal {
+        position: absolute;
+        top: 3%;
+        font-size: var(--fs-smallest);
+        width: 2.5rem;
+        height: 2.5rem;
     }
 }
 </style>
