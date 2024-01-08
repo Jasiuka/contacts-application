@@ -4,6 +4,7 @@ const state = {
     contactToModify: null,
     contactsView: "cards",
     contactsActiveFilters: {},
+    contactsSearchQuery: "",
 };
 
 const getters = {
@@ -11,15 +12,25 @@ const getters = {
     getContactToModify: (state) => state.contactToModify,
     getContactsView: (state) => state.contactsView,
     getContactsActiveFilters: (state) => state.contactsActiveFilters,
+    getContactsSearchQuery: (state) => state.contactsSearchQuery,
 };
 
 const actions = {
     async FetchContacts({ dispatch, commit }, payload) {
         try {
+            let searchFields, searchQuery;
             let filters = payload?.filters;
+            if (payload.searchFields) {
+                searchFields = payload.searchFields;
+            }
+            if (payload.searchQuery) {
+                searchQuery = payload.searchQuery;
+            }
             const url = createFetchUrlWithFilters(
                 "employees/records?expand=office_id",
-                filters
+                filters,
+                searchFields,
+                searchQuery
             );
             const response = await this.dataGet(url);
             if (response.status === 200) {
@@ -161,6 +172,9 @@ const mutations = {
             ...state.contactsActiveFilters,
             ...stateToReset,
         };
+    },
+    SET_CONTACTS_SEARCH_QUERY(state, query) {
+        state.contactsSearchQuery = query;
     },
 };
 

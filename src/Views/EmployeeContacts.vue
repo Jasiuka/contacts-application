@@ -3,6 +3,10 @@
         <template #page-heading> Kontaktų sistema </template>
         <template #page-special>
             <div class="page-special-actions">
+                <search-component
+                    @send-query="receiveQuery"
+                    placeholder="Ieškoti kontakto.."
+                ></search-component>
                 <button
                     class="page-view-change page-special-action"
                     :title="
@@ -110,12 +114,14 @@ import VectorPng from "../assets/Icons/Vector.png";
 import BulletListPng from "../assets/Icons/Bullet-List.png";
 import FilterComponent from "../components/Filter/FilterComponent.vue";
 import FilterItemSelect from "../components/Filter/FilterItemSelect.vue";
+import SearchComponent from "../components/SearchComponent.vue";
 export default {
     components: {
         ContactComponent,
         ContactsTable,
         FilterComponent,
         FilterItemSelect,
+        SearchComponent,
     },
     data() {
         return {
@@ -138,6 +144,7 @@ export default {
             "getDepartments",
             "getGroups",
             "getContactsActiveFilters",
+            "getContactsSearchQuery",
         ]),
         viewButtonImage() {
             return this.getContactsView === "cards" ? BulletListPng : VectorPng;
@@ -158,6 +165,7 @@ export default {
             "SET_CONTACTS_VIEW",
             "SET_CONTACTS_FILTER",
             "RESET_CONTACTS_FILTER",
+            "SET_CONTACTS_SEARCH_QUERY",
         ]),
         async resetStructuresData(breakpoint) {
             switch (breakpoint) {
@@ -180,6 +188,14 @@ export default {
                     await await this.FetchGroups({ id: "" });
                     break;
             }
+        },
+        async receiveQuery(query) {
+            this.SET_CONTACTS_SEARCH_QUERY(query);
+            await this.FetchContacts({
+                filters: this.getContactsActiveFilters,
+                searchQuery: query,
+                searchFields: ["name", "surname"],
+            });
         },
         openModal(formType) {
             this.OPEN_MODAL(formType);
@@ -232,15 +248,27 @@ export default {
                 departments: this.getDepartments,
                 groups: this.getGroups,
             };
-            this.FetchContacts({ filters: this.getContactsActiveFilters });
+            this.FetchContacts({
+                filters: this.getContactsActiveFilters,
+                searchFields: ["name", "surname"],
+                searchQuery: this.getContactsSearchQuery,
+            });
         },
     },
     async created() {
-        await this.FetchContacts({ filters: this.getContactsActiveFilters });
+        await this.FetchContacts({
+            filters: this.getContactsActiveFilters,
+            searchFields: ["name", "surname"],
+            searchQuery: this.getContactsSearchQuery,
+        });
         await this.FetchCompanies();
     },
     async updated() {
-        await this.FetchContacts({ filters: this.getContactsActiveFilters });
+        await this.FetchContacts({
+            filters: this.getContactsActiveFilters,
+            searchFields: ["name", "surname"],
+            searchQuery: this.getContactsSearchQuery,
+        });
     },
     async destroyed() {
         this.RESET_CONTACTS_FILTER({
@@ -251,6 +279,7 @@ export default {
             group_id: "",
         });
         this.resetStructuresData("all");
+        this.SET_CONTACTS_SEARCH_QUERY("");
     },
 };
 </script>

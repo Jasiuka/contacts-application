@@ -82,26 +82,72 @@ export const createStructureObject = (structureArray, structureName) => {
     }
 };
 
-export const createFetchUrlWithFilters = (base, filters = {}) => {
+export const createFetchUrlWithFilters = (
+    base,
+    filters = {},
+    searchFields = [],
+    searchQuery = ""
+) => {
     let url = base;
     for (const key in filters) {
         if (!filters[key]) {
             delete filters[key];
         }
     }
+
+    // If filters empty and no search query
     const arrayOfObject = Object.keys(filters);
-    if (!arrayOfObject.length) {
+    if (!arrayOfObject.length && !searchFields.length) {
         return url;
     }
     url = url + "&&filter=(";
 
-    url = arrayOfObject.reduce((acc, key, index) => {
-        if (index === 0) {
-            return acc.concat(`${key}='${filters[key]}'`);
-        } else {
-            return acc.concat(" %26%26 ", `${key}='${filters[key]}'`);
+    // if filters empty but search query exist
+    if (!arrayOfObject.length && searchFields.length) {
+        url = searchFields.reduce((acc, searchField, index) => {
+            if (index === 0) {
+                return acc.concat(`${searchField}~'${searchQuery}'`);
+            } else {
+                return acc.concat("%7C%7C", `${searchField}~'${searchQuery}'`);
+            }
+        }, url);
+    }
+
+    // if filter exist
+    if (arrayOfObject.length) {
+        url = arrayOfObject.reduce((acc, key, index) => {
+            if (index === 0) {
+                return acc.concat(`${key}='${filters[key]}'`);
+            } else {
+                return acc.concat(" %26%26 ", `${key}='${filters[key]}'`);
+            }
+        }, url);
+
+        // add search query
+        if (searchFields.length) {
+            const query = `(${searchFields.reduce((acc, searchField, index) => {
+                if (index === 0) {
+                    return acc.concat(`${searchField}~'${searchQuery}' `);
+                } else {
+                    return acc.concat(
+                        "%7C%7C ",
+                        `${searchField}~'${searchQuery}'`
+                    );
+                }
+            }, "")})`;
+            url = url.concat(" %26%26 ", query);
         }
-    }, url);
+    }
 
     return url + ")";
 };
+
+export function debounce(func, delay = 300) {
+    let timer;
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    };
+}
