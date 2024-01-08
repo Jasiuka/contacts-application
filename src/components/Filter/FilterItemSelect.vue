@@ -12,6 +12,7 @@
                 v-for="selectOption in selectOptions"
                 :key="selectOption.id"
                 :value="selectOption.id"
+                :title="selectOption.name"
             >
                 {{ selectOption.name }}
             </option>
@@ -100,5 +101,22 @@ export default {
 .filter-control label,
 .filter-control select {
     font-size: var(--fs-smallest);
+}
+
+@media only screen and (max-width: 131rem) {
+    .filter-control select {
+        width: 20rem;
+    }
+}
+
+@media only screen and (max-width: 106rem) {
+    .filter-control select,
+    .filter-control label {
+        font-size: calc(var(--fs-smallest) - 0.3rem);
+    }
+
+    .filter-control select {
+        width: 15rem;
+    }
 }
 </style>
