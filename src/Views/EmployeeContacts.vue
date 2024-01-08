@@ -81,24 +81,22 @@
         <template #content>
             <contacts-table
                 :contacts="getContacts"
-                v-if="getContactsView === 'list'"
+                v-if="getContactsView === 'list' && getContacts.length"
             >
             </contacts-table>
-            <div class="contacts-list" v-else>
-                <h2
-                    v-if="
-                        getContactsActiveFilters.company_id !== '' &&
-                        !getContacts.length
-                    "
-                >
-                    Deja, pagal jūsų užklausą duomenų nerasta.
-                </h2>
+            <div
+                class="contacts-list"
+                v-if="getContactsView === 'cards' && getContacts.length"
+            >
                 <contact-component
                     v-for="contact in getContacts"
                     :key="contact.id"
                     :contact="contact"
                 ></contact-component>
             </div>
+            <h2 v-if="!getContacts.length">
+                Atsiprašome, tačiau duomenų nerasta.
+            </h2>
         </template>
     </page-layout>
 </template>
