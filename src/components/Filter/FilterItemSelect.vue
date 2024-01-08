@@ -45,10 +45,15 @@ export default {
             required: false,
             default: "Pasirinkite filtrą..",
         },
+        valueToSelect: {
+            type: String,
+            required: false,
+        },
     },
     watch: {
         selectOptions() {
             this.selectedFilter = "";
+            // this.changeFilter();
         },
     },
     methods: {
@@ -60,6 +65,11 @@ export default {
                 value: this.selectedFilter,
             });
         },
+    },
+    updated() {
+        if (this.valueToSelect) {
+            this.selectedFilter = this.valueToSelect;
+        }
     },
 };
 </script>
@@ -76,7 +86,7 @@ export default {
 }
 
 .filter-control select {
-    width: max-content;
+    width: 25rem;
     border-radius: var(--border-radius);
     padding: var(--pd-smallest) var(--pd-medium);
     background-color: transparent;

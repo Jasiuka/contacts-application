@@ -42,6 +42,7 @@
                     select-label="Įmonė"
                     select-name="company_filter"
                     @change-filter="changeFilter"
+                    :value-to-select="getContactsActiveFilters.company_id"
                 ></filter-item-select>
                 <filter-item-select
                     :select-options="getOffices"
@@ -49,6 +50,7 @@
                     select-label="Ofisas"
                     select-name="office_filter"
                     @change-filter="changeFilter"
+                    :value-to-select="getContactsActiveFilters.office_id"
                 ></filter-item-select>
                 <filter-item-select
                     :select-options="getDivisions"
@@ -56,6 +58,7 @@
                     select-label="Padalinys"
                     select-name="division_filter"
                     @change-filter="changeFilter"
+                    :value-to-select="getContactsActiveFilters.division_id"
                 ></filter-item-select>
                 <filter-item-select
                     :select-options="getDepartments"
@@ -63,6 +66,7 @@
                     select-label="Skyrius"
                     select-name="department_filter"
                     @change-filter="changeFilter"
+                    :value-to-select="getContactsActiveFilters.department_id"
                 ></filter-item-select>
                 <filter-item-select
                     :select-options="getGroups"
@@ -70,6 +74,7 @@
                     select-label="Grupė"
                     select-name="group_filter"
                     @change-filter="changeFilter"
+                    :value-to-select="getContactsActiveFilters.group_id"
                 ></filter-item-select>
             </filter-component>
         </template>
@@ -80,6 +85,14 @@
             >
             </contacts-table>
             <div class="contacts-list" v-else>
+                <h2
+                    v-if="
+                        getContactsActiveFilters.company_id !== '' &&
+                        !getContacts.length
+                    "
+                >
+                    Deja, pagal jūsų užklausą duomenų nerasta.
+                </h2>
                 <contact-component
                     v-for="contact in getContacts"
                     :key="contact.id"
@@ -140,6 +153,7 @@ export default {
             "OPEN_MODAL",
             "SET_CONTACTS_VIEW",
             "SET_CONTACTS_FILTER",
+            "RESET_CONTACTS_FILTER",
         ]),
         openModal(formType) {
             this.OPEN_MODAL(formType);
@@ -151,15 +165,32 @@ export default {
         changeFilter(filter) {
             this.SET_CONTACTS_FILTER(filter);
 
-            console.log("CHANGED FILTER:", filter);
             if (filter.name === "company_id") {
                 this.FetchOffices({ id: filter.value });
+                this.FetchDivisions({ id: "" });
+                this.FetchDepartments({ id: "" });
+                this.FetchGroups({ id: "" });
+                this.RESET_CONTACTS_FILTER({
+                    office_id: "",
+                    division_id: "",
+                    department_id: "",
+                    group_id: "",
+                });
             }
             if (filter.name === "office_id") {
                 this.FetchDivisions({ id: filter.value });
+                this.FetchDepartments({ id: "" });
+                this.FetchGroups({ id: "" });
+                this.RESET_CONTACTS_FILTER({
+                    division_id: "",
+                    department_id: "",
+                    group_id: "",
+                });
             }
             if (filter.name === "division_id") {
                 this.FetchDepartments({ id: filter.value });
+                this.FetchGroups({ id: "" });
+                this.RESET_CONTACTS_FILTER({ department_id: "", group_id: "" });
             }
             if (filter.name === "department_id") {
                 this.FetchGroups({ id: filter.value });
@@ -169,8 +200,19 @@ export default {
     },
     async created() {
         await this.FetchContacts({ filters: this.getContactsActiveFilters });
-        await this.FetchAllStructures();
         await this.FetchCompanies();
+    },
+    async updated() {
+        await this.FetchContacts({ filters: this.getContactsActiveFilters });
+    },
+    async destroyed() {
+        this.RESET_CONTACTS_FILTER({
+            company_id: "",
+            office_id: "",
+            division_id: "",
+            department_id: "",
+            group_id: "",
+        });
     },
 };
 </script>

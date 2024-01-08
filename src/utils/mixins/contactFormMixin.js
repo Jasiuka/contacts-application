@@ -105,8 +105,8 @@ export const contactFormMixin = {
         this.SET_SELECTED_DIVISION("");
         // this.SET_DIVISIONS_STATE([]);
         this.SET_SELECTED_DEPARTMENT("");
-        this.SET_DEPARTMENTS_STATE([]);
+        // this.SET_DEPARTMENTS_STATE([]);
         this.SET_SELECTED_GROUP("");
-        this.SET_GROUPS_STATE([]);
+        // this.SET_GROUPS_STATE([]);
     },
 };

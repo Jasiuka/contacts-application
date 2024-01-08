@@ -17,12 +17,10 @@ const actions = {
     async FetchContacts({ dispatch, commit }, payload) {
         try {
             let filters = payload?.filters;
-            console.log(filters);
             const url = createFetchUrlWithFilters(
                 "employees/records?expand=office_id",
                 filters
             );
-            console.log(url);
             const response = await this.dataGet(url);
             if (response.status === 200) {
                 const contacts = response.data.items;
@@ -116,11 +114,19 @@ const actions = {
         }
     },
 
-    async UpdateContacts({ dispatch, commit }) {
+    async UpdateContacts({ dispatch, commit, state }) {
         try {
-            const response = await this.dataGet(
-                "employees/records?expand=office_id"
-            );
+            let url;
+            const filters = state.contactsActiveFilters;
+            if (filters) {
+                url = createFetchUrlWithFilters(
+                    "employees/records?expand=office_id",
+                    filters
+                );
+            } else {
+                url = "employees/records?expand=office_id";
+            }
+            const response = await this.dataGet(url);
             if (response.status === 200) {
                 const contacts = response.data.items;
                 commit("SET_CONTACTS_STATE", contacts);
@@ -148,6 +154,12 @@ const mutations = {
         state.contactsActiveFilters = {
             ...state.contactsActiveFilters,
             [filter.name]: filter.value,
+        };
+    },
+    RESET_CONTACTS_FILTER(state, stateToReset) {
+        state.contactsActiveFilters = {
+            ...state.contactsActiveFilters,
+            ...stateToReset,
         };
     },
 };
