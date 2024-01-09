@@ -227,7 +227,13 @@ export default {
             await this.FetchContacts({
                 filters: this.getContactsActiveFilters,
                 searchQuery: query,
-                searchFields: ["name", "surname"],
+                searchFields: [
+                    "name",
+                    "surname",
+                    "email",
+                    "phone_number",
+                    "position",
+                ],
             });
         },
         handlePageChange(page) {
@@ -306,7 +312,13 @@ export default {
             };
             this.FetchContacts({
                 filters: this.getContactsActiveFilters,
-                searchFields: ["name", "surname"],
+                searchFields: [
+                    "name",
+                    "surname",
+                    "email",
+                    "phone_number",
+                    "position",
+                ],
                 searchQuery: this.getContactsSearchQuery,
             });
         },
@@ -314,7 +326,13 @@ export default {
     async created() {
         await this.FetchContacts({
             filters: this.getContactsActiveFilters,
-            searchFields: ["name", "surname"],
+            searchFields: [
+                "name",
+                "surname",
+                "email",
+                "phone_number",
+                "position",
+            ],
             searchQuery: this.getContactsSearchQuery,
         });
         await this.FetchCompanies();
@@ -322,7 +340,13 @@ export default {
     async updated() {
         await this.FetchContacts({
             filters: this.getContactsActiveFilters,
-            searchFields: ["name", "surname"],
+            searchFields: [
+                "name",
+                "surname",
+                "email",
+                "phone_number",
+                "position",
+            ],
             searchQuery: this.getContactsSearchQuery,
         });
     },

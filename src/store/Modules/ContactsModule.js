@@ -153,7 +153,13 @@ const actions = {
             let url;
             let searchQuery = "";
             const filters = state.contactsActiveFilters;
-            const searchFields = ["name", "surname"];
+            const searchFields = [
+                "name",
+                "surname",
+                "email",
+                "phone_number",
+                "position",
+            ];
             if (state.contactsSearchQuery) {
                 searchQuery = state.contactsSearchQuery;
             }
