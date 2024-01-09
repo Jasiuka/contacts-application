@@ -42,7 +42,7 @@
             <p>
                 Iš viso rasta:
                 <b>
-                    {{ getContacts?.length }}
+                    {{ getContactsFoundTotal }}
                     kontaktų
                 </b>
             </p>
@@ -170,6 +170,7 @@ export default {
             "getContactsAvailablePerPageValues",
             "getContactsPerPageNumber",
             "getContactsPerPageDropdownVisible",
+            "getContactsFoundTotal",
         ]),
         viewButtonImage() {
             return this.getContactsView === "cards" ? BulletListPng : VectorPng;
@@ -224,6 +225,7 @@ export default {
         },
         async receiveQuery(query) {
             this.SET_CONTACTS_SEARCH_QUERY(query);
+            this.SET_CONTACTS_CURRENT_PAGE(1);
             await this.FetchContacts({
                 filters: this.getContactsActiveFilters,
                 searchQuery: query,
@@ -240,7 +242,13 @@ export default {
             this.SET_CONTACTS_CURRENT_PAGE(page);
             this.FetchContacts({
                 filters: this.getContactsActiveFilters,
-                searchFields: ["name", "surname"],
+                searchFields: [
+                    "name",
+                    "surname",
+                    "email",
+                    "phone_number",
+                    "position",
+                ],
                 searchQuery: this.getContactsSearchQuery,
             });
             this.SET_CONTACTS_PER_PAGE_VISIBLE(false);
@@ -248,9 +256,16 @@ export default {
         handlePerPageChange(perPage) {
             this.SET_CONTACTS_PER_PAGE(perPage);
             setLocalStorage("contacts_per_page", perPage);
+            this.SET_CONTACTS_CURRENT_PAGE(1);
             this.FetchContacts({
                 filters: this.getContactsActiveFilters,
-                searchFields: ["name", "surname"],
+                searchFields: [
+                    "name",
+                    "surname",
+                    "email",
+                    "phone_number",
+                    "position",
+                ],
                 searchQuery: this.getContactsSearchQuery,
             });
         },
@@ -310,6 +325,7 @@ export default {
                 departments: this.getDepartments,
                 groups: this.getGroups,
             };
+            this.SET_CONTACTS_CURRENT_PAGE(1);
             this.FetchContacts({
                 filters: this.getContactsActiveFilters,
                 searchFields: [

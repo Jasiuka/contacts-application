@@ -13,6 +13,7 @@ const state = {
     contactsPerPageNumber: 10,
     contactsAvailablePerPageValues: [5, 10, 25, 50, 100, "Visi"],
     contactsPerPageDropdownVisible: false,
+    contactsFoundTotal: 0,
 };
 
 const getters = {
@@ -28,6 +29,7 @@ const getters = {
         state.contactsAvailablePerPageValues,
     getContactsPerPageDropdownVisible: (state) =>
         state.contactsPerPageDropdownVisible,
+    getContactsFoundTotal: (state) => state.contactsFoundTotal,
 };
 
 const actions = {
@@ -59,6 +61,7 @@ const actions = {
                 const contacts = response.data.items;
                 commit("SET_CONTACTS_STATE", contacts);
                 commit("SET_CONTACTS_TOTAL_PAGES", response.data.totalPages);
+                commit("SET_CONTACTS_FOUND_TOTAL", response.data.totalItems);
             }
         } catch (error) {
             dispatch("CreateNotification", {
@@ -86,7 +89,7 @@ const actions = {
         }
     },
 
-    async DeleteContact({ dispatch }, contact) {
+    async DeleteContact({ dispatch, commit, state }, contact) {
         try {
             const response = await this.dataDelete(
                 "employees/records",
@@ -97,6 +100,13 @@ const actions = {
                     notificationText: "Įrašas panaikintas sėkmingai",
                     type: "success",
                 });
+                const shouldGoBackOnePage = state.contacts.length === 1;
+                if (shouldGoBackOnePage && state.contactsCurrentPage > 1) {
+                    commit(
+                        "SET_CONTACTS_CURRENT_PAGE",
+                        state.contactsCurrentPage - 1
+                    );
+                }
                 dispatch("UpdateContacts");
             }
         } catch (error) {
@@ -148,7 +158,7 @@ const actions = {
         }
     },
 
-    async UpdateContacts({ dispatch, commit, state }) {
+    async UpdateContacts({ dispatch, commit, state }, payload) {
         try {
             let url;
             let searchQuery = "";
@@ -184,6 +194,7 @@ const actions = {
                 const contacts = response.data.items;
                 commit("SET_CONTACTS_STATE", contacts);
                 commit("SET_CONTACTS_TOTAL_PAGES", response.data.totalPages);
+                commit("SET_CONTACTS_FOUND_TOTAL", response.data.totalItems);
             }
         } catch (error) {
             dispatch("CreateNotification", {
@@ -230,6 +241,9 @@ const mutations = {
     },
     SET_CONTACTS_PER_PAGE_VISIBLE(state, isVisible) {
         state.contactsPerPageDropdownVisible = isVisible;
+    },
+    SET_CONTACTS_FOUND_TOTAL(state, total) {
+        state.contactsFoundTotal = total;
     },
 };
 
