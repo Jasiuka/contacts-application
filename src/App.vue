@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div id="app" ref="app">
         <notifications-list></notifications-list>
         <navigation-bar></navigation-bar>
         <the-modal>

@@ -1,4 +1,7 @@
-import { createFetchUrlWithFilters } from "../../utils/helper.js";
+import {
+    createFetchUrlWithFiltersAndSearch,
+    addPaginationDataToUrl,
+} from "../../utils/helper.js";
 const state = {
     contacts: [],
     contactToModify: null,
@@ -7,6 +10,9 @@ const state = {
     contactsSearchQuery: "",
     contactsCurrentPage: 1,
     contactsTotalPages: 1,
+    contactsPerPageNumber: 10,
+    contactsAvailablePerPageValues: [5, 10, 25, 50, 100, "Visi"],
+    contactsPerPageDropdownVisible: false,
 };
 
 const getters = {
@@ -17,30 +23,42 @@ const getters = {
     getContactsSearchQuery: (state) => state.contactsSearchQuery,
     getContactsCurrentPage: (state) => state.contactsCurrentPage,
     getContactsTotalPages: (state) => state.contactsTotalPages,
+    getContactsPerPageNumber: (state) => state.contactsPerPageNumber,
+    getContactsAvailablePerPageValues: (state) =>
+        state.contactsAvailablePerPageValues,
+    getContactsPerPageDropdownVisible: (state) =>
+        state.contactsPerPageDropdownVisible,
 };
 
 const actions = {
-    async FetchContacts({ dispatch, commit }, payload) {
+    async FetchContacts({ dispatch, commit, state }, payload) {
         try {
-            let searchFields, searchQuery;
+            let searchFields, searchQuery, url;
             let filters = payload?.filters;
-            let page = payload?.page;
             if (payload.searchFields) {
                 searchFields = payload.searchFields;
             }
             if (payload.searchQuery) {
                 searchQuery = payload.searchQuery;
             }
-            const url = createFetchUrlWithFilters(
+            url = createFetchUrlWithFiltersAndSearch(
                 "employees/records?expand=office_id",
                 filters,
                 searchFields,
                 searchQuery
             );
+            if (state.contactsPerPageNumber !== "Visi") {
+                url = addPaginationDataToUrl(
+                    url,
+                    state.contactsPerPageNumber,
+                    state.contactsCurrentPage
+                );
+            }
             const response = await this.dataGet(url);
             if (response.status === 200) {
                 const contacts = response.data.items;
                 commit("SET_CONTACTS_STATE", contacts);
+                commit("SET_CONTACTS_TOTAL_PAGES", response.data.totalPages);
             }
         } catch (error) {
             dispatch("CreateNotification", {
@@ -140,20 +158,26 @@ const actions = {
                 searchQuery = state.contactsSearchQuery;
             }
 
-            if (filters) {
-                url = createFetchUrlWithFilters(
-                    "employees/records?expand=office_id",
-                    filters,
-                    searchFields,
-                    searchQuery
+            url = createFetchUrlWithFiltersAndSearch(
+                "employees/records?expand=office_id",
+                filters,
+                searchFields,
+                searchQuery
+            );
+
+            if (state.contactsPerPage !== "Visi") {
+                url = addPaginationDataToUrl(
+                    url,
+                    state.contactsPerPageNumber,
+                    state.contactsCurrentPage
                 );
-            } else {
-                url = "employees/records?expand=office_id";
             }
+
             const response = await this.dataGet(url);
             if (response.status === 200) {
                 const contacts = response.data.items;
                 commit("SET_CONTACTS_STATE", contacts);
+                commit("SET_CONTACTS_TOTAL_PAGES", response.data.totalPages);
             }
         } catch (error) {
             dispatch("CreateNotification", {
@@ -194,6 +218,12 @@ const mutations = {
     },
     SET_CONTACTS_TOTAL_PAGES(state, pageCount) {
         state.contactsTotalPages = pageCount;
+    },
+    SET_CONTACTS_PER_PAGE(state, perPageNumber) {
+        state.contactsPerPageNumber = perPageNumber;
+    },
+    SET_CONTACTS_PER_PAGE_VISIBLE(state, isVisible) {
+        state.contactsPerPageDropdownVisible = isVisible;
     },
 };
 
