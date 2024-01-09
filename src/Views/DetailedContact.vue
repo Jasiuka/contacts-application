@@ -1,35 +1,6 @@
 <template>
     <page-layout>
         <template #page-heading> Detalesnė kontakto informacija </template>
-        <template #page-special>
-            <div
-                v-if="getContactToModify?.name"
-                class="detailed-contact__actions"
-            >
-                <p>Kontakto veiksmai</p>
-                <button
-                    title="Ištrinti"
-                    class="contact-delete action-delete action-btn"
-                    @click="openModal(formTypes.DELETE_CONTACT)"
-                >
-                    <img
-                        alt="Ištrinimo paveikslėlis"
-                        src="../assets/Icons/Trash-Can.png"
-                    />
-                </button>
-                <button
-                    @click="openModal(formTypes.EDIT_CONTACT)"
-                    title="Koreguoti"
-                    class="contact-edit action-edit action-btn"
-                >
-                    <img
-                        src="../assets/Icons/Pencil-Drawing.png"
-                        alt="Koregavimo paveikslėlis"
-                    />
-                </button>
-                <div class="line"></div>
-            </div>
-        </template>
         <template #content>
             <h2 v-if="!getContactToModify?.name">
                 Atiprašome, tačiau toks kontaktas nerastas.
@@ -55,7 +26,7 @@
                     >
                 </div>
                 <div class="detailed-contact__main">
-                    <!-- <div class="line"></div> -->
+                    <div class="line"></div>
                     <div class="contact-details">
                         <h3>Kontaktinė informacija</h3>
                         <div class="contact-details__content">
@@ -92,6 +63,29 @@
                                     </p>
                                 </li>
                             </ul>
+                        </div>
+                        <div class="detailed-contact__actions">
+                            <p>Kontakto veiksmai</p>
+                            <button
+                                title="Ištrinti"
+                                class="contact-delete action-delete action-btn"
+                                @click="openModal(formTypes.DELETE_CONTACT)"
+                            >
+                                <img
+                                    alt="Ištrinimo paveikslėlis"
+                                    src="../assets/Icons/Trash-Can.png"
+                                />
+                            </button>
+                            <button
+                                @click="openModal(formTypes.EDIT_CONTACT)"
+                                title="Koreguoti"
+                                class="contact-edit action-edit action-btn"
+                            >
+                                <img
+                                    src="../assets/Icons/Pencil-Drawing.png"
+                                    alt="Koregavimo paveikslėlis"
+                                />
+                            </button>
                         </div>
                     </div>
                     <div class="company-details">
@@ -238,8 +232,9 @@ export default {
 .detailed-contact__actions {
     display: flex;
     flex-direction: row;
-    margin-bottom: calc(var(--gap-largest) * 2);
     align-items: center;
+    gap: var(--gap-medium);
+    margin-top: calc(var(--gap-largest) * 2);
 }
 
 .detailed-contact__actions p {
@@ -252,12 +247,6 @@ export default {
     border-radius: var(--border-radius);
 }
 
-.detailed-contact__actions .line {
-    height: 2px;
-    flex: 1;
-    background-color: var(--blue-main);
-}
-
 .detailed-contact__main {
     display: flex;
     align-items: baseline;
@@ -265,6 +254,15 @@ export default {
     gap: 15dvw;
     min-width: 100%;
     position: relative;
+    box-shadow: 0px 5px 9px 2px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+    padding: calc(var(--pd-largest) * 2);
+}
+
+.detailed-contact__main .line {
+    width: 100%;
+    box-shadow: 0px 5px 9px -5px rgba(0, 0, 0, 0.1);
+    margin-top: var(--gap-medium);
 }
 
 .detailed-contact__main h3 {
@@ -272,7 +270,6 @@ export default {
     font-weight: 400;
     margin-bottom: calc(var(--gap-largest) * 1.5);
     padding-bottom: var(--pd-medium);
-    border-bottom: 2px solid var(--blue-main);
 }
 
 .detailed-contact__main ul {
@@ -292,8 +289,6 @@ export default {
     left: 0;
     min-width: 100%;
     height: 0px;
-    /* background-color: red; */
     box-shadow: 0px 11px 2px 1px rgba(0, 0, 0, 0.1);
-    /* box-shadow: 0px 5px 14px 6px rgba(0, 0, 0, 0.1); */
 }
 </style>
