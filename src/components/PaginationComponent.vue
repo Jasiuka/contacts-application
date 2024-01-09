@@ -8,7 +8,9 @@
             >
                 Praeitas puslapis
             </button>
-            <p class="pagination-numbers">{{ currentPage }}/{{ totalPages }}</p>
+            <p class="pagination-numbers">
+                {{ currentPage }}/{{ totalPages ? totalPages : 1 }}
+            </p>
             <button
                 class="pagination-button"
                 :disabled="currentPage >= totalPages"
