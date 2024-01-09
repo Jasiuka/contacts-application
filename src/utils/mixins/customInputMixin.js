@@ -49,6 +49,14 @@ export const customInputMixin = {
     data() {
         return {
             enteredValue: "",
+            changed: false,
         };
+    },
+    watch: {
+        enteredValue(newValue, oldValue) {
+            if (newValue !== oldValue && this.isInvalid) {
+                this.changed = true;
+            }
+        },
     },
 };

@@ -29,7 +29,7 @@
                     >Paskyros</router-link
                 >
             </li>
-            <base-dropdown class="navigation-dropdown">
+            <base-dropdown v-if="getLoggedIn" class="navigation-dropdown">
                 <template #display>
                     <img src="../../assets/Male-User.png" />
                 </template>
@@ -44,20 +44,24 @@
                     </li>
                 </template>
             </base-dropdown>
+            <li v-else>
+                <router-link class="navigation-link" to="/admin-login"
+                    >Prisijungti</router-link
+                >
+            </li>
         </ul>
     </nav>
 </template>
 
 <script>
 import BaseDropdown from "../Base/BaseDropdown.vue";
+import { mapGetters } from "vuex";
 export default {
     components: {
         BaseDropdown,
     },
-    data() {
-        return {
-            loggedIn: false,
-        };
+    computed: {
+        ...mapGetters(["getLoggedIn"]),
     },
 };
 </script>
@@ -98,5 +102,9 @@ export default {
 
 .nav-logo {
     height: 3rem;
+}
+
+.navigation-list > li:last-of-type {
+    margin-left: auto;
 }
 </style>

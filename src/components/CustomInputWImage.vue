@@ -1,7 +1,13 @@
 <template>
     <div class="input-with-image__wrapper">
         <label :for="inputName">{{ labelText }}</label>
-        <label :for="inputName" class="input-with-image">
+        <label
+            :for="inputName"
+            class="input-with-image"
+            :class="{
+                'input-invalid': isInvalid && !changed,
+            }"
+        >
             <img :src="image" />
             <input
                 :name="inputName"
@@ -56,5 +62,9 @@ export default {
     background-color: transparent;
     outline: none;
     border: none;
+}
+
+.input-invalid {
+    border: 2px solid var(--red-main);
 }
 </style>

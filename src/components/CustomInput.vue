@@ -28,18 +28,6 @@ import { customInputMixin } from "../utils/mixins/customInputMixin";
 export default {
     name: "custom-input",
     mixins: [customInputMixin],
-    data() {
-        return {
-            changed: false,
-        };
-    },
-    watch: {
-        enteredValue(newValue, oldValue) {
-            if (newValue !== oldValue && this.isInvalid) {
-                this.changed = true;
-            }
-        },
-    },
     created() {
         this.enteredValue = this.inputValue;
     },
