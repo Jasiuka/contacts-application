@@ -18,62 +18,18 @@
             v-model="enteredValue"
             :required="isRequired"
             :maxlength="maxLength"
+            :autocomplete="autoComplete"
         />
     </div>
 </template>
 
 <script>
+import { customInputMixin } from "../utils/mixins/customInputMixin";
 export default {
     name: "custom-input",
-    props: {
-        labelText: {
-            type: String,
-            required: true,
-        },
-        inputType: {
-            type: String,
-            required: false,
-        },
-        iconImage: {
-            type: String,
-            required: false,
-        },
-        placeholder: {
-            type: String,
-            required: true,
-        },
-        inputName: {
-            type: String,
-            required: true,
-        },
-        inputValue: {
-            type: String,
-            required: false,
-        },
-        isInvalid: {
-            type: Boolean,
-            required: false,
-        },
-        maxLength: {
-            type: String,
-            required: false,
-        },
-        minLength: {
-            type: String,
-            required: false,
-        },
-        isRequired: {
-            type: Boolean,
-            required: false,
-        },
-        pattern: {
-            type: String,
-            required: false,
-        },
-    },
+    mixins: [customInputMixin],
     data() {
         return {
-            enteredValue: "",
             changed: false,
         };
     },

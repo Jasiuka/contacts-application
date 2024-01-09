@@ -1,8 +1,8 @@
 <template>
     <div id="app" ref="app">
         <notifications-list></notifications-list>
-        <navigation-bar></navigation-bar>
-        <the-modal>
+        <navigation-bar v-if="!isAdminLoginPage"></navigation-bar>
+        <the-modal v-if="!isAdminLoginPage">
             <template #modal-component>
                 <component :is="getModalComponent"></component>
             </template>
@@ -33,6 +33,9 @@ export default {
     },
     computed: {
         ...mapGetters(["getModalComponent"]),
+        isAdminLoginPage() {
+            return this.$route.path === "/admin-login";
+        },
     },
 };
 </script>
