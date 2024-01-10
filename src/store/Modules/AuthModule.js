@@ -71,7 +71,9 @@ const actions = {
             commit("SET_AUTH_STATE", false);
             commit("SET_PERMISSIONS_STATE");
             commit("SET_IS_SUPER_ADMIN", false);
-            router.push({ path: "/" });
+            if (router.currentRoute.fullPath !== "/contacts/") {
+                router.push({ path: "/contacts" });
+            }
         } catch (error) {
             dispatch("CreateNotification", {
                 notificationText: "Įvyko klaida bandant atsijungti.",
