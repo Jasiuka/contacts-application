@@ -40,9 +40,6 @@ export default {
     methods: {
         ...mapActions(["RefreshAuth"]),
     },
-    async created() {
-        await this.RefreshAuth();
-    },
 };
 </script>
 
