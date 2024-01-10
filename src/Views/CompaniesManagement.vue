@@ -39,6 +39,11 @@ export default {
 </script>
 
 <style scoped>
+.page-special-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+}
 .page-special-actions .wrapper {
     display: flex;
     align-items: center;
