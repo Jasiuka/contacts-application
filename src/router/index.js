@@ -80,6 +80,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some((record) => record.meta.requiresLogin === true)) {
+        console.log(store.getters.getLoggedIn);
         if (!store.getters.getLoggedIn) {
             next({
                 path: "/",
