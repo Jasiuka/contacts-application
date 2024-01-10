@@ -78,7 +78,11 @@ const router = new VueRouter({
     ],
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+    if (!from.name && !from.matched.length) {
+        await store.dispatch("RefreshAuth");
+    }
+
     if (to.matched.some((record) => record.meta.requiresLogin === true)) {
         console.log(store.getters.getLoggedIn);
         if (!store.getters.getLoggedIn) {
