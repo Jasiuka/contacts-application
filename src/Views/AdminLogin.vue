@@ -1,14 +1,15 @@
 <template>
     <main class="admin-login">
+        <spinner v-if="loading"></spinner>
         <button @click="goBack" title="Grįžti atgal" class="admin-back">
             <img src="/src/assets/Icons/Curved-Arrow.png" />
         </button>
         <base-form @submit.native.prevent="submitForm($event)">
             <template #form-heading> Admin prisijungimas </template>
             <template #form-content>
-                <!-- <span v-if="invalidFields.length" class="admin-warning">
+                <span v-if="loginFailed" class="admin-warning">
                     El. Paštas arba slaptažodis neteisingas
-                </span> -->
+                </span>
                 <custom-input-with-image
                     placeholder="Įveskite el. pašto adresą.."
                     label-text="Elektroninis paštas"
@@ -31,7 +32,11 @@
                 ></custom-input-with-image>
             </template>
             <template #form-actions>
-                <button title="Prisijungti" class="admin-submit">
+                <button
+                    :disabled="loading"
+                    title="Prisijungti"
+                    class="admin-submit"
+                >
                     Prisijungti
                 </button>
             </template>
@@ -44,17 +49,25 @@ import BaseForm from "../components/Base/BaseForm.vue";
 import CustomInputWithImage from "../components/CustomInputWImage.vue";
 import { validationMixin } from "../utils/mixins/validationMixin";
 import { createFormDataFromInputsArray } from "../utils/helper";
+import Spinner from "../components/Spinner.vue";
 import { mapActions } from "vuex";
 export default {
     name: "AdminLogin",
-    components: { BaseForm, CustomInputWithImage },
+    components: { BaseForm, CustomInputWithImage, Spinner },
     mixins: [validationMixin],
+    data() {
+        return {
+            loginFailed: false,
+            loading: false,
+        };
+    },
     methods: {
-        ...mapActions(["login"]),
+        ...mapActions(["Login"]),
         goBack() {
             this.$router.go(-1);
         },
         async submitForm(event) {
+            this.loading = true;
             this.invalidFields = [];
             const formContent = event.srcElement.children[1];
             const allFields = formContent.querySelectorAll(
@@ -75,10 +88,13 @@ export default {
             );
             if (!emailIsValid || !emailLengthIsValid) return;
             const formData = createFormDataFromInputsArray(allFields);
-            const loginResponse = await this.login(formData);
+            const loginResponse = await this.Login(formData);
             if (loginResponse.status === 200) {
                 this.$router.push({ path: "/" });
+            } else {
+                this.loginFailed = true;
             }
+            this.loading = false;
         },
     },
 };
@@ -160,5 +176,6 @@ export default {
 .admin-warning {
     color: var(--red-main);
     font-weight: 500;
+    align-self: center;
 }
 </style>

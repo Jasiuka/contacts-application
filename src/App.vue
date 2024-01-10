@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import NavigationBar from "./components/UI/NavigationBar.vue";
 import NotificationsList from "./components/Notifications/NotificationsList.vue";
 import TheModal from "./components/UI/TheModal.vue";
@@ -36,6 +36,12 @@ export default {
         isAdminLoginPage() {
             return this.$route.path === "/admin-login";
         },
+    },
+    methods: {
+        ...mapActions(["RefreshAuth"]),
+    },
+    async created() {
+        await this.RefreshAuth();
     },
 };
 </script>
@@ -119,6 +125,12 @@ button {
     font-family: "Montserrat", sans-serif;
     color: var(--black-main);
     transition: all 0.3s ease;
+}
+
+button:disabled {
+    background-color: var(--blue-light);
+    cursor: default;
+    pointer-events: none;
 }
 
 *,

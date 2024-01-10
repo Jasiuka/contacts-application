@@ -9,6 +9,7 @@ import AdminAccountsManagement from "../Views/AdminAccountsManagement.vue";
 import EmployeeContacts from "../Views/EmployeeContacts.vue";
 import ContactsManagement from "../Views/ContactsManagement.vue";
 import DetailedContact from "../Views/DetailedContact.vue";
+import store from "/src/store/index";
 Vue.use(VueRouter);
 const router = new VueRouter({
     routes: [
@@ -45,16 +46,25 @@ const router = new VueRouter({
             path: "/accounts",
             name: "AdminAccounts",
             component: AdminAccountsManagement,
+            meta: {
+                requiresSuper: true,
+            },
         },
         {
             path: "/companies",
             name: "CompaniesManagement",
             component: CompaniesManagement,
+            meta: {
+                requiresLogin: true,
+            },
         },
         {
             path: "/structure",
             name: "CompanyStructures",
             component: CompanyStructureManagement,
+            meta: {
+                requiresLogin: true,
+            },
         },
         {
             path: "*",
@@ -66,6 +76,30 @@ const router = new VueRouter({
             component: NotFound,
         },
     ],
+});
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some((record) => record.meta.requiresLogin === true)) {
+        if (!store.getters.getLoggedIn) {
+            next({
+                path: "/",
+            });
+        } else {
+            next();
+        }
+    }
+
+    if (to.matched.some((record) => record.meta.requiresSuper === true)) {
+        if (!store.getters.getIsSuperAdmin) {
+            next({
+                path: from.fullPath,
+            });
+        } else {
+            next();
+        }
+    }
+
+    next();
 });
 
 export default router;

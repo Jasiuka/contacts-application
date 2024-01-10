@@ -3,9 +3,6 @@ import axios from "axios";
 export default function (store) {
     (store.server = axios.create({
         baseURL: BASE_API_URL,
-        headers: {
-            Authorization: "Bearer " + AUTH_TOKEN,
-        },
     })),
         (store.dataGet = async function (path) {
             try {
@@ -44,18 +41,38 @@ export default function (store) {
         }),
         (store.dataPost = async function (path, dataToPost) {
             try {
-                const response = await this.server.post(path, dataToPost);
+                const header = this.createHeader();
+                const response = await this.server.post(
+                    path,
+                    dataToPost,
+                    header
+                );
                 return response;
             } catch (error) {
-                throw new Error("Įvyko klaida siunčiant duomenis į serverį");
+                if (error.response.status === 401) {
+                    throw new Error(error.response.status);
+                }
+                if (
+                    error.response.data.message.includes(
+                        "Failed to authenticate"
+                    )
+                ) {
+                    throw new Error(error.response.data.message);
+                } else {
+                    throw new Error(
+                        "Įvyko klaida siunčiant duomenis į serverį"
+                    );
+                }
             }
         });
 
     store.dataPatch = async function (path, dataToUpdateId, updatedData) {
         try {
+            const header = this.createHeader();
             const response = await this.server.patch(
                 `${path}/${dataToUpdateId}`,
-                updatedData
+                updatedData,
+                header
             );
             return response;
         } catch (error) {
@@ -65,12 +82,25 @@ export default function (store) {
 
     store.dataDelete = async function (path, dataToDeleteId) {
         try {
+            const header = this.createHeader();
             const response = await this.server.delete(
-                `${path}/${dataToDeleteId}`
+                `${path}/${dataToDeleteId}`,
+                header
             );
             return response;
         } catch (error) {
             throw new Error("Įvyko klaida naikinant duomenis");
         }
+    };
+
+    store.createHeader = function () {
+        const token = localStorage.getItem("token")
+            ? localStorage.getItem("token")
+            : "";
+        return {
+            headers: {
+                Authorization: "Bearer " + token,
+            },
+        };
     };
 }

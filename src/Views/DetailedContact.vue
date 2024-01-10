@@ -64,9 +64,16 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="detailed-contact__actions">
+                        <div
+                            v-if="
+                                getPermissions.delete_employees ||
+                                getPermissions.edit_employees
+                            "
+                            class="detailed-contact__actions"
+                        >
                             <p>Kontakto veiksmai</p>
                             <button
+                                v-if="getPermissions.delete_employees"
                                 title="Ištrinti"
                                 class="contact-delete action-delete action-btn"
                                 @click="openModal(formTypes.DELETE_CONTACT)"
@@ -77,6 +84,7 @@
                                 />
                             </button>
                             <button
+                                v-if="getPermissions.edit_employees"
                                 @click="openModal(formTypes.EDIT_CONTACT)"
                                 title="Koreguoti"
                                 class="contact-edit action-edit action-btn"
@@ -170,7 +178,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["getContactToModify"]),
+        ...mapGetters(["getContactToModify", "getPermissions"]),
         imageUrl() {
             if (this.getContactToModify.photo) {
                 const url = new URL(

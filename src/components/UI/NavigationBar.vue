@@ -14,17 +14,17 @@
                     >Kontaktai</router-link
                 >
             </li>
-            <li>
+            <li v-if="getLoggedIn">
                 <router-link class="navigation-link" to="/companies"
                     >Įmonės</router-link
                 >
             </li>
-            <li>
+            <li v-if="getLoggedIn">
                 <router-link class="navigation-link" to="/structure"
                     >Struktūra</router-link
                 >
             </li>
-            <li>
+            <li v-if="getIsSuperAdmin">
                 <router-link class="navigation-link" to="/accounts"
                     >Paskyros</router-link
                 >
@@ -40,11 +40,13 @@
                         </button>
                     </li>
                     <li class="navigation-dropdown--item">
-                        <button title="Atsijungti">Atsijungti</button>
+                        <button @click="Logout" title="Atsijungti">
+                            Atsijungti
+                        </button>
                     </li>
                 </template>
             </base-dropdown>
-            <li v-else>
+            <li class="login" v-else>
                 <router-link class="navigation-link" to="/admin-login"
                     >Prisijungti</router-link
                 >
@@ -55,13 +57,16 @@
 
 <script>
 import BaseDropdown from "../Base/BaseDropdown.vue";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
     components: {
         BaseDropdown,
     },
     computed: {
-        ...mapGetters(["getLoggedIn"]),
+        ...mapGetters(["getLoggedIn", "getIsSuperAdmin"]),
+    },
+    methods: {
+        ...mapActions(["Logout"]),
     },
 };
 </script>
@@ -104,7 +109,7 @@ export default {
     height: 3rem;
 }
 
-.navigation-list > li:last-of-type {
+.navigation-list > li:last-of-type.login {
     margin-left: auto;
 }
 </style>
