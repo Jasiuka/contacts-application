@@ -1,11 +1,11 @@
 <template>
     <base-form
         @submit.native.prevent="submitForm"
-        submitText="Pridėti"
+        submitText="Redaguoti"
         submitClass="submit-button company"
     >
         <template #form-heading>
-            <h2>Pridėti įmonę</h2>
+            <h2>Redaguoti įmonę</h2>
         </template>
         <template #form-content>
             <div class="form-control">
@@ -17,6 +17,7 @@
                     :is-invalid="invalidFields.includes('name')"
                     max-length="40"
                     :is-required="true"
+                    :input-value="getCompanyToModify.name"
                 ></custom-input>
             </div>
         </template>
@@ -27,12 +28,15 @@
 <script>
 import { validationMixin } from "/src/utils/mixins/validationMixin.js";
 import { createFormDataFromInputsArray } from "/src/utils/helper.js";
-import { mapMutations, mapActions } from "vuex";
+import { mapMutations, mapActions, mapGetters } from "vuex";
 export default {
     name: "CreateCompany",
     mixins: [validationMixin],
+    computed: {
+        ...mapGetters(["getCompanyToModify"]),
+    },
     methods: {
-        ...mapActions(["CreateCompany"]),
+        ...mapActions(["EditCompany"]),
         ...mapMutations(["CLOSE_MODAL"]),
         submitForm(event) {
             this.invalidFields = [];
@@ -51,8 +55,21 @@ export default {
             if (!isFieldValid) {
                 return;
             }
+
+            // check if changed
+            const notChanged = this.checkIfSingleChanged(
+                companyName.value,
+                this.getCompanyToModify.name
+            );
+            if (notChanged) {
+                this.CLOSE_MODAL();
+                return;
+            }
             const company = createFormDataFromInputsArray([companyName]);
-            this.CreateCompany(company);
+            this.EditCompany({
+                dataToUpdate: company,
+                id: this.getCompanyToModify.id,
+            });
             this.CLOSE_MODAL();
         },
     },

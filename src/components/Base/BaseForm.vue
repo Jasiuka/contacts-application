@@ -71,7 +71,7 @@ form {
     border-radius: var(--border-radius);
 }
 
-.form-content:has(.form-delete--content) {
+.submit-button.company .form-content:has(.form-delete--content) {
     flex-direction: column;
     gap: var(--gap-small);
 }

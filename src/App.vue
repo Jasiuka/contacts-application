@@ -20,6 +20,8 @@ import CreateCompany from "./components/Forms/CreateCompany.vue";
 import CreateContact from "./components/Forms/CreateContact.vue";
 import EditContact from "./components/Forms/EditContact.vue";
 import DeleteContact from "./components/Forms/DeleteContact.vue";
+import DeleteCompany from "./components/Forms/DeleteCompany.vue";
+import EditCompany from "./components/Forms/EditCompany.vue";
 export default {
     components: {
         NavigationBar,
@@ -27,9 +29,11 @@ export default {
         TheModal,
         // For modal
         CreateCompany,
+        DeleteCompany,
         CreateContact,
         EditContact,
         DeleteContact,
+        EditCompany,
     },
     computed: {
         ...mapGetters(["getModalComponent"]),

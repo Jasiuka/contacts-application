@@ -167,4 +167,7 @@ export const validationMixin = {
             return notChanged;
         },
     },
+    detroyed() {
+        this.invalidFields = [];
+    },
 };
