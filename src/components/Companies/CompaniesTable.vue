@@ -2,13 +2,27 @@
     <base-table data-table="companies">
         <template #table-head>
             <th>Įmonės pavadinimas</th>
-            <th>Veiksmai</th>
+            <th
+                v-if="
+                    getPermissions.edit_companies &&
+                    getPermissions.delete_companies
+                "
+            >
+                Veiksmai
+            </th>
         </template>
         <template #table-body>
             <tr :key="company.id" v-for="company in companies">
                 <td>{{ company.name }}</td>
-                <td class="row-actions">
+                <td
+                    class="row-actions"
+                    v-if="
+                        getPermissions.edit_companies &&
+                        getPermissions.delete_companies
+                    "
+                >
                     <button
+                        v-if="getPermissions.edit_companies"
                         @click="openModal(formTypes.EDIT_COMPANY, company)"
                         title="Koreguoti"
                         class="companies-edit action-edit action-btn"
@@ -16,6 +30,7 @@
                         Redaguoti
                     </button>
                     <button
+                        v-if="getPermissions.delete_companies"
                         title="Ištrinti"
                         class="companies-delete action-delete action-btn"
                         @click="openModal(formTypes.DELETE_COMPANY, company)"
@@ -31,7 +46,7 @@
 <script>
 import BaseTable from "../Base/BaseTable.vue";
 import { formTypes } from "../Forms/formTypes";
-import { mapMutations } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
 export default {
     name: "CompaniesTable",
     components: {
@@ -47,6 +62,9 @@ export default {
             type: Array,
             required: true,
         },
+    },
+    computed: {
+        ...mapGetters(["getPermissions"]),
     },
     methods: {
         ...mapMutations(["OPEN_MODAL", "SET_COMPANY_TO_MODIFY"]),

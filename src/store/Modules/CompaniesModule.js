@@ -13,7 +13,7 @@ const getters = {
     getCompaniesTotalFound: (state) => state.companiesTotalFound,
 };
 const actions = {
-    async FetchCompaniesList({ dispatch, commit, state }) {
+    async FetchCompaniesList({ dispatch, commit, state }, payload) {
         try {
             const response = await this.dataGet(
                 `/companies/records?page=${state.companiesCurrentPage}`
@@ -25,6 +25,12 @@ const actions = {
                 commit("SET_COMPANIES_TOTAL_PAGES", response.data.totalPages);
             }
         } catch (error) {
+            if (payload.edit) {
+                dispatch("CreateNotification", {
+                    notificationText: "Įvyko klaida atnaujinant duomenis",
+                    type: "error",
+                });
+            }
             dispatch("CreateNotification", {
                 notificationText: error.message,
                 type: "error",
@@ -49,7 +55,7 @@ const actions = {
                         state.companiesCurrentPage - 1
                     );
                 }
-                dispatch("UpdateCompanies");
+                dispatch("FetchCompaniesList", { edit: true });
             }
         } catch (error) {
             dispatch("CreateNotification", {
@@ -67,7 +73,7 @@ const actions = {
                     notificationText: "Įrašas sukurtas sėkmingai",
                     type: "success",
                 });
-                dispatch("UpdateCompanies");
+                dispatch("FetchCompaniesList", { edit: true });
             }
         } catch (error) {
             dispatch("CreateNotification", {
@@ -89,29 +95,11 @@ const actions = {
                     notificationText: "Įrašas pakoreguotas sėkmingai",
                     type: "success",
                 });
-                dispatch("UpdateCompanies");
+                dispatch("FetchCompaniesList", { edit: true });
             }
         } catch (error) {
             dispatch("CreateNotification", {
                 notificationText: error.message,
-                type: "error",
-            });
-        }
-    },
-    async UpdateCompanies({ dispatch, commit, state }) {
-        try {
-            const response = await this.dataGet(
-                `/companies/records?page=${state.companiesCurrentPage}`
-            );
-            if (response.status === 200) {
-                const companies = response.data.items;
-                commit("SET_COMPANIES_LIST", companies);
-                commit("SET_COMPANIES_TOTAL_PAGES", response.data.totalPages);
-                commit("SET_COMPANIES_TOTAL_FOUND", response.data.totalItems);
-            }
-        } catch (error) {
-            dispatch("CreateNotification", {
-                notificationText: "Įvyko klaida atnaujinant duomenis",
                 type: "error",
             });
         }
