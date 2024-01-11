@@ -22,6 +22,8 @@ import EditContact from "./components/Forms/EditContact.vue";
 import DeleteContact from "./components/Forms/DeleteContact.vue";
 import DeleteCompany from "./components/Forms/DeleteCompany.vue";
 import EditCompany from "./components/Forms/EditCompany.vue";
+import DeleteStructure from "./components/Forms/DeleteStructure.vue";
+import CreateStructure from "./components/Forms/CreateStructure.vue";
 export default {
     components: {
         NavigationBar,
@@ -34,6 +36,8 @@ export default {
         EditContact,
         DeleteContact,
         EditCompany,
+        DeleteStructure,
+        CreateStructure,
     },
     computed: {
         ...mapGetters(["getModalComponent"]),

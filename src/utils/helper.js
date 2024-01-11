@@ -178,3 +178,58 @@ export const getFromLocalStorage = (key) => {
         return null;
     }
 };
+
+export const createStructureStringForWhat = (structure) => {
+    if (structure === "offices") return "ofisą";
+    if (structure === "divisions") return "padalinį";
+    if (structure === "departments") return "skyrių";
+    if (structure === "groups") return "grupę";
+
+    return "Nėra struktūros";
+};
+
+export const createStructureStringForName = (structure) => {
+    if (structure === "offices") return "Ofisas";
+    if (structure === "divisions") return "Padalinio pavadinimas";
+    if (structure === "departments") return "Skyriaus pavadinimas";
+    if (structure === "groups") return "Grupės pavadinimas";
+
+    return "Nėra struktūros";
+};
+
+export const createHigherStructureObject = (structure) => {
+    if (structure === "offices") {
+        return {
+            nameInLT: "Įmonė",
+            structureName: "company_id",
+            placeholder: "įmonę",
+            urlName: "companies",
+        };
+    }
+    if (structure === "divisions") {
+        return {
+            nameInLT: "Ofisas",
+            structureName: "office_id",
+            placeholder: "ofisą",
+            urlName: "offices",
+        };
+    }
+    if (structure === "departments") {
+        return {
+            nameInLT: "Padalinys",
+            structureName: "division_id",
+            placeholder: "padalinį",
+            urlName: "divisions",
+        };
+    }
+    if (structure === "groups") {
+        return {
+            nameInLT: "Skyrius",
+            structureName: "department_id",
+            placeholder: "skyrių",
+            urlName: "departments",
+        };
+    }
+
+    return { error: "Nėra struktūros" };
+};

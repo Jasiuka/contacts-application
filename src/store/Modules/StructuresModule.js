@@ -1,9 +1,9 @@
-import {
-    separateResponsesData,
-    createStructureObject,
-} from "../../utils/helper";
+import { createStructureObject } from "../../utils/helper";
 const state = {
-    structures: null,
+    structures: [],
+    activeStructureTab: "offices",
+    structuresForSelect: [],
+    higherStructureThanActive: {},
     selectedCompany: "",
     selectedOffice: "",
     selectedDivision: "",
@@ -14,10 +14,14 @@ const state = {
     divisions: [],
     departments: [],
     groups: [],
+    structureToModify: {},
 };
 
 const getters = {
     getStructures: (state) => state.structures,
+    getActiveStructureTab: (state) => state.activeStructureTab,
+    getStructuresForSelect: (state) => state.structuresForSelect,
+    getHigherStructure: (state) => state.higherStructureThanActive,
     getSelectedCompany: (state) => state.selectedCompany,
     getSelectedOffice: (state) => state.selectedOffice,
     getSelectedDivision: (state) => state.selectedDivision,
@@ -28,26 +32,54 @@ const getters = {
     getDivisions: (state) => state.divisions,
     getDepartments: (state) => state.departments,
     getGroups: (state) => state.groups,
+    getStructureToModify: (state) => state.structureToModify,
 };
 
 const actions = {
-    async FetchAllStructures({ dispatch, commit }) {
+    async FetchStructures({ dispatch, commit, state }, payload) {
         try {
-            const responses = await this.dataGetMultiple(
-                "companies/records",
-                "departments/records",
-                "offices/records",
-                "divisions/records",
-                "groups/records"
-            );
-            const atLeastOneResponseNotOk = responses.some(
-                (resp) => resp.status !== 200
-            );
-            if (atLeastOneResponseNotOk) {
-                throw new Error("Įvyko klaida gaunant duomenis iš serverio");
+            const url = `/${
+                payload?.higherStructure
+                    ? payload.higherStructure
+                    : state.activeStructureTab
+            }/records`;
+
+            const response = await this.dataGet(url);
+            if (response.status === 200) {
+                const structures = response.data.items;
+                if (!payload?.higherStructure) {
+                    commit("SET_STRUCTURES_STATE", structures);
+                } else {
+                    commit("SET_STRUCTURES_FOR_SELECT", structures);
+                }
             }
-            const separateData = separateResponsesData(responses);
-            commit("SET_STRUCTURES_STATE", separateData);
+        } catch (error) {
+            if (payload.edit) {
+                dispatch("CreateNotification", {
+                    notificationText: "Įvyko klaida atnaujinant duomenis",
+                    type: "error",
+                });
+            }
+            dispatch("CreateNotification", {
+                notificationText: error.message,
+                type: "error",
+            });
+        }
+    },
+
+    async DeleteStructure({ dispatch, commit, state }, { id }) {
+        try {
+            const response = await this.dataDelete(
+                `${state.activeStructureTab}/records`,
+                id
+            );
+            if (response.status === 204) {
+                dispatch("CreateNotification", {
+                    notificationText: "Įrašas panaikintas sėkmingai",
+                    type: "success",
+                });
+                dispatch("FetchStructures", { edit: true });
+            }
         } catch (error) {
             dispatch("CreateNotification", {
                 notificationText: error.message,
@@ -156,8 +188,17 @@ const actions = {
 };
 
 const mutations = {
-    SET_STRUCTURES_STATE(state, { name, data }) {
-        state.structures = { ...state.structures, [name]: data };
+    SET_STRUCTURES_STATE(state, structure) {
+        state.structures = structure;
+    },
+    SET_STRUCTURE_ACTIVE_TAB(state, structure) {
+        state.activeStructureTab = structure;
+    },
+    SET_STRUCTURES_FOR_SELECT(state, structures) {
+        state.structuresForSelect = structures;
+    },
+    SET_HIGHER_STRUCTURE(state, structure) {
+        state.higherStructureThanActive = structure;
     },
     SET_SELECTED_COMPANY(state, companyId) {
         state.selectedCompany = companyId;
@@ -188,6 +229,9 @@ const mutations = {
     },
     SET_GROUPS_STATE(state, groups) {
         state.groups = groups;
+    },
+    SET_STRUCTURE_TO_MODIFY(state, structure) {
+        state.structureToModify = structure;
     },
 };
 
