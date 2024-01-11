@@ -28,6 +28,7 @@
                     :companies="getCompaniesList"
                 ></companies-table>
                 <pagination-component
+                    v-if="getCompaniesTotalPages > 1"
                     :current-page="getCompaniesCurrentPage"
                     :total-pages="getCompaniesTotalPages"
                     @change-page="handlePageChange"

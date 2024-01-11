@@ -45,7 +45,7 @@ export default {
             const isFieldValid = this.validator(
                 companyName,
                 "Įmonės pavadinimas",
-                "special",
+                "special-w-numbers",
                 40
             );
             if (!isFieldValid) {

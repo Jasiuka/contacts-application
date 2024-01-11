@@ -55,6 +55,13 @@ export const validationMixin = {
                         inputName
                     );
                     break;
+                case "special-w-numbers":
+                    isValid = this.checkValueFormatWithRegex(
+                        "^[ąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9A-Za-z\\s]+(?:\\.[ąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9A-Za-z\\s]+)?$",
+                        input,
+                        inputName
+                    );
+                    break;
                 case "length":
                     isValid = this.checkFieldValueLength(
                         input,
