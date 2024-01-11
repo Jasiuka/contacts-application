@@ -2,25 +2,12 @@
     <base-table data-table="companies">
         <template #table-head>
             <th>Įmonės pavadinimas</th>
-            <th
-                v-if="
-                    getPermissions.edit_companies &&
-                    getPermissions.delete_companies
-                "
-            >
-                Veiksmai
-            </th>
+            <th v-if="actionsVisible">Veiksmai</th>
         </template>
         <template #table-body>
             <tr :key="company.id" v-for="company in companies">
                 <td>{{ company.name }}</td>
-                <td
-                    class="row-actions"
-                    v-if="
-                        getPermissions.edit_companies &&
-                        getPermissions.delete_companies
-                    "
-                >
+                <td class="row-actions" v-if="actionsVisible">
                     <button
                         v-if="getPermissions.edit_companies"
                         @click="openModal(formTypes.EDIT_COMPANY, company)"
@@ -65,6 +52,12 @@ export default {
     },
     computed: {
         ...mapGetters(["getPermissions"]),
+        actionsVisible() {
+            return (
+                this.getPermissions.edit_companies &&
+                this.getPermissions.delete_companies
+            );
+        },
     },
     methods: {
         ...mapMutations(["OPEN_MODAL", "SET_COMPANY_TO_MODIFY"]),
