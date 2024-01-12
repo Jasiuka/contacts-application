@@ -37,8 +37,22 @@ const actions = {
             });
         }
     },
+
     async DeleteCompany({ dispatch, commit, state }, company) {
         try {
+            // Fetch assigned offices
+            const officesResponse = await this.dataGet(
+                `/companies_offices/records?filter=(company_id='${company.id}')`
+            );
+            if (officesResponse.data.items.length) {
+                dispatch("CreateNotification", {
+                    notificationText:
+                        "Negalite panaikinti šios kompanijos nes jai yra priskirtas bent vienas ofisas",
+                    type: "error",
+                });
+                return;
+            }
+            // if no assigned offices --> delete
             const response = await this.dataDelete(
                 "companies/records",
                 company.id
