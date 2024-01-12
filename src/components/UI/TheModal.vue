@@ -76,7 +76,7 @@ export default {
 
 .dialog:has(.structure),
 .dialog:has(.company) {
-    min-width: 25dvw;
+    min-width: 35dvw;
 }
 
 .close-modal {

@@ -6,6 +6,7 @@ const state = {
     structuresForSelect: [],
     higherStructureThanActive: {},
     higherStructureSelections: [],
+    lowerStructures: [],
     structureToModify: {},
     // FOR FORMS/FILTERS
     selectedCompany: "",
@@ -26,6 +27,7 @@ const getters = {
     getActiveStructureTab: (state) => state.activeStructureTab,
     getStructuresForSelect: (state) => state.structuresForSelect,
     getHigherStructure: (state) => state.higherStructureThanActive,
+    getHigherStructuresSelection: (state) => state.higherStructureSelections,
     getStructureToModify: (state) => state.structureToModify,
     // FOR FORMS/FILTERS
     getSelectedCompany: (state) => state.selectedCompany,
@@ -74,8 +76,8 @@ const actions = {
     },
 
     async FetchHigherStructuresSelections(
-        { dispatch, state },
-        { structureId }
+        { dispatch, state, commit },
+        { structureId, shouldReturn }
     ) {
         try {
             const higherStructureUrlName =
@@ -93,8 +95,35 @@ const actions = {
                 const structures = response.data.items.map(
                     (item) => item[`${higherStructureName}`]
                 );
-                // commit("SET_OFFICES_STATE", offices);
                 commit("SET_HIGHER_STRUCTURES_SELECTIONS", structures);
+                if (shouldReturn) return response.data.items;
+            }
+        } catch (error) {
+            dispatch("CreateNotification", {
+                notificationText: error.message,
+                type: "error",
+            });
+        }
+    },
+
+    async FetchLowerStructures({ dispatch }, { structureId }) {
+        try {
+            const activeStructureName = `${state.activeStructureTab.slice(
+                0,
+                state.activeStructureTab.length - 1
+            )}_id`;
+            const lowerStructure = {
+                offices: "divisions",
+                divisions: "departments",
+                departments: "groups",
+            };
+            const response = await this.dataGet(
+                `/${state.activeStructureTab}_${
+                    lowerStructure[state.activeStructureTab]
+                }/records?filter=(${activeStructureName}='${structureId}')`
+            );
+            if (response.status === 200) {
+                return response.data.items;
             }
         } catch (error) {
             dispatch("CreateNotification", {
@@ -106,6 +135,19 @@ const actions = {
 
     async DeleteStructure({ dispatch, state }, { id }) {
         try {
+            // Check if this structure have any assigned lower structures
+            if (state.activeStructureTab !== "groups") {
+                const lowerStructures = await dispatch("FetchLowerStructures", {
+                    structureId: id,
+                });
+                if (lowerStructures.length) {
+                    dispatch("CreateNotification", {
+                        notificationText: `Negalite panaikinti šios struktūros nes jai yra priskirta žemesnė struktūra`,
+                        type: "error",
+                    });
+                    return;
+                }
+            }
             const response = await this.dataDelete(
                 `${state.activeStructureTab}/records`,
                 id
@@ -148,14 +190,65 @@ const actions = {
                             [structureName]: structureId,
                         }
                     );
-
-                    if (secondResponse.status !== 200) {
-                        throw new Error("Įvyko nenumatyta sistemos klaida");
-                    }
                 });
 
                 dispatch("CreateNotification", {
                     notificationText: "Įrašas sukurtas sėkmingai",
+                    type: "success",
+                });
+                dispatch("FetchStructures");
+            }
+        } catch (error) {
+            dispatch("CreateNotification", {
+                notificationText: error.message,
+                type: "error",
+            });
+        }
+    },
+
+    async EditStructure(
+        { dispatch, state },
+        { dataToUpdate, structureId, selections }
+    ) {
+        try {
+            const assignedStructures = await dispatch(
+                "FetchHigherStructuresSelections",
+                { structureId, shouldReturn: true }
+            );
+            //Remove existing assigns
+            assignedStructures.forEach(async (structure) => {
+                await this.dataDelete(
+                    `/${state.higherStructureThanActive.urlName}_${state.activeStructureTab}/records`,
+                    structure.id
+                );
+            });
+
+            // Add new assigns
+            const structureName = `${state.activeStructureTab.slice(
+                0,
+                state.activeStructureTab.length - 1
+            )}_id`;
+            const higherStructureName =
+                state.higherStructureThanActive.structureName;
+            selections.forEach(async (selection) => {
+                await this.dataPost(
+                    `/${state.higherStructureThanActive.urlName}_${state.activeStructureTab}/records`,
+                    {
+                        [higherStructureName]: selection,
+                        [structureName]: structureId,
+                    }
+                );
+            });
+
+            // Update record with new data
+            const response = await this.dataPatch(
+                `/${state.activeStructureTab}/records`,
+                structureId,
+                dataToUpdate
+            );
+            if (response.status === 200) {
+                dispatch("CreateNotification", {
+                    notificationText: "Įrašas pakoreguotas sėkmingai",
                     type: "success",
                 });
                 dispatch("FetchStructures");

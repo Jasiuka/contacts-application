@@ -47,7 +47,7 @@ export const createValuesArrayFromNodeList = (nodeList, ...exceptions) => {
 export const createObjectWithOldAndNewValues = (
     inputsNodeList,
     obj,
-    customInputs
+    customInputs = []
 ) => {
     const nObj = {};
 

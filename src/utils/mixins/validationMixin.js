@@ -158,7 +158,12 @@ export const validationMixin = {
             }
             return isFormatValid;
         },
-        checkIfAnyChanged(inputsNodeList, currentObjValues, customInputs) {
+        checkIfAnyChanged(
+            inputsNodeList,
+            currentObjValues,
+            customInputs,
+            notificationRequired = false
+        ) {
             const oldAndNewValuesObject = createObjectWithOldAndNewValues(
                 inputsNodeList,
                 currentObjValues,
@@ -176,7 +181,7 @@ export const validationMixin = {
                 }
             });
 
-            if (allSame) {
+            if (allSame && notificationRequired) {
                 this.CreateNotification({
                     notificationText:
                         "Bent vienas laukas turėtų būti pakeistas!",

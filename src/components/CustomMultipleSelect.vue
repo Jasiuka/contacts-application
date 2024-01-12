@@ -76,8 +76,17 @@ export default {
             } else {
                 this.selected.push(selection.id);
             }
+            this.emitSelection();
+        },
+        emitSelection() {
             this.$emit("selection-change", this.selected);
         },
+    },
+    mounted() {
+        if (this.gotSelected) {
+            this.selected = [...this.gotSelected];
+            this.emitSelection();
+        }
     },
 };
 </script>

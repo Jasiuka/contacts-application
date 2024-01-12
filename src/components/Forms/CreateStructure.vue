@@ -223,10 +223,10 @@ export default {
             if (officeName) {
                 structure.append("name", officeName);
             }
-            structure.append(
-                `${this.getHigherStructure.structureName}`,
-                this.selected
-            );
+            // structure.append(
+            //     `${this.getHigherStructure.structureName}`,
+            //     this.selected
+            // );
             this.CreateStructure({ structure, selections: this.selected });
             this.CLOSE_MODAL();
         },

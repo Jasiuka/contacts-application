@@ -18,8 +18,8 @@
                             input-name="name"
                             :is-invalid="invalidFields.includes('name')"
                             max-length="50"
-                            :input-value="getStructureToModify.name"
                             :is-required="true"
+                            :input-value="getStructureToModify.name"
                         ></custom-input>
                     </div>
                 </template>
@@ -76,19 +76,14 @@
                     </div>
                 </template>
                 <div class="form-control">
-                    <custom-select
-                        :labelText="getHigherStructure.nameInLT"
-                        :notSelectedText="`Pasirinkite ${getHigherStructure.placeholder}..`"
-                        :selectName="getHigherStructure.structureName"
+                    <custom-multiple-select
                         :options="getStructuresForSelect"
-                        :is-required="true"
-                        :is-invalid="
-                            invalidFields.includes(
-                                `${getHigherStructure.structureName}`
-                            )
-                        "
-                        :value-to-select="getStructureToModify"
-                    ></custom-select>
+                        :selection-default="`Pasirinkite ${getHigherStructure.placeholder}..`"
+                        :label-text="getHigherStructure.nameInLT"
+                        @selection-change="changeSelection"
+                        :is-invalid="invalidFields.includes('selection')"
+                        :got-selected="getHigherStructuresSelection"
+                    ></custom-multiple-select>
                 </div>
             </div>
         </template>
@@ -104,14 +99,25 @@ import {
     createStructureStringForName,
 } from "/src/utils/helper.js";
 import { mapMutations, mapActions, mapGetters } from "vuex";
+import CustomMultipleSelect from "../CustomMultipleSelect.vue";
 export default {
     name: "CreateCompany",
     mixins: [validationMixin],
+    data() {
+        return {
+            selected: [],
+        };
+    },
+    components: {
+        CustomMultipleSelect,
+    },
+
     computed: {
         ...mapGetters([
             "getActiveStructureTab",
             "getHigherStructure",
             "getStructuresForSelect",
+            "getHigherStructuresSelection",
             "getStructureToModify",
         ]),
         forHeading() {
@@ -129,8 +135,11 @@ export default {
         },
     },
     methods: {
-        ...mapActions(["CreateStructure", "FetchStructures"]),
+        ...mapActions(["FetchStructures", "EditStructure"]),
         ...mapMutations(["CLOSE_MODAL"]),
+        changeSelection(selections) {
+            this.selected = selections;
+        },
         submitForm(event) {
             this.invalidFields = [];
             let officeName;
@@ -141,6 +150,13 @@ export default {
 
             const allFieldsFilled = this.checkIfAllFieldsFilled(allFields);
             if (!allFieldsFilled) return;
+
+            const selectionIsValid = this.checkSelection(
+                this.selected,
+                "selection",
+                `${this.getHigherStructure.nameInLT}`
+            );
+            if (!selectionIsValid) return;
 
             // Check structure validity if not office structure
             if (this.getActiveStructureTab !== "offices") {
@@ -211,14 +227,29 @@ export default {
                 officeName = `${street.value} ${street_number.value}, ${city.value}, ${country.value}`;
             }
 
+            // check if anything changed
+            const allSame = this.checkIfAnyChanged(
+                allFields,
+                this.getStructureToModify
+            );
+
+            const selectionsSame =
+                JSON.stringify(this.getHigherStructuresSelection) ===
+                JSON.stringify(this.selected);
+            if (allSame && selectionsSame) {
+                this.CLOSE_MODAL();
+                return;
+            }
             const structure = createFormDataFromInputsArray(allFields);
             if (officeName) {
                 structure.append("name", officeName);
             }
-            // for (const pair of structure.entries()) {
-            //     console.log(pair[0] + "with" + pair[1]);
-            // }
-            this.CreateStructure({ structure });
+
+            this.EditStructure({
+                dataToUpdate: structure,
+                structureId: this.getStructureToModify.id,
+                selections: this.selected,
+            });
             this.CLOSE_MODAL();
         },
     },

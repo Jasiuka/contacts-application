@@ -80,9 +80,14 @@ export default {
         ]),
         async openModal(formType, structure) {
             await this.SET_STRUCTURE_TO_MODIFY(structure);
-            this.FetchHigherStructuresSelections({
-                structureId: structure.id,
-            });
+            this.SET_HIGHER_STRUCTURE(
+                createHigherStructureObject(this.structureName)
+            );
+            if (formType === this.formTypes.EDIT_STRUCTURE) {
+                await this.FetchHigherStructuresSelections({
+                    structureId: structure.id,
+                });
+            }
             this.OPEN_MODAL(formType);
         },
     },

@@ -197,7 +197,8 @@ export default {
             const allFieldsValuesSame = this.checkIfAnyChanged(
                 allFieldsWithoutFile,
                 this.getContactToModify,
-                [{ name: "photo", value: this.photo }]
+                [{ name: "photo", value: this.photo }],
+                true
             );
             if (allFieldsValuesSame) {
                 return;
