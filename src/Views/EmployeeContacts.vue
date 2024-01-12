@@ -191,17 +191,7 @@ export default {
         },
         async receiveQuery(query) {
             this.SET_CONTACTS_SEARCH_QUERY(query);
-            await this.FetchContacts({
-                filters: this.getContactsActiveFilters,
-                searchQuery: query,
-                searchFields: [
-                    "name",
-                    "surname",
-                    "email",
-                    "phone_number",
-                    "position",
-                ],
-            });
+            await this.FetchContacts();
         },
         openModal(formType) {
             this.OPEN_MODAL(formType);
@@ -254,45 +244,15 @@ export default {
                 departments: this.getDepartments,
                 groups: this.getGroups,
             };
-            this.FetchContacts({
-                filters: this.getContactsActiveFilters,
-                searchFields: [
-                    "name",
-                    "surname",
-                    "email",
-                    "phone_number",
-                    "position",
-                ],
-                searchQuery: this.getContactsSearchQuery,
-            });
+            await this.FetchContacts();
         },
     },
     async created() {
-        await this.FetchContacts({
-            filters: this.getContactsActiveFilters,
-            searchFields: [
-                "name",
-                "surname",
-                "email",
-                "phone_number",
-                "position",
-            ],
-            searchQuery: this.getContactsSearchQuery,
-        });
+        await this.FetchContacts();
         await this.FetchCompanies();
     },
     async updated() {
-        await this.FetchContacts({
-            filters: this.getContactsActiveFilters,
-            searchFields: [
-                "name",
-                "surname",
-                "email",
-                "phone_number",
-                "position",
-            ],
-            searchQuery: this.getContactsSearchQuery,
-        });
+        await this.FetchContacts();
     },
     async destroyed() {
         this.RESET_CONTACTS_FILTER({
