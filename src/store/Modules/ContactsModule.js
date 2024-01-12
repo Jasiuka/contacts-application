@@ -14,6 +14,13 @@ const state = {
     contactsAvailablePerPageValues: [5, 10, 25, 50, 100, "Visi"],
     contactsPerPageDropdownVisible: false,
     contactsFoundTotal: 0,
+    contactsSearchFields: [
+        "name",
+        "surname",
+        "email",
+        "phone_number",
+        "position",
+    ],
 };
 
 const getters = {
@@ -35,20 +42,24 @@ const getters = {
 const actions = {
     async FetchContacts({ dispatch, commit, state }, payload) {
         try {
-            let searchFields, searchQuery, url;
-            let filters = payload?.filters;
-            if (payload.searchFields) {
-                searchFields = payload.searchFields;
+            let url;
+            let searchQuery = "";
+            const filters = state.contactsActiveFilters;
+
+            if (state.contactsSearchQuery) {
+                searchQuery = state.contactsSearchQuery;
             }
-            if (payload.searchQuery) {
-                searchQuery = payload.searchQuery;
+
+            if (filters) {
+                url = createFetchUrlWithFiltersAndSearch(
+                    "employees/records?expand=office_id",
+                    filters,
+                    state.contactsSearchFields,
+                    searchQuery
+                );
+            } else {
+                url = "employees/records?expand=office_id";
             }
-            url = createFetchUrlWithFiltersAndSearch(
-                "employees/records?expand=office_id",
-                filters,
-                searchFields,
-                searchQuery
-            );
             if (state.contactsPerPageNumber !== "Visi") {
                 url = addPaginationDataToUrl(
                     url,
@@ -64,6 +75,12 @@ const actions = {
                 commit("SET_CONTACTS_FOUND_TOTAL", response.data.totalItems);
             }
         } catch (error) {
+            if (payload?.edit) {
+                dispatch("CreateNotification", {
+                    notificationText: "Įvyko klaida atnaujinant duomenis",
+                    type: "error",
+                });
+            }
             dispatch("CreateNotification", {
                 notificationText: error.message,
                 type: "error",
@@ -107,7 +124,7 @@ const actions = {
                         state.contactsCurrentPage - 1
                     );
                 }
-                dispatch("UpdateContacts");
+                await dispatch("FetchContacts", { edit: true });
             }
         } catch (error) {
             dispatch("CreateNotification", {
@@ -125,7 +142,7 @@ const actions = {
                     notificationText: "Įrašas sukurtas sėkmingai",
                     type: "success",
                 });
-                dispatch("UpdateContacts");
+                await dispatch("FetchContacts", { edit: true });
             }
         } catch (error) {
             dispatch("CreateNotification", {
@@ -147,58 +164,12 @@ const actions = {
                     notificationText: "Įrašas pakoreguotas sėkmingai",
                     type: "success",
                 });
-                dispatch("UpdateContacts");
-                dispatch("FetchSingleContact", { id: contactData.id });
+                await dispatch("FetchContacts", { edit: true });
+                await dispatch("FetchSingleContact", { id: contactData.id });
             }
         } catch (error) {
             dispatch("CreateNotification", {
                 notificationText: error.message,
-                type: "error",
-            });
-        }
-    },
-
-    async UpdateContacts({ dispatch, commit, state }, payload) {
-        try {
-            let url;
-            let searchQuery = "";
-            const filters = state.contactsActiveFilters;
-            const searchFields = [
-                "name",
-                "surname",
-                "email",
-                "phone_number",
-                "position",
-            ];
-            if (state.contactsSearchQuery) {
-                searchQuery = state.contactsSearchQuery;
-            }
-
-            url = createFetchUrlWithFiltersAndSearch(
-                "employees/records?expand=office_id",
-                filters,
-                searchFields,
-                searchQuery
-            );
-
-            if (state.contactsPerPage !== "Visi") {
-                url = addPaginationDataToUrl(
-                    url,
-                    state.contactsPerPageNumber,
-                    state.contactsCurrentPage
-                );
-            }
-
-            const response = await this.dataGet(url);
-            if (response.status === 200) {
-                const contacts = response.data.items;
-                commit("SET_CONTACTS_STATE", contacts);
-                commit("SET_CONTACTS_TOTAL_PAGES", response.data.totalPages);
-                commit("SET_CONTACTS_FOUND_TOTAL", response.data.totalItems);
-            }
-        } catch (error) {
-            dispatch("CreateNotification", {
-                notificationText: "Įvyko klaida atnaujinant duomenis",
                 type: "error",
             });
         }
