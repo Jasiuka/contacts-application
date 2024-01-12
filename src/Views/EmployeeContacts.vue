@@ -225,6 +225,7 @@ export default {
         },
         async receiveQuery(query) {
             this.SET_CONTACTS_SEARCH_QUERY(query);
+            this.SET_CONTACTS_CURRENT_PAGE(1);
             await this.FetchContacts();
         },
         handlePageChange(page) {
@@ -278,6 +279,7 @@ export default {
             this.SET_CONTACTS_FILTER(filter);
             this.setFilter(filter);
             this.SET_CONTACTS_PER_PAGE_VISIBLE(false);
+            this.SET_CONTACTS_CURRENT_PAGE(1);
             this.isDropdownVisible = false;
 
             if (filter.name === "company_id") {
