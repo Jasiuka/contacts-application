@@ -50,5 +50,8 @@ export default {
             this.CLOSE_MODAL();
         },
     },
+    mounted() {
+        console.log(this.getStructureToModify);
+    },
 };
 </script>

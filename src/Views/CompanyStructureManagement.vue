@@ -122,6 +122,9 @@ export default {
         },
     },
     async created() {
+        this.SET_HIGHER_STRUCTURE(
+            createHigherStructureObject(this.getActiveStructureTab)
+        );
         await this.FetchStructures();
     },
 };

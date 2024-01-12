@@ -51,6 +51,11 @@ form {
     width: 100%;
 }
 
+.form-content:has(.structure),
+.form-content:has(.company) {
+    flex-direction: column;
+}
+
 .form-heading {
     font-size: var(--fs-small);
 }

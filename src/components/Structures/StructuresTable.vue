@@ -35,7 +35,8 @@
 <script>
 import BaseTable from "../Base/BaseTable.vue";
 import { formTypes } from "/src/components/Forms/formTypes.js";
-import { mapGetters, mapMutations } from "vuex";
+import { createHigherStructureObject } from "../../utils/helper";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 export default {
     name: "StructuresTable",
     components: {
@@ -71,9 +72,17 @@ export default {
         },
     },
     methods: {
-        ...mapMutations(["OPEN_MODAL", "SET_STRUCTURE_TO_MODIFY"]),
-        openModal(formType, structure) {
-            this.SET_STRUCTURE_TO_MODIFY(structure);
+        ...mapActions(["FetchStructures", "FetchHigherStructuresSelections"]),
+        ...mapMutations([
+            "OPEN_MODAL",
+            "SET_STRUCTURE_TO_MODIFY",
+            "SET_HIGHER_STRUCTURE",
+        ]),
+        async openModal(formType, structure) {
+            await this.SET_STRUCTURE_TO_MODIFY(structure);
+            this.FetchHigherStructuresSelections({
+                structureId: structure.id,
+            });
             this.OPEN_MODAL(formType);
         },
     },

@@ -1,9 +1,13 @@
 import { createStructureObject } from "../../utils/helper";
 const state = {
+    // FOR STRUCTURES MANAGEMENT
     structures: [],
     activeStructureTab: "offices",
     structuresForSelect: [],
     higherStructureThanActive: {},
+    higherStructureSelections: [],
+    structureToModify: {},
+    // FOR FORMS/FILTERS
     selectedCompany: "",
     selectedOffice: "",
     selectedDivision: "",
@@ -14,14 +18,16 @@ const state = {
     divisions: [],
     departments: [],
     groups: [],
-    structureToModify: {},
 };
 
 const getters = {
+    // FOR STRUCTURES MANAGEMENT
     getStructures: (state) => state.structures,
     getActiveStructureTab: (state) => state.activeStructureTab,
     getStructuresForSelect: (state) => state.structuresForSelect,
     getHigherStructure: (state) => state.higherStructureThanActive,
+    getStructureToModify: (state) => state.structureToModify,
+    // FOR FORMS/FILTERS
     getSelectedCompany: (state) => state.selectedCompany,
     getSelectedOffice: (state) => state.selectedOffice,
     getSelectedDivision: (state) => state.selectedDivision,
@@ -32,10 +38,10 @@ const getters = {
     getDivisions: (state) => state.divisions,
     getDepartments: (state) => state.departments,
     getGroups: (state) => state.groups,
-    getStructureToModify: (state) => state.structureToModify,
 };
 
 const actions = {
+    // FOR STRUCTURES MANAGEMENT
     async FetchStructures({ dispatch, commit, state }, payload) {
         try {
             const url = `/${
@@ -67,7 +73,38 @@ const actions = {
         }
     },
 
-    async DeleteStructure({ dispatch, commit, state }, { id }) {
+    async FetchHigherStructuresSelections(
+        { dispatch, state },
+        { structureId }
+    ) {
+        try {
+            const higherStructureUrlName =
+                state.higherStructureThanActive?.urlName;
+            const higherStructureName =
+                state.higherStructureThanActive?.structureName;
+            const activeStructureName = `${state.activeStructureTab.slice(
+                0,
+                state.activeStructureTab.length - 1
+            )}_id`;
+            const response = await this.dataGet(
+                `/${higherStructureUrlName}_${state.activeStructureTab}/records?filter=(${activeStructureName}='${structureId}')`
+            );
+            if (response.status === 200) {
+                const structures = response.data.items.map(
+                    (item) => item[`${higherStructureName}`]
+                );
+                // commit("SET_OFFICES_STATE", offices);
+                commit("SET_HIGHER_STRUCTURES_SELECTIONS", structures);
+            }
+        } catch (error) {
+            dispatch("CreateNotification", {
+                notificationText: error.message,
+                type: "error",
+            });
+        }
+    },
+
+    async DeleteStructure({ dispatch, state }, { id }) {
         try {
             const response = await this.dataDelete(
                 `${state.activeStructureTab}/records`,
@@ -88,6 +125,52 @@ const actions = {
         }
     },
 
+    async CreateStructure({ dispatch, state }, { structure, selections }) {
+        try {
+            const response = await this.dataPost(
+                `/${state.activeStructureTab}/records`,
+                structure
+            );
+            if (response.status === 200) {
+                const { id: structureId } = response.data;
+                const structureName = `${state.activeStructureTab.slice(
+                    0,
+                    state.activeStructureTab.length - 1
+                )}_id`;
+                const higherStructureName =
+                    state.higherStructureThanActive.structureName;
+                selections.forEach(async (selection) => {
+                    let secondResponse;
+                    secondResponse = await this.dataPost(
+                        `/${state.higherStructureThanActive.urlName}_${state.activeStructureTab}/records`,
+                        {
+                            [higherStructureName]: selection,
+                            [structureName]: structureId,
+                        }
+                    );
+
+                    if (secondResponse.status !== 200) {
+                        throw new Error("Įvyko nenumatyta sistemos klaida");
+                    }
+                });
+
+                dispatch("CreateNotification", {
+                    notificationText: "Įrašas sukurtas sėkmingai",
+                    type: "success",
+                });
+                dispatch("FetchStructures");
+            }
+        } catch (error) {
+            dispatch("CreateNotification", {
+                notificationText: error.message,
+                type: "error",
+            });
+        }
+    },
+
+    // FOR STRUCTURES MANAGEMENT
+
+    // FOR FORMS/FILTERS
     async FetchCompanies({ dispatch, commit }) {
         try {
             const response = await this.dataGetSingle("companies/records");
@@ -185,20 +268,29 @@ const actions = {
             });
         }
     },
+    // FOR FORMS/FILTERS
 };
 
 const mutations = {
+    // FOR STRUCTURES MANAGEMENT
     SET_STRUCTURES_STATE(state, structure) {
         state.structures = structure;
     },
     SET_STRUCTURE_ACTIVE_TAB(state, structure) {
         state.activeStructureTab = structure;
     },
-    SET_STRUCTURES_FOR_SELECT(state, structures) {
-        state.structuresForSelect = structures;
-    },
     SET_HIGHER_STRUCTURE(state, structure) {
         state.higherStructureThanActive = structure;
+    },
+    SET_STRUCTURE_TO_MODIFY(state, structure) {
+        state.structureToModify = structure;
+    },
+    SET_HIGHER_STRUCTURES_SELECTIONS(state, structures) {
+        state.higherStructureSelections = structures;
+    },
+    // FOR FORMS/FILTERS
+    SET_STRUCTURES_FOR_SELECT(state, structures) {
+        state.structuresForSelect = structures;
     },
     SET_SELECTED_COMPANY(state, companyId) {
         state.selectedCompany = companyId;
@@ -229,9 +321,6 @@ const mutations = {
     },
     SET_GROUPS_STATE(state, groups) {
         state.groups = groups;
-    },
-    SET_STRUCTURE_TO_MODIFY(state, structure) {
-        state.structureToModify = structure;
     },
 };
 
