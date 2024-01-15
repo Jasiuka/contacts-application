@@ -25,6 +25,8 @@ import EditCompany from "./components/Forms/EditCompany.vue";
 import DeleteStructure from "./components/Forms/DeleteStructure.vue";
 import CreateStructure from "./components/Forms/CreateStructure.vue";
 import EditStructure from "./components/Forms/EditStructure.vue";
+import DeleteAccount from "./components/Forms/DeleteAccount.vue";
+import CreateAccount from "./components/Forms/CreateAccount.vue";
 export default {
     components: {
         NavigationBar,
@@ -40,6 +42,8 @@ export default {
         DeleteStructure,
         CreateStructure,
         EditStructure,
+        DeleteAccount,
+        CreateAccount,
     },
     computed: {
         ...mapGetters(["getModalComponent"]),

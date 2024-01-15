@@ -62,6 +62,7 @@ export default {
     background-color: transparent;
     outline: none;
     border: none;
+    font-size: var(--fs-smallest);
 }
 
 .input-invalid {

@@ -47,6 +47,13 @@ export const validationMixin = {
         validator(input, inputName, pattern, length = null) {
             let isValid;
             switch (pattern) {
+                case "regular":
+                    isValid = this.checkValueFormatWithRegex(
+                        "^[ąčęėįšųūžĄČĘĖĮŠŲŪŽa-zA-Z\\s]*$",
+                        input,
+                        inputName
+                    );
+                    break;
                 case "email":
                     isValid = this.checkValueFormatWithRegex(
                         "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",

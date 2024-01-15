@@ -6,7 +6,8 @@ export default function (store) {
     })),
         (store.dataGet = async function (path) {
             try {
-                const response = await this.server.get(path);
+                const header = this.createHeader();
+                const response = await this.server.get(path, header);
                 return response;
             } catch (error) {
                 throw new Error("Įvyko klaida gaunant duomenis iš serverio");

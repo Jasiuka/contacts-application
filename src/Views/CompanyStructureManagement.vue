@@ -1,5 +1,5 @@
 <template>
-    <page-layout page-special-class="page-special-actions-companies">
+    <page-layout page-special-class="page-special-actions--simple">
         <template #page-heading> Struktūra </template>
         <template #page-special>
             <div class="page-special-actions">

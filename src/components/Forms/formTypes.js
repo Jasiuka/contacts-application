@@ -8,4 +8,7 @@ export const formTypes = {
     EDIT_STRUCTURE: "edit-structure",
     DELETE_STRUCTURE: "delete-structure",
     CREATE_STRUCTURE: "create-structure",
+    CREATE_ACCOUNT: "create-account",
+    EDIT_ACCOUNT: "edit-account",
+    DELETE_ACCOUNT: "delete-account",
 };

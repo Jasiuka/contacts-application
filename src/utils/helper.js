@@ -34,6 +34,14 @@ export const createFormDataFromInputsArray = (inputsArray) => {
     return formData;
 };
 
+export const createFormDataFromObject = (obj) => {
+    const formData = new FormData();
+    for (const key in obj) {
+        formData.append(key, obj[key]);
+    }
+    return formData;
+};
+
 export const createValuesArrayFromNodeList = (nodeList, ...exceptions) => {
     const inputValues = [];
     nodeList.forEach((node) => {
@@ -232,4 +240,28 @@ export const createHigherStructureObject = (structure) => {
     }
 
     return { error: "Nėra struktūros" };
+};
+
+export const createPermissionsObject = (obj) => {
+    const permissionsObj = { ...obj };
+    const availablePermissions = [
+        "edit_employees",
+        "delete_employees",
+        "edit_companies",
+        "delete_companies",
+        "edit_offices",
+        "delete_offices",
+        "edit_structure",
+        "delete_structure",
+        "read_permissions",
+    ];
+    availablePermissions.forEach((permission) => {
+        if (!obj[permission]) {
+            permissionsObj[permission] = obj[permission];
+        }
+        if (permission === "read_permissions") {
+            permissionsObj[permission] = true;
+        }
+    });
+    return permissionsObj;
 };

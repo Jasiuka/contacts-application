@@ -7,6 +7,7 @@ import ContactsModule from "../store/Modules/ContactsModule";
 import StructuresModule from "./Modules/StructuresModule";
 import AuthModule from "./Modules/AuthModule";
 import CompaniesModule from "./Modules/CompaniesModule";
+import AccountsModule from "./Modules/AccountsModule";
 
 Vue.use(Vuex);
 
@@ -18,6 +19,7 @@ const store = new Vuex.Store({
         StructuresModule,
         AuthModule,
         CompaniesModule,
+        AccountsModule,
     },
     plugins: [apiPlugin],
 });

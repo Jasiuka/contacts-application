@@ -47,7 +47,7 @@ const actions = {
             if (officesResponse.data.items.length) {
                 dispatch("CreateNotification", {
                     notificationText:
-                        "Negalite panaikinti šios kompanijos nes jai yra priskirtas bent vienas ofisas",
+                        "Negalite panaikinti šios įmonės nes jai yra priskirtas bent vienas ofisas",
                     type: "error",
                 });
                 return;

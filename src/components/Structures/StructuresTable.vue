@@ -1,5 +1,5 @@
 <template>
-    <base-table data-table="companies">
+    <base-table data-table="simple">
         <template #table-head>
             <th>{{ tableHeadName }}</th>
             <th v-if="actionsVisible">Veiksmai</th>
