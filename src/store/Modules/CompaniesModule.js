@@ -35,6 +35,9 @@ const actions = {
                 notificationText: error.message,
                 type: "error",
             });
+
+            commit("SET_COMPANIES_TOTAL_PAGES", 1);
+            commit("SET_COMPANIES_CURRENT_PAGE", 1);
         }
     },
 
@@ -47,7 +50,7 @@ const actions = {
             if (officesResponse.data.items.length) {
                 dispatch("CreateNotification", {
                     notificationText:
-                        "Negalite panaikinti šios įmonės nes jai yra priskirtas bent vienas ofisas",
+                        "Negalite panaikinti šios kompanijos nes jai yra priskirtas bent vienas ofisas",
                     type: "error",
                 });
                 return;
@@ -82,11 +85,13 @@ const actions = {
     async CreateCompany({ dispatch }, company) {
         try {
             const response = await this.dataPost("/companies/records", company);
+            console.log(response);
             if (response.status === 200) {
                 dispatch("CreateNotification", {
                     notificationText: "Įrašas sukurtas sėkmingai",
                     type: "success",
                 });
+
                 dispatch("FetchCompaniesList", { edit: true });
             }
         } catch (error) {

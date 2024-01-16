@@ -6,8 +6,7 @@ export default function (store) {
     })),
         (store.dataGet = async function (path) {
             try {
-                const header = this.createHeader();
-                const response = await this.server.get(path, header);
+                const response = await this.server.get(path);
                 return response;
             } catch (error) {
                 throw new Error("Įvyko klaida gaunant duomenis iš serverio");
@@ -50,6 +49,12 @@ export default function (store) {
                 );
                 return response;
             } catch (error) {
+                if (
+                    error.response.data.data.name.code ===
+                    "validation_not_unique"
+                ) {
+                    throw new Error("Klaida, toks įrašas jau egzistuoja");
+                }
                 if (error.message === "Network Error") {
                     throw new Error("Įvyko serverio klaida");
                 }
@@ -80,6 +85,11 @@ export default function (store) {
             );
             return response;
         } catch (error) {
+            if (
+                error.response.data.data.name.code === "validation_not_unique"
+            ) {
+                throw new Error("Klaida, toks įrašas jau egzistuoja");
+            }
             throw new Error("Įvyko klaida atnaujinant duomenis serveryje");
         }
     };
