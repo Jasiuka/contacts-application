@@ -4,6 +4,14 @@ const state = {
     contactToModify: null,
     contactsView: "cards",
     contactsActiveFilters: {},
+    contactsSearchQuery: "",
+    contactsSearchFields: [
+        "name",
+        "surname",
+        "email",
+        "phone_number",
+        "position",
+    ],
 };
 
 const getters = {
@@ -11,22 +19,42 @@ const getters = {
     getContactToModify: (state) => state.contactToModify,
     getContactsView: (state) => state.contactsView,
     getContactsActiveFilters: (state) => state.contactsActiveFilters,
+    getContactsSearchQuery: (state) => state.contactsSearchQuery,
 };
 
 const actions = {
-    async FetchContacts({ dispatch, commit }, payload) {
+    async FetchContacts({ dispatch, commit, state }, payload) {
         try {
-            let filters = payload?.filters;
-            const url = createFetchUrlWithFilters(
-                "employees/records?expand=office_id",
-                filters
-            );
+            let url;
+            let searchQuery = "";
+            const filters = state.contactsActiveFilters;
+
+            if (state.contactsSearchQuery) {
+                searchQuery = state.contactsSearchQuery;
+            }
+
+            if (filters) {
+                url = createFetchUrlWithFilters(
+                    "employees/records?expand=office_id",
+                    filters,
+                    state.contactsSearchFields,
+                    searchQuery
+                );
+            } else {
+                url = "employees/records?expand=office_id";
+            }
             const response = await this.dataGet(url);
             if (response.status === 200) {
                 const contacts = response.data.items;
                 commit("SET_CONTACTS_STATE", contacts);
             }
         } catch (error) {
+            if (payload?.edit) {
+                dispatch("CreateNotification", {
+                    notificationText: "Įvyko klaida atnaujinant duomenis",
+                    type: "error",
+                });
+            }
             dispatch("CreateNotification", {
                 notificationText: error.message,
                 type: "error",
@@ -63,7 +91,7 @@ const actions = {
                     notificationText: "Įrašas panaikintas sėkmingai",
                     type: "success",
                 });
-                dispatch("UpdateContacts");
+                await dispatch("FetchContacts", { edit: true });
             }
         } catch (error) {
             dispatch("CreateNotification", {
@@ -81,7 +109,7 @@ const actions = {
                     notificationText: "Įrašas sukurtas sėkmingai",
                     type: "success",
                 });
-                dispatch("UpdateContacts");
+                await dispatch("FetchContacts", { edit: true });
             }
         } catch (error) {
             dispatch("CreateNotification", {
@@ -103,37 +131,12 @@ const actions = {
                     notificationText: "Įrašas pakoreguotas sėkmingai",
                     type: "success",
                 });
-                dispatch("UpdateContacts");
-                dispatch("FetchSingleContact", { id: contactData.id });
+                await dispatch("FetchContacts", { edit: true });
+                await dispatch("FetchSingleContact", { id: contactData.id });
             }
         } catch (error) {
             dispatch("CreateNotification", {
                 notificationText: error.message,
-                type: "error",
-            });
-        }
-    },
-
-    async UpdateContacts({ dispatch, commit, state }) {
-        try {
-            let url;
-            const filters = state.contactsActiveFilters;
-            if (filters) {
-                url = createFetchUrlWithFilters(
-                    "employees/records?expand=office_id",
-                    filters
-                );
-            } else {
-                url = "employees/records?expand=office_id";
-            }
-            const response = await this.dataGet(url);
-            if (response.status === 200) {
-                const contacts = response.data.items;
-                commit("SET_CONTACTS_STATE", contacts);
-            }
-        } catch (error) {
-            dispatch("CreateNotification", {
-                notificationText: "Įvyko klaida atnaujinant duomenis",
                 type: "error",
             });
         }
@@ -161,6 +164,9 @@ const mutations = {
             ...state.contactsActiveFilters,
             ...stateToReset,
         };
+    },
+    SET_CONTACTS_SEARCH_QUERY(state, query) {
+        state.contactsSearchQuery = query;
     },
 };
 
