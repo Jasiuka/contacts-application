@@ -90,28 +90,14 @@ const actions = {
             account.append("password", randomPassword);
             account.append("passwordConfirm", randomPassword);
             account.append("emailVisibility", true);
-            account.append("verified", false);
-            let newPermissionId;
-            // Get permissions records
-            const existingPermission = await dispatch(
-                "FetchPermissionsAndCheck",
-                {
-                    permissions,
-                }
-            );
+            // Create new permission and get id
+            const newPermissionResponse = await dispatch("CreatePermission", {
+                permissions,
+            });
 
-            if (existingPermission) {
-                // If permission exist, assign existing permission to account
-                account.append("permissions_id", existingPermission);
-            } else {
-                const newPermissionResponse = await dispatch(
-                    "CreatePermission",
-                    { permissions }
-                );
+            const newPermissionId = newPermissionResponse.data.id;
+            account.append("permissions_id", newPermissionId);
 
-                newPermissionId = newPermissionResponse.data.id;
-                account.append("permissions_id", newPermissionId);
-            }
             const response = await this.dataPost("/users/records", account);
             if (response.status === 200) {
                 dispatch("CreateNotification", {
@@ -128,32 +114,18 @@ const actions = {
         }
     },
 
-    async EditAccount({ dispatch }, { account, permissions, accountId }) {
+    async EditAccount(
+        { dispatch },
+        { account, permissions, accountId, permissionsId }
+    ) {
         try {
             permissions.read_permissions = true;
-            let newPermissionId;
-            // Get permissions records
-            const existingPermission = await dispatch(
-                "FetchPermissionsAndCheck",
-                {
-                    permissions,
-                }
-            );
+            await dispatch("EditPermission", {
+                permissions,
+                permissionsId,
+            });
 
-            if (existingPermission) {
-                // If permission exist, assign existing permission to account
-                account.append("permissions_id", existingPermission);
-            } else {
-                const newPermissionResponse = await dispatch(
-                    "CreatePermission",
-                    {
-                        permissions,
-                    }
-                );
-
-                newPermissionId = newPermissionResponse.data.id;
-                account.append("permissions_id", newPermissionId);
-            }
+            account.append("permissions_id", permissionsId);
             const response = await this.dataPatch(
                 "/users/records",
                 accountId,
@@ -173,30 +145,14 @@ const actions = {
             });
         }
     },
-    async FetchPermissionsAndCheck({ dispatch }, { permissions }) {
+    async CreatePermission({ dispatch }, { permissions }) {
         try {
-            let existingPermission;
-            const response = await this.dataGet("/user_permissions/records");
-            if (response.status === 200) {
-                const permissionsRecords = response.data.items;
-                // Check if there any permissions record with same permissions
-                existingPermission = permissionsRecords.find(
-                    (permissionRecord) => {
-                        const samePermissions = Object.keys(permissions).every(
-                            (permissionKey) =>
-                                permissions[permissionKey] ===
-                                permissionRecord[permissionKey]
-                        );
-                        if (samePermissions) {
-                            return permissionRecord;
-                        }
-                    }
-                );
-
-                return existingPermission?.id
-                    ? existingPermission.id
-                    : existingPermission;
-            }
+            const permissionsFormData = createFormDataFromObject(permissions);
+            const response = await this.dataPost(
+                "/user_permissions/records",
+                permissionsFormData
+            );
+            return response;
         } catch (error) {
             dispatch("CreateNotification", {
                 notificationText: error.message,
@@ -204,11 +160,12 @@ const actions = {
             });
         }
     },
-    async CreatePermission({ dispatch }, { permissions }) {
+    async EditPermission({ dispatch }, { permissions, permissionsId }) {
         try {
             const permissionsFormData = createFormDataFromObject(permissions);
-            const response = await this.dataPost(
+            const response = await this.dataPatch(
                 "/user_permissions/records",
+                permissionsId,
                 permissionsFormData
             );
             return response;

@@ -212,8 +212,14 @@ export const validationMixin = {
             }
             return notChanged;
         },
+        checkIfObjectsValuesSame(firstObj, secondObj) {
+            const allSame = Object.keys(firstObj).every((key) => {
+                return firstObj[key] === secondObj[key];
+            });
+            return allSame;
+        },
     },
-    detroyed() {
+    destroyed() {
         this.invalidFields = [];
     },
 };

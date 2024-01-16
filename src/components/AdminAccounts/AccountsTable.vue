@@ -7,7 +7,7 @@
         </template>
         <template #table-body>
             <tr :key="account.id" v-for="account in accounts">
-                <td>{{ account.name || account.username }}</td>
+                <td>{{ account.name || "-" }}</td>
                 <td class="middle">{{ account.email }}</td>
                 <td class="row-actions" v-if="actionsVisible">
                     <button

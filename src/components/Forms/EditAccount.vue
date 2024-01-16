@@ -95,16 +95,10 @@ export default {
     computed: {
         ...mapGetters(["getAccountToModify", "getAccountAvailableSelections"]),
         checked() {
-            return deleteObjectKeys(
-                this.getAccountToModify.expand.permissions_id,
-                "id",
-                "edit_permissions",
-                "created",
-                "updated",
-                "collectionName",
-                "collectionId",
-                "read_permissions"
-            );
+            const objCopy = {
+                ...this.getAccountToModify.expand.permissions_id,
+            };
+            return this.deleteObjectKeysMethod(objCopy);
         },
     },
     methods: {
@@ -115,6 +109,19 @@ export default {
         },
         receiveChecks(checks) {
             this.checks = checks;
+        },
+        deleteObjectKeysMethod(obj) {
+            return deleteObjectKeys(
+                obj,
+                "id",
+                "edit_permissions",
+                "created",
+                "updated",
+                "collectionName",
+                "collectionId",
+                "read_permissions",
+                "delete_permissions"
+            );
         },
         submitForm(event) {
             this.invalidFields = [];
@@ -130,7 +137,14 @@ export default {
                 false
             );
 
-            if (allFieldsValuesSame) {
+            const allPermissionsSame = this.checkIfObjectsValuesSame(
+                this.checks,
+                this.deleteObjectKeysMethod({
+                    ...this.getAccountToModify.expand.permissions_id,
+                })
+            );
+
+            if (allFieldsValuesSame && allPermissionsSame) {
                 this.CLOSE_MODAL();
                 return;
             }
@@ -178,6 +192,7 @@ export default {
                 account,
                 permissions,
                 accountId: this.getAccountToModify.id,
+                permissionsId: this.getAccountToModify.expand.permissions_id.id,
             });
             this.CLOSE_MODAL();
         },
