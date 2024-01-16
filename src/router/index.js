@@ -80,7 +80,9 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
     if (!from.name && !from.matched.length) {
-        await store.dispatch("RefreshAuth");
+        if (localStorage.getItem("token")) {
+            await store.dispatch("RefreshAuth");
+        }
     }
 
     if (to.matched.some((record) => record.meta.requiresLogin === true)) {
