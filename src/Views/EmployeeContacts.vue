@@ -7,6 +7,13 @@
                     @send-query="receiveQuery"
                     placeholder="Ieškoti kontakto.."
                 ></search-component>
+                <per-page-component
+                    :toggle-dropdown="toggleDropdown"
+                    :is-dropdown-visible="getContactsPerPageDropdownVisible"
+                    @set-per-page="handlePerPageChange"
+                    :per-page-values="getContactsAvailablePerPageValues"
+                    :current-selection="getContactsPerPageNumber"
+                ></per-page-component>
                 <button
                     class="page-view-change page-special-action"
                     :title="
@@ -35,7 +42,7 @@
             <p>
                 Iš viso rasta:
                 <b>
-                    {{ getContacts?.length }}
+                    {{ getContactsFoundTotal }}
                     kontaktų
                 </b>
             </p>
@@ -101,6 +108,13 @@
             <h2 v-if="!getContacts.length">
                 Atsiprašome, tačiau duomenų nerasta.
             </h2>
+            <pagination-component
+                v-show="getContactsPerPageNumber !== 'Visi'"
+                custom-class="contacts-pagination"
+                @change-page="handlePageChange"
+                :current-page="getContactsCurrentPage"
+                :total-pages="getContactsTotalPages"
+            ></pagination-component>
         </template>
     </page-layout>
 </template>
@@ -115,6 +129,9 @@ import BulletListPng from "../assets/Icons/Bullet-List.png";
 import FilterComponent from "../components/Filter/FilterComponent.vue";
 import FilterItemSelect from "../components/Filter/FilterItemSelect.vue";
 import SearchComponent from "../components/SearchComponent.vue";
+import PaginationComponent from "../components/PaginationComponent.vue";
+import PerPageComponent from "../components/PerPageComponent.vue";
+import { setLocalStorage } from "../utils/helper";
 export default {
     components: {
         ContactComponent,
@@ -122,6 +139,8 @@ export default {
         FilterComponent,
         FilterItemSelect,
         SearchComponent,
+        PaginationComponent,
+        PerPageComponent,
     },
     data() {
         return {
@@ -132,6 +151,7 @@ export default {
                 departments: [],
                 groups: [],
             },
+            isDropdownVisible: false,
         };
     },
     computed: {
@@ -145,6 +165,12 @@ export default {
             "getGroups",
             "getContactsActiveFilters",
             "getContactsSearchQuery",
+            "getContactsCurrentPage",
+            "getContactsTotalPages",
+            "getContactsAvailablePerPageValues",
+            "getContactsPerPageNumber",
+            "getContactsPerPageDropdownVisible",
+            "getContactsFoundTotal",
         ]),
         viewButtonImage() {
             return this.getContactsView === "cards" ? BulletListPng : VectorPng;
@@ -166,6 +192,9 @@ export default {
             "SET_CONTACTS_FILTER",
             "RESET_CONTACTS_FILTER",
             "SET_CONTACTS_SEARCH_QUERY",
+            "SET_CONTACTS_CURRENT_PAGE",
+            "SET_CONTACTS_PER_PAGE",
+            "SET_CONTACTS_PER_PAGE_VISIBLE",
         ]),
         async resetStructuresData(breakpoint) {
             switch (breakpoint) {
@@ -189,12 +218,50 @@ export default {
                     break;
             }
         },
+        toggleDropdown() {
+            this.SET_CONTACTS_PER_PAGE_VISIBLE(
+                !this.getContactsPerPageDropdownVisible
+            );
+        },
         async receiveQuery(query) {
             this.SET_CONTACTS_SEARCH_QUERY(query);
+            this.SET_CONTACTS_CURRENT_PAGE(1);
             await this.FetchContacts();
+        },
+        handlePageChange(page) {
+            this.SET_CONTACTS_CURRENT_PAGE(page);
+            this.FetchContacts({
+                filters: this.getContactsActiveFilters,
+                searchFields: [
+                    "name",
+                    "surname",
+                    "email",
+                    "phone_number",
+                    "position",
+                ],
+                searchQuery: this.getContactsSearchQuery,
+            });
+            this.SET_CONTACTS_PER_PAGE_VISIBLE(false);
+        },
+        handlePerPageChange(perPage) {
+            this.SET_CONTACTS_PER_PAGE(perPage);
+            setLocalStorage("contacts_per_page", perPage);
+            this.SET_CONTACTS_CURRENT_PAGE(1);
+            this.FetchContacts({
+                filters: this.getContactsActiveFilters,
+                searchFields: [
+                    "name",
+                    "surname",
+                    "email",
+                    "phone_number",
+                    "position",
+                ],
+                searchQuery: this.getContactsSearchQuery,
+            });
         },
         openModal(formType) {
             this.OPEN_MODAL(formType);
+            this.SET_CONTACTS_PER_PAGE_VISIBLE(false);
         },
         setFilter(filter) {
             this.filterStructures = {
@@ -205,10 +272,15 @@ export default {
         changeView() {
             const nextView = this.getContactsView === "list" ? "cards" : "list";
             this.SET_CONTACTS_VIEW(nextView);
+            this.isDropdownVisible = false;
+            this.SET_CONTACTS_PER_PAGE_VISIBLE(false);
         },
         async changeFilter(filter) {
             this.SET_CONTACTS_FILTER(filter);
             this.setFilter(filter);
+            this.SET_CONTACTS_PER_PAGE_VISIBLE(false);
+            this.SET_CONTACTS_CURRENT_PAGE(1);
+            this.isDropdownVisible = false;
 
             if (filter.name === "company_id") {
                 await this.FetchOffices({ id: filter.value });
@@ -264,14 +336,36 @@ export default {
         });
         this.resetStructuresData("all");
         this.SET_CONTACTS_SEARCH_QUERY("");
+        this.SET_CONTACTS_PER_PAGE_VISIBLE(false);
     },
 };
 </script>
 
 <style>
+.page-content:has(.contacts-list, .table) {
+    display: flex;
+    flex-direction: column;
+    min-height: 55dvh;
+}
 .contacts-list {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--gap-medium);
+}
+
+.contacts-pagination {
+    margin-top: var(--gap-largest);
+
+    flex: 1;
+    align-items: flex-end;
+}
+
+.contacts-pagination .pagination-button {
+    padding: var(--pd-small) var(--pd-medium);
+    font-size: var(--fs-smallest);
+}
+
+.contacts-pagination .pagination-numbers {
+    font-size: var(--fs-small);
 }
 </style>

@@ -82,7 +82,7 @@ export const createStructureObject = (structureArray, structureName) => {
     }
 };
 
-export const createFetchUrlWithFilters = (
+export const createFetchUrlWithFiltersAndSearch = (
     base,
     filters = {},
     searchFields = [],
@@ -142,6 +142,10 @@ export const createFetchUrlWithFilters = (
     return url + ")";
 };
 
+export const addPaginationDataToUrl = (url, perPage, page) => {
+    return `${url}&&perPage=${perPage}&&page=${page}`;
+};
+
 export function debounce(func, delay = 300) {
     let timer;
     return (...args) => {
@@ -151,3 +155,26 @@ export function debounce(func, delay = 300) {
         }, delay);
     };
 }
+
+export const setLocalStorage = (key, value) => {
+    const localStorageObj = {
+        [key]: value,
+    };
+    localStorage.setItem(
+        "contacts-application",
+        JSON.stringify(localStorageObj)
+    );
+};
+
+export const getFromLocalStorage = (key) => {
+    const objectFromLocalStorage = JSON.parse(
+        localStorage.getItem("contacts-application")
+    );
+    if (objectFromLocalStorage) {
+        if (objectFromLocalStorage[key]) {
+            return objectFromLocalStorage[key];
+        }
+    } else {
+        return null;
+    }
+};

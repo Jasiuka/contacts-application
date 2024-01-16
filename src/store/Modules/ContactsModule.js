@@ -1,10 +1,19 @@
-import { createFetchUrlWithFilters } from "../../utils/helper.js";
+import {
+    createFetchUrlWithFiltersAndSearch,
+    addPaginationDataToUrl,
+} from "../../utils/helper.js";
 const state = {
     contacts: [],
     contactToModify: null,
     contactsView: "cards",
     contactsActiveFilters: {},
     contactsSearchQuery: "",
+    contactsCurrentPage: 1,
+    contactsTotalPages: 1,
+    contactsPerPageNumber: 10,
+    contactsAvailablePerPageValues: [5, 10, 25, 50, 100, "Visi"],
+    contactsPerPageDropdownVisible: false,
+    contactsFoundTotal: 0,
     contactsSearchFields: [
         "name",
         "surname",
@@ -20,6 +29,14 @@ const getters = {
     getContactsView: (state) => state.contactsView,
     getContactsActiveFilters: (state) => state.contactsActiveFilters,
     getContactsSearchQuery: (state) => state.contactsSearchQuery,
+    getContactsCurrentPage: (state) => state.contactsCurrentPage,
+    getContactsTotalPages: (state) => state.contactsTotalPages,
+    getContactsPerPageNumber: (state) => state.contactsPerPageNumber,
+    getContactsAvailablePerPageValues: (state) =>
+        state.contactsAvailablePerPageValues,
+    getContactsPerPageDropdownVisible: (state) =>
+        state.contactsPerPageDropdownVisible,
+    getContactsFoundTotal: (state) => state.contactsFoundTotal,
 };
 
 const actions = {
@@ -34,7 +51,7 @@ const actions = {
             }
 
             if (filters) {
-                url = createFetchUrlWithFilters(
+                url = createFetchUrlWithFiltersAndSearch(
                     "employees/records?expand=office_id",
                     filters,
                     state.contactsSearchFields,
@@ -43,10 +60,19 @@ const actions = {
             } else {
                 url = "employees/records?expand=office_id";
             }
+            if (state.contactsPerPageNumber !== "Visi") {
+                url = addPaginationDataToUrl(
+                    url,
+                    state.contactsPerPageNumber,
+                    state.contactsCurrentPage
+                );
+            }
             const response = await this.dataGet(url);
             if (response.status === 200) {
                 const contacts = response.data.items;
                 commit("SET_CONTACTS_STATE", contacts);
+                commit("SET_CONTACTS_TOTAL_PAGES", response.data.totalPages);
+                commit("SET_CONTACTS_FOUND_TOTAL", response.data.totalItems);
             }
         } catch (error) {
             if (payload?.edit) {
@@ -59,6 +85,8 @@ const actions = {
                 notificationText: error.message,
                 type: "error",
             });
+            commit("SET_CONTACTS_TOTAL_PAGES", 1);
+            commit("SET_CONTACTS_CURRENT_PAGE", 1);
         }
     },
 
@@ -80,7 +108,7 @@ const actions = {
         }
     },
 
-    async DeleteContact({ dispatch }, contact) {
+    async DeleteContact({ dispatch, commit, state }, contact) {
         try {
             const response = await this.dataDelete(
                 "employees/records",
@@ -91,6 +119,13 @@ const actions = {
                     notificationText: "Įrašas panaikintas sėkmingai",
                     type: "success",
                 });
+                const shouldGoBackOnePage = state.contacts.length === 1;
+                if (shouldGoBackOnePage && state.contactsCurrentPage > 1) {
+                    commit(
+                        "SET_CONTACTS_CURRENT_PAGE",
+                        state.contactsCurrentPage - 1
+                    );
+                }
                 await dispatch("FetchContacts", { edit: true });
             }
         } catch (error) {
@@ -167,6 +202,21 @@ const mutations = {
     },
     SET_CONTACTS_SEARCH_QUERY(state, query) {
         state.contactsSearchQuery = query;
+    },
+    SET_CONTACTS_CURRENT_PAGE(state, page) {
+        state.contactsCurrentPage = page;
+    },
+    SET_CONTACTS_TOTAL_PAGES(state, pageCount) {
+        state.contactsTotalPages = pageCount;
+    },
+    SET_CONTACTS_PER_PAGE(state, perPageNumber) {
+        state.contactsPerPageNumber = perPageNumber;
+    },
+    SET_CONTACTS_PER_PAGE_VISIBLE(state, isVisible) {
+        state.contactsPerPageDropdownVisible = isVisible;
+    },
+    SET_CONTACTS_FOUND_TOTAL(state, total) {
+        state.contactsFoundTotal = total;
     },
 };
 
