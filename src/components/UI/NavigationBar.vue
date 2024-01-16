@@ -31,7 +31,14 @@
             </li>
             <base-dropdown v-if="getLoggedIn" class="navigation-dropdown">
                 <template #display>
-                    <img src="../../assets/Male-User.png" />
+                    <img
+                        class="nav-image"
+                        :src="
+                            getAdminAvatar
+                                ? getAdminAvatar
+                                : '/src/assets/Male-User.png'
+                        "
+                    />
                 </template>
                 <template #list-items>
                     <li class="navigation-dropdown--item">
@@ -63,7 +70,7 @@ export default {
         BaseDropdown,
     },
     computed: {
-        ...mapGetters(["getLoggedIn", "getIsSuperAdmin"]),
+        ...mapGetters(["getLoggedIn", "getIsSuperAdmin", "getAdminAvatar"]),
     },
     methods: {
         ...mapActions(["Logout"]),
@@ -111,5 +118,10 @@ export default {
 
 .navigation-list > li:last-of-type.login {
     margin-left: auto;
+}
+
+.nav-image {
+    width: 3rem;
+    height: 3rem;
 }
 </style>

@@ -75,7 +75,10 @@ export default {
             );
             // Check if all required fields filled
             const allFieldsFilled = this.checkIfAllFieldsFilled(allFields);
-            if (!allFieldsFilled) return;
+            if (!allFieldsFilled) {
+                this.loading = false;
+                return;
+            }
 
             // check if email format and length is valid
             const email = formContent.querySelector("[name='identity']");
@@ -86,7 +89,10 @@ export default {
                 "length",
                 40
             );
-            if (!emailIsValid || !emailLengthIsValid) return;
+            if (!emailIsValid || !emailLengthIsValid) {
+                this.loading = false;
+                return;
+            }
             const formData = createFormDataFromInputsArray(allFields);
             const loginResponse = await this.Login(formData);
             if (loginResponse.status === 200) {
