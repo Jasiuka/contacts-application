@@ -54,7 +54,7 @@ export default {
         ...mapGetters(["getPermissions"]),
         actionsVisible() {
             return (
-                this.getPermissions.edit_companies &&
+                this.getPermissions.edit_companies ||
                 this.getPermissions.delete_companies
             );
         },
