@@ -5,6 +5,7 @@
             <div class="page-special-actions">
                 <div class="wrapper">
                     <button
+                        v-if="getPermissions.edit_companies"
                         @click="openModal(formTypes.CREATE_COMPANY)"
                         title="Pridėti naują įmonę"
                         class="page-add-new page-special-action"
@@ -60,6 +61,7 @@ export default {
             "getCompaniesCurrentPage",
             "getCompaniesTotalPages",
             "getCompaniesTotalFound",
+            "getPermissions",
         ]),
     },
     methods: {
