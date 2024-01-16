@@ -85,6 +85,8 @@ const actions = {
                 notificationText: error.message,
                 type: "error",
             });
+            commit("SET_CONTACTS_TOTAL_PAGES", 1);
+            commit("SET_CONTACTS_CURRENT_PAGE", 1);
         }
     },
 
