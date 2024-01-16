@@ -49,6 +49,9 @@ export default function (store) {
                 );
                 return response;
             } catch (error) {
+                if (error.message === "Network Error") {
+                    throw new Error("Įvyko serverio klaida");
+                }
                 if (error.response.status === 401) {
                     throw new Error(error.response.status);
                 }

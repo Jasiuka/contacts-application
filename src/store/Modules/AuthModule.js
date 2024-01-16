@@ -26,6 +26,13 @@ const actions = {
                 return { status: 200 };
             }
         } catch (error) {
+            if (error.message.includes("Įvyko serverio klaida")) {
+                dispatch("CreateNotification", {
+                    notificationText: error.message,
+                    type: "error",
+                });
+                return { status: 503 };
+            }
             if (error.message.includes("Failed to authenticate")) {
                 dispatch("CreateNotification", {
                     notificationText:
