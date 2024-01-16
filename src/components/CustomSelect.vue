@@ -89,6 +89,7 @@ export default {
             }
         },
         valueToSelect(newVal, oldVal) {
+
             if (newVal && !oldVal) {
                 this.selectedValue = newVal;
             }
