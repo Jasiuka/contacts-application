@@ -3,11 +3,13 @@ const state = {
     isLoggedIn: false,
     permissions: {},
     isSuperAdmin: false,
+    adminAvatar: null,
 };
 const getters = {
     getLoggedIn: (state) => state.isLoggedIn,
     getPermissions: (state) => state.permissions,
     getIsSuperAdmin: (state) => state.isSuperAdmin,
+    getAdminAvatar: (state) => state.adminAvatar,
 };
 const actions = {
     async Login({ dispatch, commit }, credentials) {
@@ -22,6 +24,13 @@ const actions = {
                 commit("SET_IS_SUPER_ADMIN", isSuper);
                 commit("SET_PERMISSIONS_STATE", record.expand.permissions_id);
                 commit("SET_AUTH_STATE", true);
+                if (record.avatar) {
+                    const imageUrl = new URL(
+                        `${record.id}/${record.avatar}`,
+                        `http://localhost:8090/api/files/_pb_users_auth_/`
+                    );
+                    commit("SET_ADMIN_AVATAR", imageUrl);
+                }
                 localStorage.setItem("token", token);
                 return { status: 200 };
             }
@@ -59,6 +68,13 @@ const actions = {
                 commit("SET_IS_SUPER_ADMIN", isSuper);
                 commit("SET_PERMISSIONS_STATE", record.expand.permissions_id);
                 commit("SET_AUTH_STATE", true);
+                if (record.avatar) {
+                    const imageUrl = new URL(
+                        `${record.id}/${record.avatar}`,
+                        `http://localhost:8090/api/files/_pb_users_auth_/`
+                    );
+                    commit("SET_ADMIN_AVATAR", imageUrl);
+                }
                 localStorage.setItem("token", token);
             }
         } catch (error) {
@@ -109,6 +125,9 @@ const mutations = {
     },
     SET_IS_SUPER_ADMIN(state, isSuper) {
         state.isSuperAdmin = isSuper;
+    },
+    SET_ADMIN_AVATAR(state, avatar) {
+        state.adminAvatar = avatar;
     },
 };
 

@@ -41,6 +41,9 @@ const router = new VueRouter({
             path: "/admin-login",
             name: "AdminLogin",
             component: AdminLogin,
+            meta: {
+                requiresLoggedOff: true,
+            },
         },
         {
             path: "/accounts",
@@ -97,6 +100,15 @@ router.beforeEach(async (to, from, next) => {
 
     if (to.matched.some((record) => record.meta.requiresSuper === true)) {
         if (!store.getters.getIsSuperAdmin) {
+            next({
+                path: from.fullPath,
+            });
+        } else {
+            next();
+        }
+    }
+    if (to.matched.some((record) => record.meta.requiresLoggedOff === true)) {
+        if (store.getters.getLoggedIn) {
             next({
                 path: from.fullPath,
             });
