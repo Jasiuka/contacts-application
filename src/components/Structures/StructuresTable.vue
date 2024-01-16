@@ -66,7 +66,7 @@ export default {
 
         actionsVisible() {
             return (
-                this.getPermissions.delete_structure &&
+                this.getPermissions.delete_structure ||
                 this.getPermissions.edit_structure
             );
         },
