@@ -5,6 +5,7 @@
             <div class="page-special-actions">
                 <div class="wrapper">
                     <button
+                        v-if="getPermissions.edit_structure"
                         @click="openModal(formTypes.CREATE_STRUCTURE)"
                         :title="`Pridėti naują ${structureNameForHeading}`"
                         class="page-add-new page-special-action"
@@ -95,7 +96,11 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["getStructures", "getActiveStructureTab"]),
+        ...mapGetters([
+            "getStructures",
+            "getActiveStructureTab",
+            "getPermissions",
+        ]),
         createTableHeadName() {
             return createStructureStringForName(this.getActiveStructureTab);
         },
