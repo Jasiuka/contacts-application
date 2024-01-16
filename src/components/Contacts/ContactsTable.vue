@@ -2,6 +2,7 @@
     <base-table>
         <template #table-head>
             <th v-for="headText in tableHead">{{ headText }}</th>
+            <th v-if="actionsVisible">Veiksmai</th>
         </template>
         <template #table-body>
             <tr
@@ -18,8 +19,9 @@
 
                 <td>{{ contact.email }}</td>
                 <td>{{ contact.expand.office_id.name }}</td>
-                <td class="row-actions">
+                <td class="row-actions" v-if="actionsVisible">
                     <button
+                        v-if="getPermissions.delete_employees"
                         title="Ištrinti"
                         class="contact-delete action-delete action-btn"
                         @click="openModal(formTypes.DELETE_CONTACT, contact)"
@@ -30,6 +32,7 @@
                         />
                     </button>
                     <button
+                        v-if="getPermissions.edit_employees"
                         @click="openModal(formTypes.EDIT_CONTACT, contact)"
                         title="Koreguoti"
                         class="contact-edit action-edit action-btn"
@@ -48,7 +51,7 @@
 <script>
 import BaseTable from "../Base/BaseTable.vue";
 import { formTypes } from "../Forms/formTypes";
-import { mapMutations } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
 export default {
     name: "ContactsTable",
     components: {
@@ -68,12 +71,20 @@ export default {
                 "Telefono numeris",
                 "Elektroninis paštas",
                 "Adresas",
-                "Veiksmai",
             ],
             formTypes,
         };
     },
+    computed: {
+        ...mapGetters(["getPermissions"]),
+    },
     methods: {
+        actionsVisible() {
+            return (
+                this.getPermissions.delete_employees ||
+                this.getPermissions.edit_employees
+            );
+        },
         ...mapMutations(["OPEN_MODAL", "CLOSE_MODAL", "SET_CONTACT_TO_MODIFY"]),
 
         openModal(formType, contact) {
