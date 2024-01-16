@@ -20,6 +20,11 @@ export default {
 <style scoped>
 .table {
     min-width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+    overflow: hidden;
 }
 
 .table tr {
@@ -34,46 +39,40 @@ export default {
 
 .table th,
 td {
-    padding: var(--pd-small);
     text-align: start;
     font-size: var(--fs-small);
+    padding: var(--pd-medium) 0;
+}
+
+.table th:first-child,
+.table td:first-child {
+    padding-left: var(--pd-medium);
+}
+
+.table th:last-child,
+.table td:last-child {
+    padding-right: var(--pd-medium);
 }
 
 .table-head--row th {
     font-weight: 600;
 }
 
-.row-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-medium);
+.row-actions,
+.table thead th:last-child {
+    text-align: end;
 }
 
-.table[data-table="simple"] {
-    border-collapse: collapse;
-    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-    border-radius: var(--border-radius);
-    overflow: hidden;
+.row-actions > button {
+    display: inline-block;
 }
-.table[data-table="simple"] thead {
+
+.row-actions > button:first-child {
+    margin-right: var(--gap-smallest);
+}
+
+.table thead {
     background-color: rgb(245, 245, 245);
-}
-
-.table[data-table="simple"] thead tr {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--pd-small) calc(var(--pd-largest) * 2);
-}
-
-.table[data-table="simple"] tbody tr td {
-    padding: var(--pd-medium) calc(var(--pd-largest) * 2);
-}
-
-.table[data-table="simple"] tbody tr {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 }
 
 .table[data-table="simple"] tbody .action-btn {

@@ -1,11 +1,11 @@
 <template>
     <base-form
         @submit.native.prevent="submitForm"
-        submitText="Pridėti"
+        submitText="Redaguoti"
         submitClass="submit-button account"
     >
         <template #form-heading>
-            <h2>Pridėti paskyrą</h2>
+            <h2>Redaguoti paskyrą</h2>
         </template>
         <template #form-content>
             <div class="form-side form-side-accounts">
@@ -18,6 +18,7 @@
                         :is-invalid="invalidFields.includes('name')"
                         max-length="30"
                         :is-required="true"
+                        :input-value="getAccountToModify.name"
                     ></custom-input>
                 </div>
                 <div class="form-control">
@@ -30,6 +31,7 @@
                         :is-invalid="invalidFields.includes('email')"
                         max-length="40"
                         image="/src/assets/Icons/Mail.png"
+                        :input-value="getAccountToModify.email"
                     >
                     </custom-input-with-image>
                     <div class="form-control">
@@ -59,6 +61,7 @@
                 <custom-checkbox-select
                     :options="getAccountAvailableSelections"
                     @send-checks="receiveChecks"
+                    :checked-options="checked"
                 ></custom-checkbox-select>
             </div>
         </template>
@@ -73,10 +76,11 @@ import CustomCheckboxSelect from "../CustomCheckboxSelect.vue";
 import {
     createFormDataFromInputsArray,
     createPermissionsObject,
+    deleteObjectKeys,
 } from "/src/utils/helper.js";
 import { mapMutations, mapActions, mapGetters } from "vuex";
 export default {
-    name: "CreateAccount",
+    name: "EditAccount",
     components: {
         CustomInputWithImage,
         CustomCheckboxSelect,
@@ -89,10 +93,22 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["getAccountAvailableSelections"]),
+        ...mapGetters(["getAccountToModify", "getAccountAvailableSelections"]),
+        checked() {
+            return deleteObjectKeys(
+                this.getAccountToModify.expand.permissions_id,
+                "id",
+                "edit_permissions",
+                "created",
+                "updated",
+                "collectionName",
+                "collectionId",
+                "read_permissions"
+            );
+        },
     },
     methods: {
-        ...mapActions(["CreateAccount"]),
+        ...mapActions(["EditAccount"]),
         ...mapMutations(["CLOSE_MODAL"]),
         changeAvatarDisplayText(event) {
             this.avatar = event.target.files[0].name;
@@ -106,6 +122,18 @@ export default {
             const allFields = formContent.querySelectorAll(
                 "input:not([type='checkbox'])"
             );
+            // check if any changed
+            const allFieldsValuesSame = this.checkIfAnyChanged(
+                allFields,
+                this.getAccountToModify,
+                [{ name: "avatar", value: this.avatar }],
+                false
+            );
+
+            if (allFieldsValuesSame) {
+                this.CLOSE_MODAL();
+                return;
+            }
             // check if filled
             const allFieldsFilled = this.checkIfAllFieldsFilled(
                 allFields,
@@ -120,6 +148,7 @@ export default {
             if (!isNameValid) {
                 return;
             }
+
             const email = event.target.email;
             const isEmailValid = this.validator(
                 email,
@@ -130,7 +159,6 @@ export default {
             if (!isEmailValid) {
                 return;
             }
-
             const fileInput = formContent.querySelector("[name='avatar']");
             if (fileInput.files[0]) {
                 const photoValidFormat = this.checkFileFormat(
@@ -146,9 +174,18 @@ export default {
 
             const permissions = createPermissionsObject(this.checks);
             const account = createFormDataFromInputsArray(allFields);
-            this.CreateAccount({ account, permissions });
+            this.EditAccount({
+                account,
+                permissions,
+                accountId: this.getAccountToModify.id,
+            });
             this.CLOSE_MODAL();
         },
+    },
+    created() {
+        this.avatar = this.getAccountToModify.avatar
+            ? this.getAccountToModify.avatar
+            : "";
     },
 };
 </script>

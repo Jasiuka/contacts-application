@@ -55,7 +55,7 @@ export default {
         ...mapGetters(["getPermissions"]),
         actionsVisible() {
             return (
-                this.getPermissions.edit_permissions &&
+                this.getPermissions.edit_permissions ||
                 this.getPermissions.delete_permissions
             );
         },
@@ -69,9 +69,3 @@ export default {
     },
 };
 </script>
-
-<style>
-.middle {
-    margin-left: 10rem;
-}
-</style>
