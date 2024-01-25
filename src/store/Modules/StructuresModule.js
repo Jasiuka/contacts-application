@@ -1,9 +1,14 @@
-import {
-    separateResponsesData,
-    createStructureObject,
-} from "../../utils/helper";
+import { createStructureObject } from "../../utils/helper";
 const state = {
-    structures: null,
+    // FOR STRUCTURES MANAGEMENT
+    structures: [],
+    activeStructureTab: "offices",
+    structuresForSelect: [],
+    higherStructureThanActive: {},
+    higherStructureSelections: [],
+    lowerStructures: [],
+    structureToModify: {},
+    // FOR FORMS/FILTERS
     selectedCompany: "",
     selectedOffice: "",
     selectedDivision: "",
@@ -17,7 +22,14 @@ const state = {
 };
 
 const getters = {
+    // FOR STRUCTURES MANAGEMENT
     getStructures: (state) => state.structures,
+    getActiveStructureTab: (state) => state.activeStructureTab,
+    getStructuresForSelect: (state) => state.structuresForSelect,
+    getHigherStructure: (state) => state.higherStructureThanActive,
+    getHigherStructuresSelection: (state) => state.higherStructureSelections,
+    getStructureToModify: (state) => state.structureToModify,
+    // FOR FORMS/FILTERS
     getSelectedCompany: (state) => state.selectedCompany,
     getSelectedOffice: (state) => state.selectedOffice,
     getSelectedDivision: (state) => state.selectedDivision,
@@ -31,23 +43,61 @@ const getters = {
 };
 
 const actions = {
-    async FetchAllStructures({ dispatch, commit }) {
+    // FOR STRUCTURES MANAGEMENT
+    async FetchStructures({ dispatch, commit, state }, payload) {
         try {
-            const responses = await this.dataGetMultiple(
-                "companies/records",
-                "departments/records",
-                "offices/records",
-                "divisions/records",
-                "groups/records"
-            );
-            const atLeastOneResponseNotOk = responses.some(
-                (resp) => resp.status !== 200
-            );
-            if (atLeastOneResponseNotOk) {
-                throw new Error("Įvyko klaida gaunant duomenis iš serverio");
+            const url = `/${
+                payload?.higherStructure
+                    ? payload.higherStructure
+                    : state.activeStructureTab
+            }/records`;
+
+            const response = await this.dataGet(url);
+            if (response.status === 200) {
+                const structures = response.data.items;
+                if (!payload?.higherStructure) {
+                    commit("SET_STRUCTURES_STATE", structures);
+                } else {
+                    commit("SET_STRUCTURES_FOR_SELECT", structures);
+                }
             }
-            const separateData = separateResponsesData(responses);
-            commit("SET_STRUCTURES_STATE", separateData);
+        } catch (error) {
+            if (payload.edit) {
+                dispatch("CreateNotification", {
+                    notificationText: "Įvyko klaida atnaujinant duomenis",
+                    type: "error",
+                });
+            }
+            dispatch("CreateNotification", {
+                notificationText: error.message,
+                type: "error",
+            });
+        }
+    },
+
+    async FetchHigherStructuresSelections(
+        { dispatch, state, commit },
+        { structureId, shouldReturn }
+    ) {
+        try {
+            const higherStructureUrlName =
+                state.higherStructureThanActive?.urlName;
+            const higherStructureName =
+                state.higherStructureThanActive?.structureName;
+            const activeStructureName = `${state.activeStructureTab.slice(
+                0,
+                state.activeStructureTab.length - 1
+            )}_id`;
+            const response = await this.dataGet(
+                `/${higherStructureUrlName}_${state.activeStructureTab}/records?filter=(${activeStructureName}='${structureId}')`
+            );
+            if (response.status === 200) {
+                const structures = response.data.items.map(
+                    (item) => item[`${higherStructureName}`]
+                );
+                commit("SET_HIGHER_STRUCTURES_SELECTIONS", structures);
+                if (shouldReturn) return response.data.items;
+            }
         } catch (error) {
             dispatch("CreateNotification", {
                 notificationText: error.message,
@@ -56,6 +106,164 @@ const actions = {
         }
     },
 
+    async FetchLowerStructures({ dispatch }, { structureId }) {
+        try {
+            const activeStructureName = `${state.activeStructureTab.slice(
+                0,
+                state.activeStructureTab.length - 1
+            )}_id`;
+            const lowerStructure = {
+                offices: "divisions",
+                divisions: "departments",
+                departments: "groups",
+            };
+            const response = await this.dataGet(
+                `/${state.activeStructureTab}_${
+                    lowerStructure[state.activeStructureTab]
+                }/records?filter=(${activeStructureName}='${structureId}')`
+            );
+            if (response.status === 200) {
+                return response.data.items;
+            }
+        } catch (error) {
+            dispatch("CreateNotification", {
+                notificationText: error.message,
+                type: "error",
+            });
+        }
+    },
+
+    async DeleteStructure({ dispatch, state }, { id }) {
+        try {
+            // Check if this structure have any assigned lower structures
+            if (state.activeStructureTab !== "groups") {
+                const lowerStructures = await dispatch("FetchLowerStructures", {
+                    structureId: id,
+                });
+                if (lowerStructures.length) {
+                    dispatch("CreateNotification", {
+                        notificationText: `Negalite panaikinti šios struktūros nes jai yra priskirta žemesnė struktūra`,
+                        type: "error",
+                    });
+                    return;
+                }
+            }
+            const response = await this.dataDelete(
+                `${state.activeStructureTab}/records`,
+                id
+            );
+            if (response.status === 204) {
+                dispatch("CreateNotification", {
+                    notificationText: "Įrašas panaikintas sėkmingai",
+                    type: "success",
+                });
+                dispatch("FetchStructures", { edit: true });
+            }
+        } catch (error) {
+            dispatch("CreateNotification", {
+                notificationText: error.message,
+                type: "error",
+            });
+        }
+    },
+
+    async CreateStructure({ dispatch, state }, { structure, selections }) {
+        try {
+            const response = await this.dataPost(
+                `/${state.activeStructureTab}/records`,
+                structure
+            );
+            if (response.status === 200) {
+                const { id: structureId } = response.data;
+                const structureName = `${state.activeStructureTab.slice(
+                    0,
+                    state.activeStructureTab.length - 1
+                )}_id`;
+                const higherStructureName =
+                    state.higherStructureThanActive.structureName;
+                selections.forEach(async (selection) => {
+                    let secondResponse;
+                    secondResponse = await this.dataPost(
+                        `/${state.higherStructureThanActive.urlName}_${state.activeStructureTab}/records`,
+                        {
+                            [higherStructureName]: selection,
+                            [structureName]: structureId,
+                        }
+                    );
+                });
+
+                dispatch("CreateNotification", {
+                    notificationText: "Įrašas sukurtas sėkmingai",
+                    type: "success",
+                });
+                dispatch("FetchStructures");
+            }
+        } catch (error) {
+            dispatch("CreateNotification", {
+                notificationText: error.message,
+                type: "error",
+            });
+        }
+    },
+
+    async EditStructure(
+        { dispatch, state },
+        { dataToUpdate, structureId, selections }
+    ) {
+        try {
+            const assignedStructures = await dispatch(
+                "FetchHigherStructuresSelections",
+                { structureId, shouldReturn: true }
+            );
+            //Remove existing assigns
+            assignedStructures.forEach(async (structure) => {
+                await this.dataDelete(
+                    `/${state.higherStructureThanActive.urlName}_${state.activeStructureTab}/records`,
+                    structure.id
+                );
+            });
+
+            // Add new assigns
+            const structureName = `${state.activeStructureTab.slice(
+                0,
+                state.activeStructureTab.length - 1
+            )}_id`;
+            const higherStructureName =
+                state.higherStructureThanActive.structureName;
+            selections.forEach(async (selection) => {
+                await this.dataPost(
+                    `/${state.higherStructureThanActive.urlName}_${state.activeStructureTab}/records`,
+                    {
+                        [higherStructureName]: selection,
+                        [structureName]: structureId,
+                    }
+                );
+            });
+
+            // Update record with new data
+            const response = await this.dataPatch(
+                `/${state.activeStructureTab}/records`,
+                structureId,
+                dataToUpdate
+            );
+            if (response.status === 200) {
+                dispatch("CreateNotification", {
+                    notificationText: "Įrašas pakoreguotas sėkmingai",
+                    type: "success",
+                });
+                dispatch("FetchStructures");
+            }
+        } catch (error) {
+            dispatch("CreateNotification", {
+                notificationText: error.message,
+                type: "error",
+            });
+        }
+    },
+
+    // FOR STRUCTURES MANAGEMENT
+
+    // FOR FORMS/FILTERS
     async FetchCompanies({ dispatch, commit }) {
         try {
             const response = await this.dataGetSingle("companies/records");
@@ -153,11 +361,29 @@ const actions = {
             });
         }
     },
+    // FOR FORMS/FILTERS
 };
 
 const mutations = {
-    SET_STRUCTURES_STATE(state, { name, data }) {
-        state.structures = { ...state.structures, [name]: data };
+    // FOR STRUCTURES MANAGEMENT
+    SET_STRUCTURES_STATE(state, structure) {
+        state.structures = structure;
+    },
+    SET_STRUCTURE_ACTIVE_TAB(state, structure) {
+        state.activeStructureTab = structure;
+    },
+    SET_HIGHER_STRUCTURE(state, structure) {
+        state.higherStructureThanActive = structure;
+    },
+    SET_STRUCTURE_TO_MODIFY(state, structure) {
+        state.structureToModify = structure;
+    },
+    SET_HIGHER_STRUCTURES_SELECTIONS(state, structures) {
+        state.higherStructureSelections = structures;
+    },
+    // FOR FORMS/FILTERS
+    SET_STRUCTURES_FOR_SELECT(state, structures) {
+        state.structuresForSelect = structures;
     },
     SET_SELECTED_COMPANY(state, companyId) {
         state.selectedCompany = companyId;

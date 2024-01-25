@@ -52,6 +52,11 @@ form {
     margin-bottom: var(--gap-medium);
 }
 
+.form-content:has(.structure),
+.form-content:has(.company) {
+    flex-direction: column;
+}
+
 .form-heading {
     font-size: var(--fs-small);
     margin-bottom: calc(var(--gap-large) * 2);
@@ -73,7 +78,7 @@ form {
     border-radius: var(--border-radius);
 }
 
-.form-content:has(.form-delete--content) {
+.submit-button.company .form-content:has(.form-delete--content) {
     flex-direction: column;
     gap: var(--gap-small);
 }

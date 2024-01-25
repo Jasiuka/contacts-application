@@ -29,6 +29,7 @@
                     />
                 </button>
                 <button
+                    v-if="getPermissions.edit_employees"
                     @click="openModal(formTypes.CREATE_CONTACT)"
                     title="Pridėti naują kontaktą"
                     class="page-add-new page-special-action"
@@ -171,6 +172,7 @@ export default {
             "getContactsPerPageNumber",
             "getContactsPerPageDropdownVisible",
             "getContactsFoundTotal",
+            "getPermissions",
         ]),
         viewButtonImage() {
             return this.getContactsView === "cards" ? BulletListPng : VectorPng;

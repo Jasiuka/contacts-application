@@ -1,8 +1,8 @@
 <template>
     <div id="app" ref="app">
         <notifications-list></notifications-list>
-        <navigation-bar></navigation-bar>
-        <the-modal>
+        <navigation-bar v-if="!isAdminLoginPage"></navigation-bar>
+        <the-modal v-if="!isAdminLoginPage">
             <template #modal-component>
                 <component :is="getModalComponent"></component>
             </template>
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import NavigationBar from "./components/UI/NavigationBar.vue";
 import NotificationsList from "./components/Notifications/NotificationsList.vue";
 import TheModal from "./components/UI/TheModal.vue";
@@ -20,6 +20,11 @@ import CreateCompany from "./components/Forms/CreateCompany.vue";
 import CreateContact from "./components/Forms/CreateContact.vue";
 import EditContact from "./components/Forms/EditContact.vue";
 import DeleteContact from "./components/Forms/DeleteContact.vue";
+import DeleteCompany from "./components/Forms/DeleteCompany.vue";
+import EditCompany from "./components/Forms/EditCompany.vue";
+import DeleteStructure from "./components/Forms/DeleteStructure.vue";
+import CreateStructure from "./components/Forms/CreateStructure.vue";
+import EditStructure from "./components/Forms/EditStructure.vue";
 export default {
     components: {
         NavigationBar,
@@ -27,12 +32,23 @@ export default {
         TheModal,
         // For modal
         CreateCompany,
+        DeleteCompany,
         CreateContact,
         EditContact,
         DeleteContact,
+        EditCompany,
+        DeleteStructure,
+        CreateStructure,
+        EditStructure,
     },
     computed: {
         ...mapGetters(["getModalComponent"]),
+        isAdminLoginPage() {
+            return this.$route.path === "/admin-login";
+        },
+    },
+    methods: {
+        ...mapActions(["RefreshAuth"]),
     },
 };
 </script>
@@ -116,6 +132,12 @@ button {
     font-family: "Montserrat", sans-serif;
     color: var(--black-main);
     transition: all 0.3s ease;
+}
+
+button:disabled {
+    background-color: var(--blue-light);
+    cursor: default;
+    pointer-events: none;
 }
 
 *,

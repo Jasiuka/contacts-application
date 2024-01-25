@@ -32,6 +32,7 @@
         </template>
         <template #card-actions>
             <button
+                v-if="getPermissions.delete_employees"
                 title="Ištrinti"
                 class="contact-delete action-delete action-btn"
                 @click="openModal(formTypes.DELETE_CONTACT)"
@@ -42,6 +43,7 @@
                 />
             </button>
             <button
+                v-if="getPermissions.edit_employees"
                 @click="openModal(formTypes.EDIT_CONTACT)"
                 title="Koreguoti"
                 class="contact-edit action-edit action-btn"
@@ -56,7 +58,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
 import { formTypes } from "../Forms/formTypes";
 export default {
     name: "ContactComponent",
@@ -67,6 +69,7 @@ export default {
         },
     },
     computed: {
+        ...mapGetters(["getPermissions"]),
         imageUrl() {
             if (this.contact.photo) {
                 const url = new URL(

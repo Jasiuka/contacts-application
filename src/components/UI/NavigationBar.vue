@@ -14,24 +14,31 @@
                     >Kontaktai</router-link
                 >
             </li>
-            <li>
+            <li v-if="getLoggedIn">
                 <router-link class="navigation-link" to="/companies"
                     >Įmonės</router-link
                 >
             </li>
-            <li>
+            <li v-if="getLoggedIn">
                 <router-link class="navigation-link" to="/structure"
                     >Struktūra</router-link
                 >
             </li>
-            <li>
+            <li v-if="getIsSuperAdmin">
                 <router-link class="navigation-link" to="/accounts"
                     >Paskyros</router-link
                 >
             </li>
-            <base-dropdown class="navigation-dropdown">
+            <base-dropdown v-if="getLoggedIn" class="navigation-dropdown">
                 <template #display>
-                    <img src="../../assets/Male-User.png" />
+                    <img
+                        class="nav-image"
+                        :src="
+                            getAdminAvatar
+                                ? getAdminAvatar
+                                : '/src/assets/Male-User.png'
+                        "
+                    />
                 </template>
                 <template #list-items>
                     <li class="navigation-dropdown--item">
@@ -40,24 +47,33 @@
                         </button>
                     </li>
                     <li class="navigation-dropdown--item">
-                        <button title="Atsijungti">Atsijungti</button>
+                        <button @click="Logout" title="Atsijungti">
+                            Atsijungti
+                        </button>
                     </li>
                 </template>
             </base-dropdown>
+            <li class="login" v-else>
+                <router-link class="navigation-link" to="/admin-login"
+                    >Prisijungti</router-link
+                >
+            </li>
         </ul>
     </nav>
 </template>
 
 <script>
 import BaseDropdown from "../Base/BaseDropdown.vue";
+import { mapGetters, mapActions } from "vuex";
 export default {
     components: {
         BaseDropdown,
     },
-    data() {
-        return {
-            loggedIn: false,
-        };
+    computed: {
+        ...mapGetters(["getLoggedIn", "getIsSuperAdmin", "getAdminAvatar"]),
+    },
+    methods: {
+        ...mapActions(["Logout"]),
     },
 };
 </script>
@@ -97,6 +113,15 @@ export default {
 }
 
 .nav-logo {
+    height: 3rem;
+}
+
+.navigation-list > li:last-of-type.login {
+    margin-left: auto;
+}
+
+.nav-image {
+    width: 3rem;
     height: 3rem;
 }
 </style>

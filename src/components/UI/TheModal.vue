@@ -74,6 +74,11 @@ export default {
     max-height: 99dvh;
 }
 
+.dialog:has(.structure),
+.dialog:has(.company) {
+    min-width: 35dvw;
+}
+
 .close-modal {
     align-self: flex-end;
     font-size: var(--fs-small);
