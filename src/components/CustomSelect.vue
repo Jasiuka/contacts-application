@@ -156,5 +156,16 @@ option:checked {
     label {
         font-size: calc(var(--fs-smallest) - 0.4rem);
     }
+
+    select {
+        padding: var(--pd-smallest);
+    }
+}
+
+@media only screen and (max-height: 44rem) {
+    select,
+    label {
+        font-size: calc(var(--fs-smallest) - 0.6rem);
+    }
 }
 </style>
