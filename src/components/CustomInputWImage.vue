@@ -19,6 +19,7 @@
                 :required="isRequired"
                 :placeholder="placeholder"
                 :autocomplete="autoComplete"
+                :value="inputValue"
             />
         </label>
     </div>
@@ -34,6 +35,9 @@ export default {
             type: String,
             required: true,
         },
+    },
+    created() {
+        this.enteredValue = this.inputValue;
     },
 };
 </script>
@@ -62,6 +66,7 @@ export default {
     background-color: transparent;
     outline: none;
     border: none;
+    font-size: var(--fs-smallest);
 }
 
 .input-invalid {

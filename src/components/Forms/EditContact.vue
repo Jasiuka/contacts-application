@@ -159,7 +159,7 @@
                         <p class="image-text" v-if="photo">
                             Nuotrauka: {{ photo }}
                         </p>
-                        <p v-else>Nuotrauka neįkelta</p>
+                        <p class="image-text" v-else>Nuotrauka neįkelta</p>
                     </div>
                 </div>
             </div>
@@ -197,7 +197,8 @@ export default {
             const allFieldsValuesSame = this.checkIfAnyChanged(
                 allFieldsWithoutFile,
                 this.getContactToModify,
-                [{ name: "photo", value: this.photo }]
+                [{ name: "photo", value: this.photo }],
+                true
             );
             if (allFieldsValuesSame) {
                 return;
