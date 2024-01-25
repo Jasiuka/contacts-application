@@ -4,6 +4,7 @@
       >{{ labelText }}
       <span class="input-required" v-if="isRequired">*</span>
     </label>
+
     <input
       ref="input"
       :placeholder="placeholder"
@@ -69,12 +70,5 @@ label {
   label {
     font-size: calc(var(--fs-smallest) - 0.3rem);
   }
-}
-
-@media only screen and (max-height: 44rem) {
-    input,
-    label {
-        font-size: calc(var(--fs-smallest) - 0.6rem);
-    }
 }
 </style>

@@ -71,7 +71,7 @@ export default {
     flex-direction: column;
     gap: var(--gap-largest);
     min-width: 50dvw;
-    max-height: 99dvh;
+    max-height: 90dvh;
 }
 
 .dialog:has(.structure),
