@@ -1,5 +1,5 @@
 <template>
-    <page-layout page-special-class="page-special-actions-companies">
+    <page-layout page-special-class="page-special-actions--simple">
         <template #page-heading> Įmonės </template>
         <template #page-special>
             <div class="page-special-actions">
@@ -82,18 +82,18 @@ export default {
 </script>
 
 <style>
-.page-special-actions-companies > .page-special-actions {
+.page-special-actions--simple > .page-special-actions {
     display: flex;
     flex-direction: column;
     align-items: baseline;
 }
-.page-special-actions-companies .wrapper {
+.page-special-actions--simple .wrapper {
     display: flex;
     align-items: center;
     gap: var(--gap-medium);
 }
 
-.page-special-actions-companies .wrapper p {
+.page-special-actions--simple .wrapper p {
     font-size: var(--fs-small);
 }
 

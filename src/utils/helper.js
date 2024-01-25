@@ -23,7 +23,7 @@ export const createFormDataFromInputsArray = (inputsArray) => {
     const formData = new FormData();
     Array.from(inputsArray).forEach((input) => {
         if (input.value && input.value !== "0") {
-            if (input.name === "photo") {
+            if (input.name === "photo" || input.name === "avatar") {
                 formData.append(input.name, input.files[0]);
             } else {
                 formData.append(input.name, input.value);
@@ -31,6 +31,14 @@ export const createFormDataFromInputsArray = (inputsArray) => {
         }
     });
 
+    return formData;
+};
+
+export const createFormDataFromObject = (obj) => {
+    const formData = new FormData();
+    for (const key in obj) {
+        formData.append(key, obj[key]);
+    }
     return formData;
 };
 
@@ -58,12 +66,14 @@ export const createObjectWithOldAndNewValues = (
         };
     });
 
-    customInputs.forEach((input) => {
-        nObj[input.name] = {
-            newVal: input.value,
-            oldVal: obj[input.name],
-        };
-    });
+    if (customInputs.length) {
+        customInputs.forEach((input) => {
+            nObj[input.name] = {
+                newVal: input.value,
+                oldVal: obj[input.name],
+            };
+        });
+    }
 
     return nObj;
 };
@@ -232,4 +242,48 @@ export const createHigherStructureObject = (structure) => {
     }
 
     return { error: "Nėra struktūros" };
+};
+
+export const createPermissionsObject = (obj) => {
+    const permissionsObj = { ...obj };
+    const availablePermissions = [
+        "edit_employees",
+        "delete_employees",
+        "edit_companies",
+        "delete_companies",
+        "edit_offices",
+        "delete_offices",
+        "edit_structure",
+        "delete_structure",
+    ];
+    availablePermissions.forEach((permission) => {
+        if (!obj[permission]) {
+            permissionsObj[permission] = false;
+        } else {
+            permissionsObj[permission] = obj[permission];
+        }
+    });
+    return permissionsObj;
+};
+
+export const deleteObjectKeys = (obj, ...keys) => {
+    const newObj = { ...obj };
+    keys.forEach((key) => {
+        delete newObj[key];
+    });
+    return newObj;
+};
+
+export const generatePassword = (length = 8) => {
+    const generateFrom =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{}|;:,.<>?/~";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+        const char =
+            generateFrom.split("")[
+                Math.floor(Math.random() * generateFrom.length)
+            ];
+        password += char;
+    }
+    return password;
 };

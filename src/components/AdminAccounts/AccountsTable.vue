@@ -1,26 +1,28 @@
 <template>
     <base-table data-table="simple">
         <template #table-head>
-            <th>Įmonės pavadinimas</th>
+            <th>Vardas</th>
+            <th>El. Paštas</th>
             <th v-if="actionsVisible">Veiksmai</th>
         </template>
         <template #table-body>
-            <tr :key="company.id" v-for="company in companies">
-                <td>{{ company.name }}</td>
+            <tr :key="account.id" v-for="account in accounts">
+                <td>{{ account.name || "-" }}</td>
+                <td class="middle">{{ account.email }}</td>
                 <td class="row-actions" v-if="actionsVisible">
                     <button
-                        v-if="getPermissions.edit_companies"
-                        @click="openModal(formTypes.EDIT_COMPANY, company)"
+                        v-if="getPermissions.edit_permissions"
+                        @click="openModal(formTypes.EDIT_ACCOUNT, account)"
                         title="Koreguoti"
-                        class="companies-edit action-edit action-btn"
+                        class="accounts-edit action-edit action-btn"
                     >
                         Redaguoti
                     </button>
                     <button
-                        v-if="getPermissions.delete_companies"
+                        v-if="getPermissions.delete_permissions"
                         title="Ištrinti"
-                        class="companies-delete action-delete action-btn"
-                        @click="openModal(formTypes.DELETE_COMPANY, company)"
+                        class="accounts-delete action-delete action-btn"
+                        @click="openModal(formTypes.DELETE_ACCOUNT, account)"
                     >
                         Ištrinti
                     </button>
@@ -33,9 +35,8 @@
 <script>
 import BaseTable from "../Base/BaseTable.vue";
 import { formTypes } from "../Forms/formTypes";
-import { mapMutations, mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 export default {
-    name: "CompaniesTable",
     components: {
         BaseTable,
     },
@@ -45,7 +46,7 @@ export default {
         };
     },
     props: {
-        companies: {
+        accounts: {
             type: Array,
             required: true,
         },
@@ -54,15 +55,15 @@ export default {
         ...mapGetters(["getPermissions"]),
         actionsVisible() {
             return (
-                this.getPermissions.edit_companies ||
-                this.getPermissions.delete_companies
+                this.getPermissions.edit_permissions ||
+                this.getPermissions.delete_permissions
             );
         },
     },
     methods: {
-        ...mapMutations(["OPEN_MODAL", "SET_COMPANY_TO_MODIFY"]),
-        openModal(formType, company) {
-            this.SET_COMPANY_TO_MODIFY(company);
+        ...mapMutations(["OPEN_MODAL", "SET_ACCOUNT_TO_MODIFY"]),
+        openModal(formType, account) {
+            this.SET_ACCOUNT_TO_MODIFY(account);
             this.OPEN_MODAL(formType);
         },
     },

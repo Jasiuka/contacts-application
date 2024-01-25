@@ -47,6 +47,13 @@ export const validationMixin = {
         validator(input, inputName, pattern, length = null) {
             let isValid;
             switch (pattern) {
+                case "regular":
+                    isValid = this.checkValueFormatWithRegex(
+                        "^[ąčęėįšųūžĄČĘĖĮŠŲŪŽa-zA-Z\\s]*$",
+                        input,
+                        inputName
+                    );
+                    break;
                 case "email":
                     isValid = this.checkValueFormatWithRegex(
                         "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
@@ -205,8 +212,14 @@ export const validationMixin = {
             }
             return notChanged;
         },
+        checkIfObjectsValuesSame(firstObj, secondObj) {
+            const allSame = Object.keys(firstObj).every((key) => {
+                return firstObj[key] === secondObj[key];
+            });
+            return allSame;
+        },
     },
-    detroyed() {
+    destroyed() {
         this.invalidFields = [];
     },
 };
