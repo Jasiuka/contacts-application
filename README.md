@@ -19,6 +19,8 @@ This is my largest internship project/task, which I developed through my interns
 - CRUD Operations for Contacts, Companies and their structures, admin accounts
 - Navigation Guards
 
+- NOT RESPONSIVE
+
 ## 🔧 Tech stack
 
 #### Frontend
