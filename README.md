@@ -29,7 +29,10 @@ This is my largest internship project/task, which I developed through my interns
 
 - Pocketbase
 
-## 💻 Website Design Preview
+#### Login to test admin
+
+Email: test@test.com
+password: testadmin
 
 ## 👤 Author
 
