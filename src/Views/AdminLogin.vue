@@ -16,7 +16,7 @@
           input-name="identity"
           input-type="email"
           max-length="40"
-          image="dist/assets/Icons/Mail.png"
+          image="/assets/Icons/Mail.png"
           :is-invalid="invalidFields.includes('admin_email')"
           :is-required="true"
         ></custom-input-with-image>
@@ -26,7 +26,7 @@
           input-name="password"
           input-type="password"
           :auto-complete="true"
-          image="dist/assets/Icons/Lock.png"
+          image="/assets/Icons/Lock.png"
           :is-required="true"
           :is-invalid="invalidFields.includes('admin_password')"
         ></custom-input-with-image>
