@@ -30,7 +30,9 @@
         <template #display>
           <img
             class="nav-image"
-            :src="getAdminAvatar ? getAdminAvatar : '/src/assets/Male-User.png'"
+            :src="
+              getAdminAvatar ? getAdminAvatar : '/dist/assets/Male-User.png'
+            "
           />
         </template>
         <template #list-items>
